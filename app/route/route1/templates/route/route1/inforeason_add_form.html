@@ -1,0 +1,21 @@
+{% extends "core/page.html" %}
+
+{% block page_title %}Добавление инфоповода{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <form action="" method="POST" accept-charset="utf-8">
+            {% csrf_token %}
+            {# {{ form.as_p }} #}
+            {% for f in form.visible_fields %}
+                {% include "core/form_field.html" with field=f %}
+            {% endfor %}
+
+            {% for f in form.hidden_fields %}
+                {{ f }}
+            {% endfor %}
+
+            {% include "core/form_inline_buttons.html" with title="Сохранить" type="submit" btn_classes="btn-success" %}
+        </form>
+    </div>
+{% endblock %}

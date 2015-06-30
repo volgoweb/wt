@@ -1,0 +1,10 @@
+{% extends "core/page.html" %}
+
+{% block content %}
+    <form action="" method="POST" accept-charset="utf-8">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <input type="submit" value="Сохранить"/>
+    </form>
+{% endblock %}

@@ -1,0 +1,43 @@
+
+[
+    {
+        "model": "account.Account",
+        "fields": {
+            "email": "copywriter@test.test",
+            "password": "pbkdf2_sha256$20000$ranqe1b6dNOs$rrljflWB93INl5UA/lk/V10W1yw7Fmsr3cwkO4GoSgU=",
+            "first_name": "Иван",
+            "last_name": "Копирайтеров1",
+            "job": "Копирайтер"
+        }
+    },
+    {
+        "model": "account.Account",
+        "fields": {
+            "email": "redactor@test.test",
+            "password": "pbkdf2_sha256$20000$eTf4Ba9WqJqj$AWxGRoo0ohRXE8F2Io1Qh+WJHBme2lvLtL6941khUgo=",
+            "first_name": "Петр",
+            "last_name": "Редакторов",
+            "job": "Редактор"
+        }
+    },
+    {
+        "model": "account.Account",
+        "fields": {
+            "email": "content_manager@test.test",
+            "password": "pbkdf2_sha256$20000$Wi7MBW6hbrnj$0i65vkwIcmFAz5eX5szX11NVSBxvFZEwep6OPQXFsAg=",
+            "first_name": "Павел",
+            "last_name": "Конменов",
+            "job": "Контент-менеджер"
+        }
+    },
+    {
+        "model": "account.Account",
+        "fields": {
+            "email": "corrector@test.test",
+            "password": "pbkdf2_sha256$20000$cwIAvPVOHkSc$P6n9yWr0sOhDrqbv8SMlN8ZEk1s78w1imXogihLptL0=",
+            "first_name": "Ирина",
+            "last_name": "Корректова",
+            "job": "Корректор"
+        }
+    }
+]

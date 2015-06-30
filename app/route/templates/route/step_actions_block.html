@@ -1,0 +1,6 @@
+
+<div class="route-step-actions">
+    {% for action in actions %}
+        <a href="{{ action.url }}?step={{ step.pk }}&action_name={{ action.name }}" class="btn btn-warning">{{ action.title }}</a>
+    {% endfor %}
+</div>

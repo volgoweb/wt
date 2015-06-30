@@ -1,0 +1,16 @@
+
+{% extends "core/page.html" %}
+
+{% block page_title %}Вход{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+        <form  method="POST" accept-charset="utf-8" class="login-form">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <input type="submit" value="Войти"/>
+        </form>
+{% endblock %}

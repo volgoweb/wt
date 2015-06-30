@@ -1,0 +1,12 @@
+
+<div class="form-field__{{ field.name }} form-field {% if inline %}form-field_inline{% endif %} form-group {{ container_classes }}">
+    {% if label != "" %}
+    <label class="form-field__label">{% if label %}{{ label }}{% else %}{{ field.label }}{% endif %}{% if field.field.required %}<span class="required">*</span>{% endif %}: </label>
+    {% endif %}
+
+    <div class="form-field__value">{{ field }}</div>
+
+    <div class="form-field__errors bg-danger">
+        {{ field.errors }}
+    </div>
+</div>

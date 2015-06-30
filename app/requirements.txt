@@ -1,0 +1,15 @@
+django==1.8
+django-extensions
+django-autoslug
+Pillow
+easy_thumbnails
+mysql-python
+django-polymorphic
+django-ajaximage
+nodeenv # виртуальное окружение для nodejs
+# nodeenv --python-virtualenv #Use current python virtualenv
+# потом установить через npm пакет less
+django-compressor
+django-endless-pagination
+django-ckeditor
+django-datetime-widget

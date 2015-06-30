@@ -1,0 +1,26 @@
+
+<table class="tasks-list__table table table-bordered table-consended table-striped">
+    <thead>
+        <tr>
+            <th>Название задачи</th>
+            <th class="fulldate-col">Дата создания</th>
+            <th class="fulldate-col">Крайний срок</th>
+            <th>Автор</th>
+            <th>Исполнитель</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for t in tasks %}
+            <tr>
+                <td><a href="{% url "task:task_detail" t.pk %}">№{{ t.pk }} {{ t.title }}</a></td>
+                <td class="fulldate-col">{{ t.created|date:"FULL_DATETIME_FORMAT" }}</td>
+                <td class="fulldate-col">{{ t.due_date|date:"FULL_DATETIME_FORMAT" }}</td>
+                <td>{{ t.author }}</td>
+                <td>{{ t.performer }}</td>
+                <td>{{ t.get_status_display }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

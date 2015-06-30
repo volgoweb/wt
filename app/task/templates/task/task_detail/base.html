@@ -1,0 +1,65 @@
+{% extends "core/page.html" %}
+{% load static %}
+{% load route_tags %}
+
+{% block js %}
+    {{ block.super }}
+    
+    <script type="text/javascript" src="{% static 'helper/js/single_choice_checkboxes.js' %}"></script>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    {{ form.media }}
+{% endblock %}
+
+{% block page_title %}
+    Задача "{{ task.title }}"
+{% endblock %}
+
+{% block content %}
+<div class="col-lg-6 col-md-9 col-sm-12">
+    <div class="bg-danger">
+        {% if form.errors %}
+            <p>Ошибка!</p>
+            <p>Проверьте все поля, под которыми есть сообщения об ошибках.</p>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        <div class="task__due-date col-md-4">
+            <label>Крайний срок:</label> <span>{{ task.due_date }}</span>
+        </div>
+
+        <div class="task__performer col-md-4">
+            <label>Исполнитель:</label> <span>{{ task.performer }}</span>
+        </div>
+    </div>
+
+    {% if not can_edit %}
+        {% include "core/field_view.html" with value=task.get_status_display label=task.get_field_labels.status inline=True %}
+        {% include "core/field_view.html" with value=task.comment label=task.get_field_labels.comment hide_if_empty=True %}
+    {% endif %}
+    
+    <div class="task__desc">
+        <label>Описание:</label> 
+        {{ task.desc }}
+    </div>
+
+    {% if can_edit %}
+        <form action="" method="POST" accept-charset="utf-8">
+            {% csrf_token %}
+
+            {% block task_form_fields %}
+            {% endblock %}
+
+            <input type="submit" class="btn btn-primary" value="Сохранить"/>
+        </form>
+    {% else %}
+        {% block task_results_view %}
+        {% endblock %}
+    {% endif %}
+
+    {% route_step_actions task.step request %}
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+
+{% if hide_if_empty and not value %}
+{% else %}
+    <div class="field-view {{ container_classes }} {% if inline %}field-view_inline{% endif %}">
+        <label class="form-view__label">{{ label }}: </label>
+        <span class="form-view__value">
+            {% block field_view_value %}
+                {{ value }}
+            {% endblock %}
+        </span>
+    </div>
+{% endif %}

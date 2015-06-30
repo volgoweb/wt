@@ -1,0 +1,19 @@
+
+<table class="notifications-list__table table table-bordered table-consended table-striped">
+    <thead>
+        <tr>
+            <th class="fulldate-col">Дата</th>
+            <th>Описание</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for n in notifications %}
+            <tr>
+                <td class="fulldate-col">{{ n.created|date:"FULL_DATETIME_FORMAT" }}</td>
+                <td>{{ n.text|safe }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+

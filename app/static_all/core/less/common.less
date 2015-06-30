@@ -1,0 +1,82 @@
+td, th {
+    padding: 5px;
+}
+
+.form-label {
+    color: gray;
+    font-weight: bold;
+}
+
+.collapse-btn {
+    width: 100%;
+    text-align: left;
+}
+.collapse-btn.collapsed {
+    background-color: transparent;
+}
+.collapse-btn:after {
+    content: ' ↑'
+}
+.collapse-btn.collapsed:after {
+    content: ' ↓'
+}
+.collapsible-block {
+    background-color: white;
+    border: 1px solid gray;
+    padding: 10px;
+}
+
+
+.form-field_inline {
+    overflow: hidden;
+}
+
+.form-field_inline .form-field__label,
+.form-field_inline .form-field__value  {
+    float: left;
+}
+
+.form-field__errors {
+    float: none;
+}
+
+input[type="radio"] {
+    height: 15px;
+    // float: left;
+    border: none;
+    .box-shadow(none)
+}
+
+.form-field__value ul {
+    overflow: hidden;
+    list-style: none;
+}
+
+.form-field__value li {
+    float: left;
+    margin-right: 15px;
+}
+
+.ui-datepicker-trigger {
+    display: none;
+}
+
+.form-field_without-label {
+    vertical-align: bottom !important;
+}
+
+.form-field__value .ajaximage.img-active .file-remove {
+    display: none;
+}
+
+.django-ckeditor-widget {
+    width: 100%;
+}
+
+table .id-col {
+    width: 60px;
+}
+
+table .fulldate-col {
+    width: 150px;
+}

@@ -1,0 +1,18 @@
+{% load static %}
+
+<script type="text/javascript" src="{% static 'helper/js/formset_delete_field.js' %}"></script>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $('.{{ formset_container_class }}').formset_delete_field({
+            checkbox: '.{{ formset_container_class }} .formset__item .formset-delete-container input[type="checkbox"]',
+            form_item_container: '.{{ formset_container_class }} .formset__item',
+        });
+    });
+</script>
+
+<div class="formset-delete-container btn-group" data-toggle="buttons">
+    <label class="formset-delete-button btn {{ button_classes }}">
+        {{ delete_field }}
+        <span class="glyphicon glyphicon-remove-circle"></span>
+    </label>
+</div>

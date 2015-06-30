@@ -1,0 +1,48 @@
+{% extends "core/page.html" %}
+{% load endless %}
+
+{% block page_title %}
+        Задачи
+        <span class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="{% url "task:add_task" %}">Добавить задачу</a></li>
+                {# TODO DEMO-пункт меню #}
+                <li><a href="{% url "route:route1:start_route" %}">Запустить бизнес-процесс <strong>"Согласование договора"</strong></a></li>
+            </ul>
+        </span>
+{% endblock %}
+
+{% block content %}
+    <div class="tasks-list">
+
+        <div class="tasks-list__filters row-fluid">
+            <form action="" method="GET" accept-charset="utf-8" class="form-inline">
+                {% for f in filters_form.visible_fields %}
+                    {% include "core/form_field.html" with field=f %}
+                {% endfor %}
+
+                {% for f in filters_form.hidden_fields %}
+                    {{ f }}
+                {% endfor %}
+
+                {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %}
+                {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="this.form.reset();" %}
+            </form>
+        </div>
+
+        {% paginate tasks %}
+        {% get_pages %}
+        <div class="row-fluid">
+            <p class="lead">Найдено: <strong>{{ count_objects }}</strong></p>
+            {% if tasks %}
+                {% include "task/tasks_list.html" with tasks=tasks %}
+                {% include "helper/endless_pagination/pages.html" %}
+            {% endif %}
+        </div>
+
+    </div> {# .tasks-list #}
+{% endblock %}

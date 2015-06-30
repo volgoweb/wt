@@ -1,0 +1,49 @@
+
+{% if files_formset %}
+    <div class="files-formset">
+        <!-- <h3>Картинки</h3> -->
+
+        {{ files_formset.management_form }}
+        {{ files_formset.media }}
+
+        <div class="empty-form" style="display: none;">
+            <div class="files-formset__item formset__item" style="overflow: hidden;">
+                {{ files_formset.empty_form.id }}
+                <div class="pull-left">
+                    {% include "core/form_field.html" with field=files_formset.empty_form.file label="" inline=True %}
+                </div>
+                <div class="pull-left">
+                    {% include "helper/field/common/formset_delete_field.html" with delete_field=files_formset.empty_form.DELETE button_classes="btn-danger btn-formset-delete" button_title='<span class="glyphicon glyphicon-remove-sign"></span>' formset_container_class="files-formset__items" %}
+                </div>
+            </div>
+        </div>
+
+        <div class="files-formset__items">
+            {% for file_form in files_formset.forms %}
+                <div class="files-formset__item formset__item" style="overflow: hidden;">
+                    {{ file_form.id }}
+                    {% include "core/form_field.html" with field=file_form.file label="" inline=True container_classes="pull-left" %}
+                    <div class="pull-left">
+                        {% include "helper/field/common/formset_delete_field.html" with delete_field=file_form.DELETE button_classes="btn-danger btn-formset-delete" button_title='<span class="glyphicon glyphicon-remove-sign"></span>' formset_container_class="files-formset__items" %}
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <input type="button" value="Еще" id="more-file-form">
+        <script>
+            $(document).ready(function() {
+                $('#more-file-form').on('click', function() {
+                    var form_idx = $('#id_form-TOTAL_FORMS').val();
+                    $('.files-formset__items').append($('.empty-form').html().replace(/__prefix__/g, form_idx));
+                    $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+                });
+
+                $('.files-formset__items').single_choice_checkboxes({
+                    checkbox: '.files-formset__items .form-field__is_teaser_file input[type="checkbox"]'
+                });
+            });
+        </script>
+    </div>
+{% endif %}

@@ -1,0 +1,13 @@
+{% extends "task/task_detail/base.html" %}
+
+{% block task_form_fields %}
+    {{ block.super }}
+
+    {% for f in form.hidden_fields %}
+        {{ f }}
+    {% endfor %}
+
+    {% for f in form.visible_fields %}
+        {% include "core/form_field.html" with field=f inline=True %}
+    {% endfor %}
+{% endblock %}
