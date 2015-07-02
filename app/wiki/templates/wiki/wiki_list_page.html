@@ -6,11 +6,14 @@
     {# <link rel="stylesheet" type="text/css" media="all" href="{% static "core/watable/watable.css" %}" /> #}
     {# <script type="text/javascript" src="{% static 'core/watable/jquery.watable.js' %}"></script> #}
     <script type="text/javascript" src="{% static 'core/quicksearch/jquery.quicksearch.js' %}"></script>
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "wiki/css/wiki.css" %}" />
 {% endblock %}
 
 {% block content %}
     <div class="control-group">
-        <a href="{% url "wiki:add_wiki_page" %}" class="btn btn-primary">Добавить страницу</a>
+        <a href="{% url "wiki:add_wiki_page" %}" class="btn btn-primary">
+            <span class="glyphicon glyphicon-plus"></span> Добавить страницу
+        </a>
     </div>
 
     <hr>
@@ -25,7 +28,7 @@
             <table class="wiki-page-items table table-hover col-md-8">
                 <tbody>
                     {% for node in tree %}
-                        <tr>
+                        <tr class="wiki-page-item">
                             <td class="wiki-catalog__item" data-pk="{{ node.pk }}" style="padding-left: {% widthratio node.level 20 100 %}px;">{#<a href="{{ node.get_absolute_url }}">#}{{ node.title }}{#</a>#}</td>
                         </tr>
                     {% endfor %}

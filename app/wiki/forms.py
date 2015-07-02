@@ -21,11 +21,11 @@ class WikiPageForm(BootstrapFormMixin, forms.ModelForm):
         super(WikiPageForm, self).__init__(*args, **kwargs)
         self.fields['title'].widget.attrs.update({
             'autofocus': '',
-            'tabindex': 1,
+            # 'tabindex': 1,
         })
-        self.fields['text'].widget.attrs.update({
-            'tabindex': 2,
-        })
-        self.fields['parent'].widget.attrs.update({
-            'tabindex': 3,
-        })
+        # self.fields['text'].widget.attrs.update({
+        #     'tabindex': 2,
+        # })
+        # self.fields['parent'].widget.attrs.update({
+        #     'tabindex': 3,
+        # })

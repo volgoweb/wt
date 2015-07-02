@@ -10,3 +10,7 @@
 .add-wiki-form th {
     width: 150px;
 }
+
+.wiki-page-item {
+    cursor: pointer;
+}

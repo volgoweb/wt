@@ -44,6 +44,9 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
         self.fields['author'].initial = self.request.user
         self.fields['author'].widget = self.fields['author'].hidden_widget()
         self.fields['status'].widget = forms.widgets.HiddenInput()
+        self.fields['title'].widget.attrs.update({
+            'autofocus': '',
+        })
 
         self.add_files_formset()
 
