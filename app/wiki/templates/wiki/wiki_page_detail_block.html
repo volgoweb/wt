@@ -4,5 +4,5 @@
 {% endif %}
 
 <div class="wiki-page__text">
-    {{ page.text }}
+    {{ page.text|default:""|safe }}
 </div>

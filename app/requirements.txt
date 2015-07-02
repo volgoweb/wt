@@ -16,3 +16,4 @@ django-datetime-widget
 # django-taggit
 # django-tagging
 django-mptt
+django_select2

@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     # 'tagging',
     # 'tagging_autosuggest',
     'mptt',
+    'django_select2',
 
     'helper',
     'app.core',

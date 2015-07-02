@@ -6,7 +6,7 @@ from endless_pagination import settings as endless_settings
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import WikiPage
-from .forms import WikiListFilters
+from .forms import WikiListFilters, WikiPageForm
 
 class WikiList(AjaxListView):
     model = WikiPage
@@ -74,7 +74,8 @@ class WikiList(AjaxListView):
 class AddWikiPage(CreateView):
     model = WikiPage
     template_name = 'wiki/add_wiki_page.html'
-    fields = '__all__'
+    form_class = WikiPageForm
+    # fields = '__all__'
 
     # def get_form_kwargs(self):
     #     kwargs = super(AddWikiPage, self).get_form_kwargs()

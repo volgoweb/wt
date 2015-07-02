@@ -31,7 +31,8 @@ urlpatterns = [
     url(r'^ajaximage/', include('ajaximage.urls')),
     url(r'^ckeditor/', include('ckeditor.urls')),
     # url(r'^tagging/', include('tagging_autosuggest.urls')),
-    url(r'^tagging/', include('tagging.urls', namespace='tagging')),
+    # url(r'^tagging/', include('tagging.urls', namespace='tagging')),
+    url(r'^select2/', include('django_select2.urls')),
 
     url(r'^$', 'app.core.views.front_page', name='front_page'),
     url(r'^accounts/', include(account_urls, namespace='account')),
