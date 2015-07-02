@@ -53,6 +53,9 @@ INSTALLED_APPS = (
     'endless_pagination',
     'ckeditor',
     'datetimewidget',
+    # 'tagging',
+    # 'tagging_autosuggest',
+    'mptt',
 
     'helper',
     'app.core',
@@ -62,6 +65,7 @@ INSTALLED_APPS = (
     'app.route',
     'app.route.route1',
     'app.notification',
+    'app.wiki',
 )
 
 MIDDLEWARE_CLASSES = (

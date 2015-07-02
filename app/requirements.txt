@@ -13,3 +13,6 @@ django-compressor
 django-endless-pagination
 django-ckeditor
 django-datetime-widget
+# django-taggit
+# django-tagging
+django-mptt

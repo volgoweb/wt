@@ -7,3 +7,8 @@ from helper import models as helper_models
 class FileItem(helper_models.FileItem):
     class Meta:
         abstract = False
+
+
+# class TagItem(helper_models.TagItem):
+#     class Meta:
+#         abstract = False

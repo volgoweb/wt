@@ -24,11 +24,14 @@ from app.account import urls as account_urls
 from app.task import urls as task_urls
 from app.route import urls as route_urls
 from app.notification import urls as notification_urls
+from app.wiki import urls as wiki_urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ajaximage/', include('ajaximage.urls')),
     url(r'^ckeditor/', include('ckeditor.urls')),
+    # url(r'^tagging/', include('tagging_autosuggest.urls')),
+    url(r'^tagging/', include('tagging.urls', namespace='tagging')),
 
     url(r'^$', 'app.core.views.front_page', name='front_page'),
     url(r'^accounts/', include(account_urls, namespace='account')),
@@ -36,6 +39,7 @@ urlpatterns = [
     url(r'^tasks/', include(task_urls, namespace='task')),
     url(r'^routes/', include(route_urls, namespace='route')),
     url(r'^notifications/', include(notification_urls, namespace='notification')),
+    url(r'^wiki/', include(wiki_urls, namespace='wiki')),
 ]
 
 

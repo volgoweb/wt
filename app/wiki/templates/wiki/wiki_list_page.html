@@ -1,0 +1,59 @@
+{% extends "core/page.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }} 
+    {# <link rel="stylesheet" type="text/css" media="all" href="{% static "core/watable/watable.css" %}" /> #}
+    {# <script type="text/javascript" src="{% static 'core/watable/jquery.watable.js' %}"></script> #}
+    <script type="text/javascript" src="{% static 'core/quicksearch/jquery.quicksearch.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="control-group">
+        <a href="{% url "wiki:add_wiki_page" %}" class="btn btn-primary">Добавить страницу</a>
+    </div>
+
+    <hr>
+    
+    <div class="row-fluid">
+        <div class="wiki-catalog col-md-12">
+            <div id="id_due_date" class="input-group date">
+                <input id="wiki-search" class="form-control" type="text" name="wiki_search" value="" placeholder="Поиск по названию ..."/>
+                <span class="input-group-addon" onclick="$('#wiki-search').val('').trigger('keyup');"><span class="glyphicon glyphicon-remove"></span></span>
+            </div>
+
+            <table class="wiki-page-items table table-hover col-md-8">
+                <tbody>
+                    {% for node in tree %}
+                        <tr>
+                            <td class="wiki-catalog__item" data-pk="{{ node.pk }}" style="padding-left: {% widthratio node.level 20 100 %}px;">{#<a href="{{ node.get_absolute_url }}">#}{{ node.title }}{#</a>#}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="wiki-detail">
+            
+        </div>
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+            $('input#wiki-search').quicksearch('.wiki-page-items tbody tr');
+            var $catalog_items = $('.wiki-catalog__item');
+            $catalog_items.on('click', function() {
+                var $item = $(this);
+                var pk = $(this).data('pk');
+                $.get('/wiki/wiki-page-block/' + pk, function(data){
+                    $('.wiki-detail').html(data);
+                    $('.wiki-detail').removeClass('col-md-2').addClass('col-md-10');
+                    $('.wiki-catalog').removeClass('col-md-10').addClass('col-md-2');
+                    var $row = $item.parent('tr');
+                    $catalog_items.parent('tr').removeClass('active')
+                    $row.addClass('active');
+                });
+            });
+        });
+    </script>
+{% endblock %}

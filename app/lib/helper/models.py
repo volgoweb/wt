@@ -233,11 +233,20 @@ class ModelFieldsAccessTypeMixin(object):
         return access_types
 
 
-
 class FileItem(models.Model):
     file = models.FileField(
         upload_to = 'files',
         verbose_name = u'Файл',
+    )
+
+    class Meta:
+        abstract = True
+
+
+class TagItem(models.Model):
+    tag = models.CharField(
+        max_length=100,
+        verbose_name=u'Тег',
     )
 
     class Meta:

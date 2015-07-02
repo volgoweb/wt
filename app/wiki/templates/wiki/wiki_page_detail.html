@@ -1,0 +1,9 @@
+{% extends "core/page.html" %}
+
+{% block page_title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+        {% include "wiki/wiki_page_detail_block.html" with show_title=False %}
+    </div>
+{% endblock %}
