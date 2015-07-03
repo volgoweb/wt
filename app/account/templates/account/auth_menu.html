@@ -1,8 +1,12 @@
-<div class="auth-menu">
-    <span class="auth-menu__prefix">{{ prefix }}</span>
-    <ul class="auth-menu__items">
+<li class="dropdown">
+    <a href="#" id="profile-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Профиль
+        <span class="caret"></span>
+    </a>
+
+    <ul class="dropdown-menu" aria-labelledby="profile-button">
         {% for link in items %}
             <li><a href="{{ link.url }}">{{ link.title }}</a></li>
         {% endfor %}
     </ul>
-</div>
+</li>

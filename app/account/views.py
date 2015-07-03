@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.views.generic.edit import FormView
-from django.views.generic import View
+from django.views.generic import View, UpdateView
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
+
+from .models import Account
 
 
 class Login(FormView):
@@ -28,3 +30,8 @@ class Login(FormView):
                 return super(Login, self).form_invalid(form)
         else:
             return super(Login, self).form_invalid(form)
+
+
+class EditProfile(UpdateView):
+    model = Account
+    fields = '__all__'

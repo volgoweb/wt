@@ -10,30 +10,30 @@
 {% endblock %}
 
 {% block content %}
-    <div class="control-group">
-        <a href="{% url "wiki:add_wiki_page" %}" class="btn btn-primary">
-            <span class="glyphicon glyphicon-plus"></span> Добавить страницу
-        </a>
-    </div>
-
-    <hr>
-    
     <div class="row-fluid">
         <div class="wiki-catalog col-md-12">
-            <div id="id_due_date" class="input-group date">
-                <input id="wiki-search" class="form-control" type="text" name="wiki_search" value="" placeholder="Поиск по названию ..." autofocus/>
-                <span class="input-group-addon" onclick="$('#wiki-search').val('').trigger('keyup');"><span class="glyphicon glyphicon-remove"></span></span>
-            </div>
+                <div class="control-group">
+                    <a href="{% url "wiki:add_wiki_page" %}" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-plus"></span> Добавить страницу
+                    </a>
+                </div>
 
-            <table class="wiki-page-items table table-hover col-md-8">
-                <tbody>
-                    {% for node in tree %}
-                        <tr class="wiki-page-item">
-                            <td class="wiki-catalog__item" data-pk="{{ node.pk }}" style="padding-left: {% widthratio node.level 20 100 %}px;">{#<a href="{{ node.get_absolute_url }}">#}{{ node.title }}{#</a>#}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                <hr>
+
+                <div id="id_due_date" class="input-group date">
+                    <input id="wiki-search" class="form-control" type="text" name="wiki_search" value="" placeholder="Поиск по названию ..." autofocus/>
+                    <span class="input-group-addon" onclick="$('#wiki-search').val('').trigger('keyup');"><span class="glyphicon glyphicon-remove"></span></span>
+                </div>
+
+                <table class="wiki-page-items table table-hover col-md-8">
+                    <tbody>
+                        {% for node in tree %}
+                            <tr class="wiki-page-item">
+                                <td class="wiki-catalog__item" data-pk="{{ node.pk }}" style="padding-left: {% widthratio node.level 20 100 %}px;">{#<a href="{{ node.get_absolute_url }}">#}{{ node.title }}{#</a>#}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
         </div>
 
         <div class="wiki-detail">
@@ -43,7 +43,14 @@
 
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
-            $('input#wiki-search').quicksearch('.wiki-page-items tbody tr');
+            // TODO вынести в отдельный файл
+            var $search = $('input#wiki-search');
+            $search.quicksearch('.wiki-page-items tbody tr');
+            $search.on('focus', function(){
+                $('.wiki-catalog').removeClass('col-md-2').addClass('col-md-12');
+                $('.wiki-detail').html('');
+            });
+
             var $catalog_items = $('.wiki-catalog__item');
             $catalog_items.on('click', function() {
                 var $item = $(this);

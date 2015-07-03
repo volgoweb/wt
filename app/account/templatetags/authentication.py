@@ -8,10 +8,12 @@ def auth_menu(context):
     request = context.get('request', None)
     if request:
         items = []
-        prefix = ''
         auth_status = request.user.is_authenticated()
         if auth_status:
-            prefix = u'Вошли как %s' % request.user.get_short_name()
+            items.append({
+                'url': reverse('account:edit_profile'),
+                'title': u'Редактировать профиль',
+            })
             items.append({
                 'url': reverse('account:logout'),
                 'title': u'Выйти',
@@ -23,7 +25,6 @@ def auth_menu(context):
             })
 
         return {
-            'prefix': prefix,
             'items': items,
         }
 
