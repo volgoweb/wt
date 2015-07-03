@@ -14,3 +14,7 @@
 .wiki-page-item {
     cursor: pointer;
 }
+
+.wiki-page__title {
+    margin-top: 0;
+}
