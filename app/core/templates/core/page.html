@@ -35,23 +35,56 @@
     </head>
     <body>
         <div class="body-wrapper row-fluid">
-            {% block menu %}
-                <div class="navbar-sidebar col-md-3 col-lg-2">
-                    <div class="logo-container">
-                        <a href="http://click-and-click.ru" target="_blank" class="logo-image"></a>
-                        <p class="logo-slogan">Автоматизация бизнеса</p>
-                    </div>
+            <nav id="main-navbar" class="navbar navbar-default navbar-fixed-top navbar-inverse">
+              <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+              <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-6" aria-expanded="false">
+                        <span class="sr-only">Меню</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="http://click-and-click.ru" target="_blank" class="logo"></a>
+                </div>
 
-                    <div class="global-search {#input-group#} form-group">
-                        <input id="global-search__input" type="text" class="form-control" name="some_name" value="" placeholder="Поиск..."/>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
+                  <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">События</a></li>
+                    <li><a href="#">Задачи</a></li>
+                    <li><a href="#">Книга знаний</a></li>
+                    {% auth_menu %}
+                  </ul>
+                </div><!-- /.navbar-collapse -->
+              </div>
+            </nav>
+
+            {% block menu %}
+                <div class="sec-menu col-md-3 col-lg-2">
+                    {# <div class="global-search form-group"> #}
+                    {#     <input id="global-search__input" type="text" class="form-control" name="some_name" value="" placeholder="Поиск..."/> #}
                         {# <span class="input-group-addon" onclick="$('#global-search__input').val('');"><span class="glyphicon glyphicon-remove"></span></span> #}
-                    </div>
+                    {# </div> #}
 
                     <ul class="nav">
-                        <li><a href="{% url "notification:notifications_list_page" %}">События</a></li>
-                        <li><a href="{% url "task:all_tasks_list" %}">Задачи</a></li>
-                        <li><a href="{% url "wiki:wiki_list_page" %}">База знаний</a></li>
-                        {% auth_menu %}
+                        <li><a href="#" class="sec-menu__link_favorite-tasks">
+                            <span class="glyphicon glyphicon-star-empty"></span> Избранные <span class="badge">2</span>
+                        </a></li>
+                        <li><a href="#" class="sec-menu__link_today-tasks">
+                            <span class="glyphicon glyphicon-time"></span> Сегодня <span class="badge">11</span>
+                        </a></li>
+                        <li><a href="#" class="sec-menu__link_overdue-tasks">
+                            <span class="glyphicon glyphicon-fire"></span> Просроченные <span class="badge">1</span>
+                        </a></li>
+                        <li><a href="#" class="sec-menu__link_later-tasks">
+                            <span class="glyphicon glyphicon-calendar"></span> Позже <span class="badge">23</span>
+                        </a></li>
+                        <li><a href="#" class="sec-menu__link_completed-tasks">
+                            <span class="glyphicon glyphicon-saved"></span> Выполненные <span class="badge">209</span>
+                        </a></li>
+                        <li><a href="#" class="sec-menu__link_outbound-tasks">
+                            <span class="glyphicon glyphicon-export"></span> Исходящие <span class="badge">9</span>
+                        </a></li>
                     </ul>
                 </div>
             {% endblock %}
@@ -65,7 +98,7 @@
                     {% block content %}
                     {% endblock %}
                 </div>
-            </div>
+            </div> {# .content-sidebar #}
         </div>
     </body>
 </html>

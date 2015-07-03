@@ -12,13 +12,23 @@ from .forms import TasksListFilters
 from app.task import forms as task_forms
 
 
-class AllTasksList(AjaxListView):
+class TasksList(AjaxListView):
     model = Task
     template_name = 'task/all_tasks_list_page.html'
     context_object_name = 'tasks'
     # TODO создать кастомый queryset
     # queryset = Task.objects.filter(deleted=False)
     filters_form_class = TasksListFilters
+    LIST_MY_TODAY = 'my-today'
+    LIST_MY_OVERDUE = 'my-overdue'
+    LIST_MY_NO_DATE = 'my-no-date'
+    LIST_MY_FUTURE = 'my-future'
+    LIST_NAMES = [
+        LIST_MY_TODAY,
+        LIST_MY_OVERDUE,
+        LIST_MY_NO_DATE,
+        LIST_MY_FUTURE,
+    ]
 
     @csrf_exempt
     def get(self, *args, **kwargs):
@@ -27,6 +37,7 @@ class AllTasksList(AjaxListView):
             'project': '',
             'status': Task.STATUS_IN_WORK,
         }
+        self.list_name = kwargs['list']
         return super(AllTasksList, self).get(*args, **kwargs)
 
     def define_filters(self):

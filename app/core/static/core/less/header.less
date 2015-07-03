@@ -1,33 +1,97 @@
-.navbar-sidebar {
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+#main-navbar {
+    margin-bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
 }
 
-.site-name__title {
-    color: @brand-primary;
-}
-
-.logo-container {
-    padding: 10px 0;
-}
-
-.logo-image {
+.logo  {
     background-image: url(../../../images/logo.png);
     background-repeat: no-repeat;
     background-size: contain;
+    background-position: center center;
     display: block;
-    height: 30px;
+    width: 150px;
+    height: @navbar-height;
+    margin: @nav-link-padding;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
 }
 
-.logo-slogan {
-    color: white;
+.sec-menu {
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-top: 15px;
 }
 
-.nav li {
-    display: block;
-}
-
-#global-search__input {
+.sec-menu li.active > a,
+.sec-menu li > a:hover {
     background-color: transparent;
-    color: white;
+    border-left: 4px solid;
+}
+
+.active .sec-menu__link_today-tasks,
+.sec-menu__link_today-tasks:hover,
+.sec-menu__link_today-tasks:focus,
+.sec-menu__link_today-tasks {
+   color: @brand-success; 
+   background-color: transparent !important;
+}
+.sec-menu__link_today-tasks .badge {
+    background-color: @brand-success;
+}
+
+.active .sec-menu__link_overdue-tasks,
+.sec-menu__link_overdue-tasks:hover,
+.sec-menu__link_overdue-tasks:focus,
+.sec-menu__link_overdue-tasks {
+   color: @brand-danger; 
+   background-color: transparent !important;
+}
+.sec-menu__link_overdue-tasks .badge {
+    background-color: @brand-danger;
+}
+
+.active .sec-menu__link_favorite-tasks,
+.sec-menu__link_favorite-tasks:hover,
+.sec-menu__link_favorite-tasks:focus,
+.sec-menu__link_favorite-tasks {
+   color: rgb(210, 175, 0); 
+   background-color: transparent !important;
+}
+.sec-menu__link_favorite-tasks .badge {
+    background-color: rgb(210, 175, 0);
+}
+
+.active .sec-menu__link_later-tasks,
+.sec-menu__link_later-tasks:hover,
+.sec-menu__link_later-tasks:focus,
+.sec-menu__link_later-tasks {
+   color: rgb(57, 161, 249); 
+   background-color: transparent !important;
+}
+.sec-menu__link_later-tasks .badge {
+    background-color: rgb(57, 161, 249);
+}
+
+.active .sec-menu__link_completed-tasks,
+.sec-menu__link_completed-tasks:hover,
+.sec-menu__link_completed-tasks:focus,
+.sec-menu__link_completed-tasks {
+   color: silver;
+   background-color: transparent !important;
+}
+.sec-menu__link_completed-tasks .badge {
+    background-color: silver;
+}
+
+.active .sec-menu__link_outbound-tasks,
+.sec-menu__link_outbound-tasks:hover,
+.sec-menu__link_outbound-tasks:focus,
+.sec-menu__link_outbound-tasks {
+   color: rgb(171, 122, 255); 
+   background-color: transparent !important;
+}
+.sec-menu__link_outbound-tasks .badge {
+    background-color: rgb(171, 122, 255);
 }
