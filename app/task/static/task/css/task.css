@@ -1,0 +1,16 @@
+
+.task-item {
+    padding: 7px 0;
+    font-size: 18px;
+}
+
+.task-item .badge {
+    font-size: 15px;
+    line-height: 14px;
+    margin-left: 7px;
+    margin-top: 3px;
+}
+
+.task-icon_decline {
+    color: yellow;
+}

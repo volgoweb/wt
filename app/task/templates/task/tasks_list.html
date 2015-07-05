@@ -1,26 +1,27 @@
 
-<table class="tasks-list__table table table-bordered table-consended table-striped">
-    <thead>
-        <tr>
-            <th>Название задачи</th>
-            <th class="fulldate-col">Дата создания</th>
-            <th class="fulldate-col">Крайний срок</th>
-            <th>Автор</th>
-            <th>Исполнитель</th>
-            <th>Статус</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        {% for t in tasks %}
-            <tr>
-                <td><a href="{% url "task:task_detail" t.pk %}">№{{ t.pk }} {{ t.title }}</a></td>
-                <td class="fulldate-col">{{ t.created|date:"FULL_DATETIME_FORMAT" }}</td>
-                <td class="fulldate-col">{{ t.due_date|date:"FULL_DATETIME_FORMAT" }}</td>
-                <td>{{ t.author }}</td>
-                <td>{{ t.performer }}</td>
-                <td>{{ t.get_status_display }}</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% for t in tasks %}
+    {# <tr> #}
+    <div class="task-item row-fluid">
+        {% if t.status == Task.STATUS_DECLINE %}
+            <span class="task-icon_decline glyphicon glyphicon-ban-circle"></span>
+        {% else %}
+            <input
+                type="checkbox"
+                name="task-complete"
+                value=""
+                data-task-pk="{{ task.pk }}"
+                class="task-item__complete pull-left"
+                {% if t.status == Task.STATUS_READY %}
+                    checked="checked"
+                {% endif %}
+            />
+        {% endif %}
+        <a href="{% url "task:task_detail" t.pk %}">{{ t.title }}</a>
+        {% if show_performer %}
+            <span class="badge pull-right">{{ t.performer }}</span>
+        {% endif %}
+        {% if show_due_date %}
+            <span class="badge pull-right">{{ t.due_date|date:"FULL_DATETIME_FORMAT" }}</span>
+        {% endif %}
+    </div>
+{% endfor %}

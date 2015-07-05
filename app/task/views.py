@@ -30,15 +30,14 @@ class TasksList(AjaxListView):
         LIST_MY_FUTURE,
     ]
 
-    @csrf_exempt
-    def get(self, *args, **kwargs):
-        self.default_filters = {
-            'performer': self.request.user.pk,
-            'project': '',
-            'status': Task.STATUS_IN_WORK,
-        }
-        self.list_name = kwargs['list']
-        return super(AllTasksList, self).get(*args, **kwargs)
+    # @csrf_exempt
+    # def get(self, *args, **kwargs):
+    #     self.default_filters = {
+    #         'performer': self.request.user.pk,
+    #         'project': '',
+    #         'status': Task.STATUS_IN_WORK,
+    #     }
+    #     return super(TasksList, self).get(*args, **kwargs)
 
     def define_filters(self):
         data = {}
@@ -54,37 +53,113 @@ class TasksList(AjaxListView):
             for key in self.default_filters.keys():
                 self.filters_values[key] = self.filters_form.cleaned_data.get(key)
 
+    def get_base_queryset(self):
+        pass
+
     def get_queryset(self):
-        qs = Task.objects.all()
+        qs = self.get_base_queryset()
         # if len(self.request.GET) > 0:
-        self.define_filters()
+        # self.define_filters()
 
-        filter_performer = self.filters_values.get('performer')
-        if filter_performer:
-            qs = qs.filter(performer=filter_performer)
+        # filter_performer = self.filters_values.get('performer')
+        # if filter_performer:
+        #     qs = qs.filter(performer=filter_performer)
 
-        filter_project = self.filters_values.get('project')
-        if filter_project:
-            # TODO заменить методами кастомного queryset
-            qs = qs.filter(inforeason__project=filter_project)
+        # filter_project = self.filters_values.get('project')
+        # if filter_project:
+        #     # TODO заменить методами кастомного queryset
+        #     qs = qs.filter(inforeason__project=filter_project)
 
-        filter_status = self.filters_values.get('status')
-        if filter_status:
-            qs = qs.filter(status=filter_status)
-        self.queryset = qs
+        # filter_status = self.filters_values.get('status')
+        # if filter_status:
+        #     qs = qs.filter(status=filter_status)
+        # self.queryset = qs
         return qs
 
     def get_context_data(self, **kwargs):
         # TODO брать из урла и переделать модуль endless_pagination, чтобы он использовал кол-во страниц из адреса или переменной вьюса.
         self.per_page = endless_settings.PER_PAGE
 
-        context = super(AllTasksList, self).get_context_data(**kwargs)
-        self.define_filters()
+        context = super(TasksList, self).get_context_data(**kwargs)
+        # self.define_filters()
+
+        context['Task'] = Task
 
         # фильтры списка
-        context['filters_form'] = self.filters_form
+        # context['filters_form'] = self.filters_form
 
-        context['count_objects'] = self.queryset.count()
+        # context['count_objects'] = self.queryset.count()
+        return context
+
+
+class FavoriteTasksPage(TasksList):
+    def get_base_queryset(self):
+        return Task.objects.all().performed(self.request.user).in_work().favorite()
+
+
+class TodayTasksPage(TasksList):
+    def get_base_queryset(self):
+        return Task.objects.all().performed(self.request.user).in_work().today()
+
+    def get_context_data(self, **kwargs):
+        context = super(TodayTasksPage, self).get_context_data(**kwargs)
+        context.update({
+            'page_title': u'Задачи на сегодня',
+            'show_due_date': False,
+        })
+        return context
+
+
+class OverdueTasksPage(TasksList):
+    def get_base_queryset(self):
+        return Task.objects.all().performed(self.request.user).in_work().today()
+
+    def get_context_data(self, **kwargs):
+        context = super(OverdueTasksPage, self).get_context_data(**kwargs)
+        context.update({
+            'page_title': u'Задачи просроченные',
+            'show_due_date': True,
+        })
+        return context
+
+
+class LaterTasksPage(TasksList):
+    def get_base_queryset(self):
+        return Task.objects.all().performed(self.request.user).in_work().later_than_today()
+
+    def get_context_data(self, **kwargs):
+        context = super(LaterTasksPage, self).get_context_data(**kwargs)
+        context.update({
+            'page_title': u'Задачи на будущее',
+            'show_due_date': True,
+        })
+        return context
+
+
+class CompletedTasksPage(TasksList):
+    def get_base_queryset(self):
+        return Task.objects.all().performed(self.request.user).completed()
+
+    def get_context_data(self, **kwargs):
+        context = super(CompletedTasksPage, self).get_context_data(**kwargs)
+        context.update({
+            'page_title': u'Задачи выполненные',
+            'show_due_date': True,
+        })
+        return context
+
+
+class OutboundTasksPage(TasksList):
+    def get_base_queryset(self):
+        return Task.objects.all().consigned(self.request.user).in_work()
+
+    def get_context_data(self, **kwargs):
+        context = super(OutboundTasksPage, self).get_context_data(**kwargs)
+        context.update({
+            'page_title': u'Задачи исходящие',
+            'show_performer': True,
+            'show_due_date': True,
+        })
         return context
 
 
@@ -146,6 +221,7 @@ class AddTask(CreateView):
     model = Task
     template_name = 'task/add_task.html'
     form_class = task_forms.AddTaskForm
+    success_url = '/tasks/today/'
 
     def get_form_kwargs(self):
         kwargs = super(AddTask, self).get_form_kwargs()

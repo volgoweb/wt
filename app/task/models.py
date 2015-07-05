@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 from collections import OrderedDict
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -27,6 +28,37 @@ from .signals import task_saved
 class TaskQueryset(models.query.QuerySet):
     def not_deleted(self):
         return self.filter(deleted=False)
+
+    def in_work(self):
+        return self.filter(status=self.model.STATUS_IN_WORK)
+
+    def performed(self, user):
+        return self.filter(performer=user)
+
+    def consigned(self, user):
+        return self.filter(author=user)
+
+    def overdue(self, *args, **kwargs):
+        now = datetime.datetime.now()
+        return self.filter(due_date__lt=now)
+
+    def today(self, *args, **kwargs):
+        today = datetime.date.today()
+        start_of_today = datetime.datetime(today.year, today.month, today.day, 00, 00, 01)
+        end_of_today = datetime.datetime(today.year, today.month, today.day, 23, 59, 59)
+        return self.filter(
+            due_date__range=(start_of_today, end_of_today),
+        )
+
+    def later_than_today(self, *args, **kwargs):
+        today = datetime.date.today()
+        end_of_today = datetime.datetime(today.year, today.month, today.day, 23, 59, 59)
+        return self.filter(
+            due_date__gt=end_of_today,
+        )
+
+    def completed(self, *args, **kwargs):
+        return self.filter(status=self.model.STATUS_READY)
 
 
 class TaskManager(models.Manager):
