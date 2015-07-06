@@ -14,11 +14,27 @@ from helper.fields import FormsetField
 from app.account.models import Account
 from app.core.models import FileItem
 
+class TaskStepForm(BootstrapFormMixin, forms.ModelForm):
+    class Meta:
+        model = TaskStep
+        fields = '__all__'
+        widgets = {
+            'date': DateTimeWidget(
+                usel10n=True,
+                bootstrap_version=3,
+                options={
+                    'format': 'dd.mm.yyyy hh:ii',
+                    'autoclose': True,
+                    'showMeridian' : True
+                },
+            ),
+        }
+
 
 class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ['step_id', 'step_type', 'deleted', 'files', 'comments']
+        exclude = ['step_id', 'step_type', 'deleted', 'files', 'comments', 'task_steps']
         # fields = ['title', 'desc', 'status']
         widgets = {
             'due_date': DateTimeWidget(
@@ -52,6 +68,7 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
             })
 
         self.add_files_formset()
+        self.add_task_steps_formset()
 
     def add_files_formset(self, *args, **kwargs):
         extra = 1
@@ -61,11 +78,36 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
             if qs.count() > 0:
                 extra = 0
         Formset = modelformset_factory(FileItem, fields=['file'], extra=extra, can_delete=True)
-        formset = Formset(self.request.POST or None, queryset=qs)
+        formset = Formset(data=self.request.POST or None, files=self.request.FILES or None, queryset=qs)
         self.files_formset = formset
         self.fields['files_formset'] = FormsetField(
             formset=render_to_string('task/task_detail/files_formset.html', {'files_formset': formset}),
-            label=u'файлы',
+            label=u'Файлы',
+        )
+
+    def add_task_steps_formset(self, *args, **kwargs):
+        extra = 1
+        qs = None
+        if getattr(self.instance, 'pk', None):
+            qs = self.instance.task_steps.all()
+            if qs.count() > 0:
+                extra = 0
+        Formset = modelformset_factory(TaskStep,
+            form=TaskStepForm,
+            # fields=[
+            #     'completed',
+            #     'title',
+            #     'desc',
+            #     'date',
+            # ],
+            extra=extra,
+            can_delete=True,
+        )
+        formset = Formset(self.request.POST or None, queryset=qs)
+        self.task_steps_formset = formset
+        self.fields['task_steps_formset'] = FormsetField(
+            formset=render_to_string('task/task_detail/task_steps_formset.html', {'task_steps_formset': formset}),
+            label=u'Шаги',
         )
 
     def clean_author(self, *args, **kwargs):
@@ -78,6 +120,11 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
             items = self.files_formset.save()
             for item in items:
                 self.instance.files.add(item)
+
+        if self.task_steps_formset.is_valid():
+            items = self.task_steps_formset.save()
+            for item in items:
+                self.instance.task_steps.add(item)
         return result
 
 

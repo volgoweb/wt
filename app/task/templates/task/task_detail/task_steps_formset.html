@@ -1,0 +1,84 @@
+
+{% if task_steps_formset %}
+    <div class="task_steps-formset">
+        <!-- <h3>Шаги</h3> -->
+
+        {{ task_steps_formset.management_form }}
+        {{ task_steps_formset.media }}
+
+        <div class="empty-form" style="display: none;">
+            <div class="task_steps-formset__item formset__item" style="overflow: hidden;">
+                <div class="container">
+                    {{ task_steps_formset.empty_form.id }}
+
+                    <div class="pull-left">
+                        {% include "core/form_field.html" with field=task_steps_formset.empty_form.completed label="" inline=True %}
+                    </div>
+
+                    <div class="pull-left">
+                        {% include "core/form_field.html" with field=task_steps_formset.empty_form.title label="" inline=True %}
+                    </div>
+
+                    <div class="pull-left">
+                        {% include "core/form_field.html" with field=task_steps_formset.empty_form.date label="" inline=True %}
+                    </div>
+
+                    <div class="pull-left">
+                        {% include "helper/field/common/formset_delete_field.html" with delete_field=task_steps_formset.empty_form.DELETE button_classes="btn-danger btn-formset-delete" button_title='<span class="glyphicon glyphicon-remove-sign"></span>' formset_container_class="task_steps-formset__items" %}
+                    </div>
+                </div>
+
+                <div class="container">
+                    {% include "core/form_field.html" with field=task_steps_formset.empty_form.desc label="" inline=True %}
+                </div>
+            </div>
+        </div>
+
+        <div class="task_steps-formset__items">
+            {% for ts_form in task_steps_formset.forms %}
+                <div class="task_steps-formset__item formset__item" style="overflow: hidden;">
+                    <div class="container">
+                        {{ ts_form.id }}
+
+                        <div class="pull-left">
+                            {# {% include "core/form_field.html" with field=ts_form.completed label="" inline=True %} #}
+                            {{ ts_form.completed }}
+                        </div>
+
+                        <div class="pull-left">
+                            {# {% include "core/form_field.html" with field=ts_form.title label="" inline=True %} #}
+                            {{ ts_form.title }}
+                        </div>
+
+                        <div class="pull-left">
+                            {# {% include "core/form_field.html" with field=ts_form.date label="" inline=True %} #}
+                            {{ ts_form.date }}
+                        </div>
+
+                        <div class="pull-left">
+                            {% include "helper/field/common/formset_delete_field.html" with delete_field=ts_form.DELETE button_classes="btn-danger btn-formset-delete" button_title='<span class="glyphicon glyphicon-remove-sign"></span>' formset_container_class="task_steps-formset__items" %}
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        {# {% include "core/form_field.html" with field=ts_form.desc label="" inline=True %} #}
+                        {{ ts_form.date }}
+                    </div>
+                </div> {# .task_steps-formset__item #}
+            {% endfor %}
+
+        </div>
+
+        <input type="button" value="Еще" id="more-task-step-form">
+        <script>
+            $(document).ready(function() {
+                $('#more-task-step-form').on('click', function() {
+                    var $formset = $('.task_steps-formset');
+                    var form_idx = $('#id_form-TOTAL_FORMS').val();
+                    $('.task_steps-formset__items').append($formset.find('.empty-form').html().replace(/__prefix__/g, form_idx));
+                    $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+                });
+            });
+        </script>
+    </div>
+{% endif %}

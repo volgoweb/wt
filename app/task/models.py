@@ -24,6 +24,12 @@ from .signals import task_saved
 # - Может быть в задачах выводить список возможных действий,
 #   который берется из шага, к которому относится задача.
 
+class TaskStep(models.Model):
+    completed = models.BooleanField(default=False, verbose_name=u'Сделан')
+    title = models.CharField(max_length=255, verbose_name=u'Название')
+    desc = models.TextField(blank=True, null=True, verbose_name=u'Описание')
+    date = models.DateTimeField(blank=True, null=True, verbose_name=u'Дата исполнения')
+
 
 class TaskQueryset(models.query.QuerySet):
     def not_deleted(self):
@@ -91,6 +97,8 @@ class Task(helper_models.FieldsLabelsMixin, PolymorphicModel):
     author = models.ForeignKey('account.Account', verbose_name=u'Автор')
     files = models.ManyToManyField('core.FileItem', verbose_name=u'Вложения')
     deleted = models.BooleanField(default=False, verbose_name=u'Удаленная')
+
+    task_steps = models.ManyToManyField('task.TaskStep', verbose_name=u'Шаги задачи')
 
     objects = TaskManager()
 

@@ -35,13 +35,10 @@
         <script>
             $(document).ready(function() {
                 $('#more-file-form').on('click', function() {
+                    var $formset = $('.files-formset');
                     var form_idx = $('#id_form-TOTAL_FORMS').val();
-                    $('.files-formset__items').append($('.empty-form').html().replace(/__prefix__/g, form_idx));
+                    $('.files-formset__items').append($formset.find('.empty-form').html().replace(/__prefix__/g, form_idx));
                     $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
-                });
-
-                $('.files-formset__items').single_choice_checkboxes({
-                    checkbox: '.files-formset__items .form-field__is_teaser_file input[type="checkbox"]'
                 });
             });
         </script>
