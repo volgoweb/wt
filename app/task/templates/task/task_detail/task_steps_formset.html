@@ -6,75 +6,73 @@
         {{ task_steps_formset.management_form }}
         {{ task_steps_formset.media }}
 
-        <div class="empty-form" style="display: none;">
-            <div class="task_steps-formset__item formset__item" style="overflow: hidden;">
-                <div class="container">
-                    {{ task_steps_formset.empty_form.id }}
+        <table>
+            <tbody class="empty-form" style="display: none;">
+                <tr class="task_steps-formset__item formset__item">
+                    <td class="task-step-item__col-completed">
+                        {{ task_steps_formset.empty_form.id }}
+                        {{ task_steps_formset.empty_form.completed }}
+                    </td>
 
-                    <div class="pull-left">
-                        {% include "core/form_field.html" with field=task_steps_formset.empty_form.completed label="" inline=True %}
-                    </div>
+                    <td class="task-step-item__col-title">
+                        {% include "core/form_field.html" with field=task_steps_formset.empty_form.title %}
+                        {% include "core/form_field.html" with field=task_steps_formset.empty_form.date %}
+                    </td>
 
-                    <div class="pull-left">
-                        {% include "core/form_field.html" with field=task_steps_formset.empty_form.title label="" inline=True %}
-                    </div>
+                    <td class="task-step-item__col-date">
+                        {% include "core/form_field.html" with field=task_steps_formset.empty_form.date %}
+                    </td>
 
-                    <div class="pull-left">
-                        {% include "core/form_field.html" with field=task_steps_formset.empty_form.date label="" inline=True %}
-                    </div>
-
-                    <div class="pull-left">
+                    <td class="task-step-item__col-delete">
                         {% include "helper/field/common/formset_delete_field.html" with delete_field=task_steps_formset.empty_form.DELETE button_classes="btn-danger btn-formset-delete" button_title='<span class="glyphicon glyphicon-remove-sign"></span>' formset_container_class="task_steps-formset__items" %}
-                    </div>
-                </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-                <div class="container">
-                    {% include "core/form_field.html" with field=task_steps_formset.empty_form.desc label="" inline=True %}
-                </div>
-            </div>
-        </div>
+        {# <div class="task_steps-formset__items"> #}
+            <table class="table table-condensed task-steps__table">
+                <tbody class="task_steps-formset__items">
+                    {% for ts_form in task_steps_formset.forms %}
+                            <tr class="task_steps-formset__item formset__item">
+                                <td class="task-step-item__col-completed">
+                                    {{ ts_form.id }}
+                                    {# {% include "core/form_field.html" with field=ts_form.completed label="" inline=True %} #}
+                                    {{ ts_form.completed }}
+                                </td>
 
-        <div class="task_steps-formset__items">
-            {% for ts_form in task_steps_formset.forms %}
-                <div class="task_steps-formset__item formset__item" style="overflow: hidden;">
-                    <div class="container">
-                        {{ ts_form.id }}
+                                <td class="task-step-item__col-title">
+                                    {% include "core/form_field.html" with field=ts_form.title %}
+                                    {% include "core/form_field.html" with field=ts_form.desc %}
+                                </td>
 
-                        <div class="pull-left">
-                            {# {% include "core/form_field.html" with field=ts_form.completed label="" inline=True %} #}
-                            {{ ts_form.completed }}
-                        </div>
+                                <td class="task-step-item__col-date">
+                                    {% include "core/form_field.html" with field=ts_form.date %}
+                                </td>
 
-                        <div class="pull-left">
-                            {# {% include "core/form_field.html" with field=ts_form.title label="" inline=True %} #}
-                            {{ ts_form.title }}
-                        </div>
+                                <td class="task-step-item__col-delete">
+                                    {% include "helper/field/common/formset_delete_field.html" with delete_field=ts_form.DELETE button_classes="btn-danger btn-formset-delete" button_title='<span class="glyphicon glyphicon-remove-sign"></span>' formset_container_class="task_steps-formset__items" %}
+                                </td>
+                            </tr>
 
-                        <div class="pull-left">
-                            {# {% include "core/form_field.html" with field=ts_form.date label="" inline=True %} #}
-                            {{ ts_form.date }}
-                        </div>
+                            {# <tr> #}
+                            {#     <td colspan="3"> #}
+                            {#         {% include "core/form_field.html" with field=ts_form.desc %} #}
+                            {#     </td> #}
+                            {# </tr> #}
+                        </tr> {# .task_steps-formset__item #}
+                    {% endfor %}
+                </tbody>
+            </table>
 
-                        <div class="pull-left">
-                            {% include "helper/field/common/formset_delete_field.html" with delete_field=ts_form.DELETE button_classes="btn-danger btn-formset-delete" button_title='<span class="glyphicon glyphicon-remove-sign"></span>' formset_container_class="task_steps-formset__items" %}
-                        </div>
-                    </div>
-
-                    <div class="container">
-                        {# {% include "core/form_field.html" with field=ts_form.desc label="" inline=True %} #}
-                        {{ ts_form.date }}
-                    </div>
-                </div> {# .task_steps-formset__item #}
-            {% endfor %}
-
-        </div>
+        {# </div> #}
 
         <input type="button" value="Еще" id="more-task-step-form">
         <script>
             $(document).ready(function() {
                 $('#more-task-step-form').on('click', function() {
                     var $formset = $('.task_steps-formset');
-                    var form_idx = $('#id_form-TOTAL_FORMS').val();
+                    var form_idx = $formset.find('#id_form-TOTAL_FORMS').val();
                     $('.task_steps-formset__items').append($formset.find('.empty-form').html().replace(/__prefix__/g, form_idx));
                     $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
                 });

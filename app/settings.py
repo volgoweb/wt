@@ -15,6 +15,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 import os
 import sys
+import datetime
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -57,6 +58,8 @@ INSTALLED_APPS = (
     # 'tagging_autosuggest',
     'mptt',
     'django_select2',
+    # защита от подбора пароля
+    'axes',
 
     'helper',
     'app.core',
@@ -78,7 +81,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.middleware.locale.LocaleMiddleware'
+    'django.middleware.locale.LocaleMiddleware',
+    'axes.middleware.FailedLoginMiddleware',
 )
 
 ROOT_URLCONF = 'app.urls'
@@ -203,5 +207,13 @@ CKEDITOR_CONFIGS = {
     # }
 }
 # end CKEditor
+
+#
+# AXES защита от подбора пароля
+#
+AXES_LOGIN_FAILURE_LIMIT = 10
+AXES_COOLOFF_TIME = datetime.timedelta(minutes=5)
+AXES_LOCKOUT_TEMPLATE = 'accounts/auth_temporally_lock.html'
+# end AXES
 
 from settings_custom import *

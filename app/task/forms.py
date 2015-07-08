@@ -68,7 +68,7 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
             })
 
         self.add_files_formset()
-        self.add_task_steps_formset()
+        # self.add_task_steps_formset()
 
     def add_files_formset(self, *args, **kwargs):
         extra = 1
@@ -94,12 +94,6 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
                 extra = 0
         Formset = modelformset_factory(TaskStep,
             form=TaskStepForm,
-            # fields=[
-            #     'completed',
-            #     'title',
-            #     'desc',
-            #     'date',
-            # ],
             extra=extra,
             can_delete=True,
         )
@@ -121,10 +115,10 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
             for item in items:
                 self.instance.files.add(item)
 
-        if self.task_steps_formset.is_valid():
-            items = self.task_steps_formset.save()
-            for item in items:
-                self.instance.task_steps.add(item)
+        # if self.task_steps_formset.is_valid():
+        #     items = self.task_steps_formset.save()
+        #     for item in items:
+        #         self.instance.task_steps.add(item)
         return result
 
 
