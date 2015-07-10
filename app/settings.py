@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'django_select2',
     # защита от подбора пароля
     'axes',
+    # 'ajaxuploader',
 
     'helper',
     'app.core',

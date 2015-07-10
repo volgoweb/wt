@@ -1,0 +1,44 @@
+
+.task-item {
+    padding: 7px 0;
+    font-size: 18px;
+}
+
+.task-item .badge {
+    font-size: 15px;
+    line-height: 14px;
+    margin-left: 7px;
+    margin-top: 3px;
+}
+
+.task-icon_decline {
+    color: yellow;
+}
+
+.task-step-item__col-completed {
+    width: 30px;
+    padding-top: 34px;
+}
+
+.task-step-item__col-date {
+    width: 250px;
+}
+
+.task-step-item__col-delete,
+.table-condensed > tbody > tr > td.task-step-item__col-delete {
+    width: 40px;
+    vertical-align: top;
+    padding-top: 30px;
+}
+
+.task-steps__table td {
+    vertical-align: top;
+}
+
+.task-steps__table label {
+    font-size: 14px;
+}
+
+.task-steps__table textarea {
+    height: 50px;
+}

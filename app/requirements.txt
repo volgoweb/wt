@@ -18,3 +18,4 @@ django-datetime-widget
 django-mptt
 django_select2
 django-axes
+ajaxuploader

@@ -2,6 +2,11 @@
 {% if files_formset %}
     <div class="files-formset">
         <!-- <h3>Картинки</h3> -->
+        <script>
+            $(function() {
+                AjaxUploadWidget.autoDiscover();
+            });
+        </script>
 
         {{ files_formset.management_form }}
         {{ files_formset.media }}

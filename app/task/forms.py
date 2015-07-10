@@ -7,6 +7,7 @@ from django import forms
 from django.forms.models import modelformset_factory
 from django.template.loader import render_to_string
 from datetimewidget.widgets import DateTimeWidget
+from ajax_upload.widgets import AjaxClearableFileInput
 
 from .models import *
 from helper.forms import BootstrapFormMixin
@@ -77,7 +78,13 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
             qs = self.instance.files.all()
             if qs.count() > 0:
                 extra = 0
-        Formset = modelformset_factory(FileItem, fields=['file'], extra=extra, can_delete=True)
+        Formset = modelformset_factory(
+            FileItem,
+            fields=['file'],
+            widgets={'file': AjaxClearableFileInput()},
+            extra=extra,
+            can_delete=True,
+        )
         formset = Formset(data=self.request.POST or None, files=self.request.FILES or None, queryset=qs)
         self.files_formset = formset
         self.fields['files_formset'] = FormsetField(
