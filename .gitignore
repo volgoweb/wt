@@ -1,0 +1,5 @@
+*.pyc
+app/static_all
+app/static_all/*
+files
+files/*
