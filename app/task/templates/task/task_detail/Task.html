@@ -10,4 +10,6 @@
     {% for f in form.visible_fields %}
         {% include "core/form_field.html" with field=f inline=True %}
     {% endfor %}
+
+    {% include "task/task_detail/files_formset.html" %}
 {% endblock %}

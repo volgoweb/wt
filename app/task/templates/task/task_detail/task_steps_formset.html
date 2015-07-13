@@ -72,9 +72,10 @@
             $(document).ready(function() {
                 $('#more-task-step-form').on('click', function() {
                     var $formset = $('.task_steps-formset');
-                    var form_idx = $formset.find('#id_form-TOTAL_FORMS').val();
+                    var $total_forms = $('input[name$="TOTAL_FORMS"]');
+                    var form_idx = $total_forms.val();
                     $('.task_steps-formset__items').append($formset.find('.empty-form').html().replace(/__prefix__/g, form_idx));
-                    $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+                    $total_forms.val(parseInt(form_idx) + 1);
                 });
             });
         </script>

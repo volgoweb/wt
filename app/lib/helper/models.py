@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from autoslug import AutoSlugField
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from polymorphic import PolymorphicModel
 from django.conf import settings
 
 class FieldsLabelsMixin(object):
@@ -233,11 +236,14 @@ class ModelFieldsAccessTypeMixin(object):
         return access_types
 
 
-class FileItem(models.Model):
+class FileItem(PolymorphicModel):
     file = models.FileField(
         upload_to = 'files',
         verbose_name = u'Файл',
     )
+    owner_type = models.ForeignKey(ContentType, related_name='owner_type', blank=True, null=True)
+    owner_id = models.PositiveIntegerField(blank=True, null=True)
+    owner = GenericForeignKey('owner_type', 'owner_id')
 
     class Meta:
         abstract = True

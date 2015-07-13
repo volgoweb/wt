@@ -45,7 +45,7 @@
         this.$element.on('change', function(evt) {
             self.upload();
         });
-        this.$changeButton = $('<button type="button" class="btn-change"></button>')
+        this.$changeButton = $('<button type="button" class="ajax-upload-button btn-change"></button>')
             .text(this.options.changeButtonText)
             .on('click', function(evt) {
                 self.$element.show();
@@ -53,7 +53,7 @@
             });
         this.$element.after(this.$changeButton);
 
-        this.$removeButton = $('<button type="button" class="btn-remove"></button>')
+        this.$removeButton = $('<button type="button" class="ajax-upload-button btn-remove"></button>')
             .text(this.options.removeButtonText)
             .on('click', function(evt) {
                 if(self.options.onRemove) {
@@ -170,9 +170,10 @@
         return cleaned;
     };
 
-    AjaxUploadWidget.autoDiscover = function(options) {
-        $('input[type="file"].ajax-upload').each(function(index, element) {
+    AjaxUploadWidget.autoDiscover = function(container, options) {
+        $(container).find('input[type="file"].ajax-upload').not('.ajax-upload-processed').each(function(index, element) {
             new AjaxUploadWidget(element, options);
+            $(element).addClass('ajax-upload-processed');
         });
     };
 }).call(this);

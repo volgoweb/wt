@@ -24,6 +24,20 @@ from .signals import task_saved
 # - Может быть в задачах выводить список возможных действий,
 #   который берется из шага, к которому относится задача.
 
+
+class TaskFile(models.Model):
+    """
+    Пытался сделать общую модель для хранения файлов,
+    но так и не смог отладить работу с formset этой модели.
+    Поэтому костыльно делаю отдельную модель для файлов задачи.
+    """
+    # task = models.ForeignKey('task.Task')
+    file = models.FileField(
+        upload_to = 'files',
+        verbose_name = u'Файл',
+    )
+
+
 class TaskStep(models.Model):
     completed = models.BooleanField(default=False, verbose_name=u'Сделан')
     title = models.CharField(max_length=255, verbose_name=u'Название')
@@ -56,15 +70,19 @@ class TaskQueryset(models.query.QuerySet):
             due_date__range=(start_of_today, end_of_today),
         )
 
-    def later_than_today(self, *args, **kwargs):
+    def later_than_today_or_without_due(self, *args, **kwargs):
         today = datetime.date.today()
         end_of_today = datetime.datetime(today.year, today.month, today.day, 23, 59, 59)
         return self.filter(
-            due_date__gt=end_of_today,
+            models.Q(due_date__gt=end_of_today) |
+            models.Q(due_date__isnull=True)
         )
 
     def completed(self, *args, **kwargs):
         return self.filter(status=self.model.STATUS_READY)
+
+    def favorite(self, *args, **kwargs):
+        return self.filter(is_favorite=True)
 
 
 class TaskManager(models.Manager):
@@ -95,7 +113,8 @@ class Task(helper_models.FieldsLabelsMixin, PolymorphicModel):
     status = models.CharField(max_length=20, choices=STATUSES.items(), default=STATUS_IN_WORK, verbose_name=u'Статус задачи')
     created = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата создания')
     author = models.ForeignKey('account.Account', verbose_name=u'Автор')
-    files = models.ManyToManyField('core.FileItem', verbose_name=u'Вложения')
+    files = models.ManyToManyField('task.TaskFile', verbose_name=u'Вложения')
+    is_favorite = models.BooleanField(default=False, verbose_name=u'Избранная')
     deleted = models.BooleanField(default=False, verbose_name=u'Удаленная')
 
     task_steps = models.ManyToManyField('task.TaskStep', verbose_name=u'Шаги задачи')

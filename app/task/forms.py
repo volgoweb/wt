@@ -4,7 +4,9 @@ from django import forms
 # from django.template.loader import render_to_string
 # from django.forms.models import modelformset_factory
 # from ckeditor.widgets import CKEditorWidget
-from django.forms.models import modelformset_factory
+from django.forms.models import modelformset_factory, inlineformset_factory
+from django.contrib.contenttypes.models import ContentType
+# from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.template.loader import render_to_string
 from datetimewidget.widgets import DateTimeWidget
 from ajax_upload.widgets import AjaxClearableFileInput
@@ -14,6 +16,21 @@ from helper.forms import BootstrapFormMixin
 from helper.fields import FormsetField
 from app.account.models import Account
 from app.core.models import FileItem
+from app.core.forms import FileItemForm
+
+
+class TaskFileForm(BootstrapFormMixin, forms.ModelForm):
+    class Meta:
+        model = TaskFile
+        fields = '__all__'
+        widgets = {
+            'file': AjaxClearableFileInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(TaskFileForm, self).__init__(*args, **kwargs)
+        self.fields['file'].required = False
+
 
 class TaskStepForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
@@ -35,7 +52,7 @@ class TaskStepForm(BootstrapFormMixin, forms.ModelForm):
 class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ['step_id', 'step_type', 'deleted', 'files', 'comments', 'task_steps']
+        exclude = ['step_id', 'step_type', 'deleted', 'comments', 'task_steps', 'files']
         # fields = ['title', 'desc', 'status']
         widgets = {
             'due_date': DateTimeWidget(
@@ -68,24 +85,32 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
                 'autofocus': '',
             })
 
-        self.add_files_formset()
+        # self.add_files_formset()
         # self.add_task_steps_formset()
 
     def add_files_formset(self, *args, **kwargs):
         extra = 1
-        qs = None
+        qs = TaskFile.objects.none()
         if getattr(self.instance, 'pk', None):
+            # qs = TaskFile.objects.filter(owner_id=self.instance.pk)
             qs = self.instance.files.all()
             if qs.count() > 0:
                 extra = 0
         Formset = modelformset_factory(
-            FileItem,
+            # Task,
+            TaskFile,
+            form=TaskFileForm,
+            # ct_field='owner_type',
+            # fk_field='owner_id',
             fields=['file'],
-            widgets={'file': AjaxClearableFileInput()},
+            # widgets={'file': AjaxClearableFileInput()},
             extra=extra,
             can_delete=True,
         )
+        self.FilesFormset = Formset
         formset = Formset(data=self.request.POST or None, files=self.request.FILES or None, queryset=qs)
+        # forms = formset.forms
+        # assert False
         self.files_formset = formset
         self.fields['files_formset'] = FormsetField(
             formset=render_to_string('task/task_detail/files_formset.html', {'files_formset': formset}),
@@ -114,19 +139,25 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
     def clean_author(self, *args, **kwargs):
         return self.request.user
 
-    def save(self, *args, **kwargs):
-        result = super(AddTaskForm, self).save(*args, **kwargs)
-        # TODO подумать как можно вынести сохранение формсета в класс поля.
-        if self.files_formset.is_valid():
-            items = self.files_formset.save()
-            for item in items:
-                self.instance.files.add(item)
+    # def save(self, *args, **kwargs):
+    #     task = super(AddTaskForm, self).save(*args, **kwargs)
+    #     if self.files_formset.is_valid():
+    #         items = self.files_formset.save()
+    #         self.instance.files.add(*items)
+    #         self.instance.save()
+    #         print 'items'
+    #         print items
+    #         # self.instance.files.add(*items)
+    #     else:
+    #         err = self.files_formset.errors
+    #         print '--------- files_formset  errors:'
+    #         print err
 
-        # if self.task_steps_formset.is_valid():
-        #     items = self.task_steps_formset.save()
-        #     for item in items:
-        #         self.instance.task_steps.add(item)
-        return result
+    #     # if self.task_steps_formset.is_valid():
+    #     #     items = self.task_steps_formset.save()
+    #     #     for item in items:
+    #     #         self.instance.task_steps.add(item)
+    #     return task
 
 
 class TaskForm(AddTaskForm):

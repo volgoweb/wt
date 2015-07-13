@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import ListView, UpdateView, CreateView
 from django.forms.models import modelformset_factory
-from django.http import Http404
+from django.contrib.contenttypes.forms import generic_inlineformset_factory
+from django.contrib.contenttypes.models import ContentType
+from django.http import Http404, HttpResponse
 from endless_pagination.views import AjaxListView
 from endless_pagination import settings as endless_settings
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS, FieldError
 
-from .models import Task
-from .forms import TasksListFilters
+from .models import Task, TaskFile
+from .forms import TasksListFilters, TaskFileForm
 from app.task import forms as task_forms
+from app.core.models import FileItem
+from app.core.forms import FileItemForm
 
 
 class TasksList(AjaxListView):
@@ -32,11 +36,10 @@ class TasksList(AjaxListView):
 
     # @csrf_exempt
     # def get(self, *args, **kwargs):
-    #     self.default_filters = {
-    #         'performer': self.request.user.pk,
-    #         'project': '',
-    #         'status': Task.STATUS_IN_WORK,
-    #     }
+    #     if 'only_count' in kwargs:
+    #         count = self.get_base_queryset().count()
+    #         return HttpResponse(count)
+
     #     return super(TasksList, self).get(*args, **kwargs)
 
     def define_filters(self):
@@ -53,8 +56,17 @@ class TasksList(AjaxListView):
             for key in self.default_filters.keys():
                 self.filters_values[key] = self.filters_form.cleaned_data.get(key)
 
-    def get_base_queryset(self):
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
         pass
+
+    @classmethod
+    def get_base_count_from_class(cls, request):
+        qs = cls.get_base_queryset_from_class(request)
+        return qs.count()
+
+    def get_base_queryset(self):
+        return self.__class__.get_base_queryset_from_class(self.request)
 
     def get_queryset(self):
         qs = self.get_base_queryset()
@@ -89,17 +101,20 @@ class TasksList(AjaxListView):
         # context['filters_form'] = self.filters_form
 
         # context['count_objects'] = self.queryset.count()
-        return context
+        from django.template import RequestContext
+        return RequestContext(self.request, context)
 
 
 class FavoriteTasksPage(TasksList):
-    def get_base_queryset(self):
-        return Task.objects.all().performed(self.request.user).in_work().favorite()
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
+        return Task.objects.all().performed(request.user).in_work().favorite()
 
 
 class TodayTasksPage(TasksList):
-    def get_base_queryset(self):
-        return Task.objects.all().performed(self.request.user).in_work().today()
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
+        return Task.objects.all().performed(request.user).in_work().today()
 
     def get_context_data(self, **kwargs):
         context = super(TodayTasksPage, self).get_context_data(**kwargs)
@@ -111,8 +126,9 @@ class TodayTasksPage(TasksList):
 
 
 class OverdueTasksPage(TasksList):
-    def get_base_queryset(self):
-        return Task.objects.all().performed(self.request.user).in_work().today()
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
+        return Task.objects.all().performed(request.user).in_work().today()
 
     def get_context_data(self, **kwargs):
         context = super(OverdueTasksPage, self).get_context_data(**kwargs)
@@ -124,8 +140,9 @@ class OverdueTasksPage(TasksList):
 
 
 class LaterTasksPage(TasksList):
-    def get_base_queryset(self):
-        return Task.objects.all().performed(self.request.user).in_work().later_than_today()
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
+        return Task.objects.all().performed(request.user).in_work().later_than_today_or_without_due()
 
     def get_context_data(self, **kwargs):
         context = super(LaterTasksPage, self).get_context_data(**kwargs)
@@ -137,8 +154,9 @@ class LaterTasksPage(TasksList):
 
 
 class CompletedTasksPage(TasksList):
-    def get_base_queryset(self):
-        return Task.objects.all().performed(self.request.user).completed()
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
+        return Task.objects.all().performed(request.user).completed()
 
     def get_context_data(self, **kwargs):
         context = super(CompletedTasksPage, self).get_context_data(**kwargs)
@@ -150,8 +168,9 @@ class CompletedTasksPage(TasksList):
 
 
 class OutboundTasksPage(TasksList):
-    def get_base_queryset(self):
-        return Task.objects.all().consigned(self.request.user).in_work()
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
+        return Task.objects.all().consigned(request.user).in_work()
 
     def get_context_data(self, **kwargs):
         context = super(OutboundTasksPage, self).get_context_data(**kwargs)
@@ -168,6 +187,28 @@ class TaskDetail(UpdateView):
     # form_class = TaskForm
     template_name = 'task/task_detail.html'
     success_url = '/tasks/'
+
+    def get_files_formset(self, *args, **kwargs):
+        extra = 1
+        obj = self.get_object()
+        qs = FileItem.objects.none()
+        if getattr(obj, 'pk', None):
+            task_type = ContentType.objects.get(app_label='task', model='task')
+            qs = FileItem.objects.filter(owner_id=obj.pk, owner_type=task_type.pk)
+            # items = [(i.pk, i.file.url) for i in qs]
+            # assert False
+            if qs.count() > 0:
+                extra = 0
+        FilesFormset = generic_inlineformset_factory(
+            FileItem,
+            form=FileItemForm,
+            ct_field='owner_type',
+            fk_field='owner_id',
+            fields=['file'],
+            extra=extra,
+        )
+        formset = FilesFormset(data=self.request.POST or None, files=self.request.FILES or None, queryset=qs, instance=obj)
+        return formset
 
     def get_object(self, *args, **kwargs):
         obj = super(TaskDetail, self).get_object(*args, **kwargs)
@@ -209,8 +250,26 @@ class TaskDetail(UpdateView):
             'task': self.get_object(),
             'can_edit': self.can_edit,
             'task_results': obj.get_results(),
+            'files_formset': self.get_files_formset(),
         })
         return context
+
+    def form_valid(self, form):
+        is_invalid_formset = True
+        if form.is_valid():
+            obj = form.save(commit=False)
+            files_formset = self.get_files_formset()
+            if files_formset.is_valid():
+                obj = form.save(commit=True)
+                files_formset.save()
+            else:
+                is_invalid_formset = False
+
+        if is_invalid_formset:
+            return super(TaskDetail, self).form_valid(form)
+        else:
+            return self.form_invalid(form)
+
 
     def get_success_url(self):
         obj = self.get_object()
@@ -229,3 +288,37 @@ class AddTask(CreateView):
             'request': self.request,
         })
         return kwargs
+
+    def get_files_formset(self, *args, **kwargs):
+        self.FilesFormset = generic_inlineformset_factory(
+            FileItem,
+            form=FileItemForm,
+            ct_field='owner_type',
+            fk_field='owner_id',
+            fields=['file'],
+            extra=1,
+        )
+        formset = self.FilesFormset(data=self.request.POST or None, files=self.request.FILES or None, instance=kwargs.get('instance', None))
+        return formset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AddTask, self).get_context_data(*args, **kwargs)
+        context['files_formset'] = self.get_files_formset()
+        return context
+
+    def form_valid(self, form):
+        is_invalid_formset = True
+        if form.is_valid():
+            obj = form.save(commit=False)
+            files_formset = self.get_files_formset(instance=obj)
+            if files_formset.is_valid():
+                obj = form.save(commit=True)
+                files_formset.save()
+            else:
+                is_invalid_formset = False
+
+        if is_invalid_formset:
+            return super(AddTask, self).form_valid(form)
+        else:
+            return self.form_invalid(form)
+

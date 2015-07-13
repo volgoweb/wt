@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     # защита от подбора пароля
     'axes',
     # 'ajaxuploader',
+    'ajax_upload',
 
     'helper',
     'app.core',
@@ -98,7 +99,12 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                "django.core.context_processors.i18n",
+                "django.core.context_processors.media",
+                "django.core.context_processors.static",
+                "django.core.context_processors.tz",
                 'django.contrib.messages.context_processors.messages',
+                'app.task.context_processors.task_counts',
             ],
         },
     },
@@ -160,6 +166,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     # "constance.context_processors.config",
     "django.contrib.messages.context_processors.messages",
+    "app.task.context_processors.task_counts",
 )
 
 TEMPLATE_LOADERS = (

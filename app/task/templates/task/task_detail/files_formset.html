@@ -1,12 +1,7 @@
 
 {% if files_formset %}
     <div class="files-formset">
-        <!-- <h3>Картинки</h3> -->
-        <script>
-            $(function() {
-                AjaxUploadWidget.autoDiscover();
-            });
-        </script>
+        <h3>Файлы</h3>
 
         {{ files_formset.management_form }}
         {{ files_formset.media }}
@@ -31,6 +26,9 @@
                     <div class="pull-left">
                         {% include "helper/field/common/formset_delete_field.html" with delete_field=file_form.DELETE button_classes="btn-danger btn-formset-delete" button_title='<span class="glyphicon glyphicon-remove-sign"></span>' formset_container_class="files-formset__items" %}
                     </div>
+                    <div class="form-field__errors bg-danger">
+                        {{ file_form.errors }}
+                    </div>
                 </div>
             {% endfor %}
 
@@ -39,11 +37,17 @@
         <input type="button" value="Еще" id="more-file-form">
         <script>
             $(document).ready(function() {
+                AjaxUploadWidget.autoDiscover('.files-formset__items');
                 $('#more-file-form').on('click', function() {
                     var $formset = $('.files-formset');
-                    var form_idx = $('#id_form-TOTAL_FORMS').val();
-                    $('.files-formset__items').append($formset.find('.empty-form').html().replace(/__prefix__/g, form_idx));
-                    $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+                    var $total_forms = $('input[name$="TOTAL_FORMS"]');
+                    var form_idx = $total_forms.val();
+                    var new_form_html = $formset.find('.empty-form').html().replace(/__prefix__/g, form_idx);
+                    $('.files-formset__items').append(new_form_html);
+                    $total_forms.val(parseInt(form_idx) + 1);
+                    var $new_form_item = $('.files-formset__items .formset__item').last();
+                    $new_form_item.find('input[type="file"]').removeClass('ajax-upload-processed').click();
+                    AjaxUploadWidget.autoDiscover('.files-formset__items');
                 });
             });
         </script>

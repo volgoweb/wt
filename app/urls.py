@@ -29,6 +29,7 @@ from app.wiki import urls as wiki_urls
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ajaximage/', include('ajaximage.urls')),
+    url(r'^ajax-upload/', include('ajax_upload.urls')),
     url(r'^ckeditor/', include('ckeditor.urls')),
     # url(r'^tagging/', include('tagging_autosuggest.urls')),
     # url(r'^tagging/', include('tagging.urls', namespace='tagging')),

@@ -47,7 +47,7 @@
     </div>
 
     {% if can_edit %}
-        <form action="" method="POST" accept-charset="utf-8">
+        <form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data">
             {% csrf_token %}
 
             {% block task_form_fields %}
