@@ -1,0 +1,8 @@
+
+<ul class="partners-list">
+    {% for partner in partners %}
+        <li>
+            <a href="{% url "partner:partner_detail_page" partner.pk %}">{{ partner.name }}</a>
+        </li>
+    {% endfor %}
+</ul>

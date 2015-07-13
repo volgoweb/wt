@@ -1,0 +1,27 @@
+{% extends "partner/page.html" %}
+{% load static %}
+{% load endless %}
+
+{% block page_title %}
+       {{ page_title}}
+{% endblock %}
+
+{% block content %}
+    <div class="partners-list">
+        {% paginate partners %}
+        {% get_pages %}
+        <div class="row-fluid">
+            {% if partners %}
+                {% include "partner/partners_list.html" with partners=partners %}
+                {% include "helper/endless_pagination/pages.html" %}
+            {% else %}
+                <div class="partners-list__empty bg-warning">
+                    Нет партнеров
+                </div>
+            {% endif %}
+        </div>
+
+    </div> {# .tasks-list #}
+{% endblock %}
+
+

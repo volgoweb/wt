@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     'app.route.route1',
     'app.notification',
     'app.wiki',
+    'app.partner',
 )
 
 MIDDLEWARE_CLASSES = (

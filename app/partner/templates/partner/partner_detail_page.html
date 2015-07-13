@@ -1,0 +1,9 @@
+{% extends "partner/page.html" %}
+
+{% block page_title %}Партнер "{{ partner.name }}"{% endblock %}
+
+{% block content %}
+    <div class="partner-detail__desc">
+        {{ partner.desc|default:""|safe }}
+    </div>
+{% endblock %}
