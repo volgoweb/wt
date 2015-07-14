@@ -1,96 +1,57 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import django.utils.timezone
+import mptt.fields
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Account'
-        db.create_table(u'account_account', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('password', self.gf('django.db.models.fields.CharField')(max_length=128)),
-            ('last_login', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('is_superuser', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('email', self.gf('django.db.models.fields.EmailField')(unique=True, max_length=255)),
-            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('middle_name', self.gf('django.db.models.fields.CharField')(max_length=30, null=True, blank=True)),
-            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('job', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-        ))
-        db.send_create_signal(u'account', ['Account'])
+    dependencies = [
+        ('auth', '0006_require_contenttypes_0002'),
+    ]
 
-        # Adding M2M table for field groups on 'Account'
-        m2m_table_name = db.shorten_name(u'account_account_groups')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('account', models.ForeignKey(orm[u'account.account'], null=False)),
-            ('group', models.ForeignKey(orm[u'auth.group'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['account_id', 'group_id'])
-
-        # Adding M2M table for field user_permissions on 'Account'
-        m2m_table_name = db.shorten_name(u'account_account_user_permissions')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('account', models.ForeignKey(orm[u'account.account'], null=False)),
-            ('permission', models.ForeignKey(orm[u'auth.permission'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['account_id', 'permission_id'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Account'
-        db.delete_table(u'account_account')
-
-        # Removing M2M table for field groups on 'Account'
-        db.delete_table(db.shorten_name(u'account_account_groups'))
-
-        # Removing M2M table for field user_permissions on 'Account'
-        db.delete_table(db.shorten_name(u'account_account_user_permissions'))
-
-
-    models = {
-        u'account.account': {
-            'Meta': {'object_name': 'Account'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '255'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'job': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
-            'middle_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"})
-        },
-        u'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        }
-    }
-
-    complete_apps = ['account']
+    operations = [
+        migrations.CreateModel(
+            name='Account',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('password', models.CharField(max_length=128, verbose_name='password')),
+                ('last_login', models.DateTimeField(null=True, verbose_name='last login', blank=True)),
+                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
+                ('email', models.EmailField(unique=True, max_length=255, verbose_name='\u0430\u0434\u0440\u0435\u0441 \u044d\u043b\u0435\u043a\u0442\u0440\u043e\u043d\u043d\u043e\u0439 \u043f\u043e\u0447\u0442\u044b')),
+                ('first_name', models.CharField(max_length=30, verbose_name='\u0438\u043c\u044f')),
+                ('middle_name', models.CharField(max_length=30, null=True, verbose_name='middle name', blank=True)),
+                ('last_name', models.CharField(max_length=30, verbose_name='\u0444\u0430\u043c\u0438\u043b\u0438\u044f')),
+                ('is_active', models.BooleanField(default=True)),
+                ('job', models.CharField(max_length=50, null=True, verbose_name='job', blank=True)),
+                ('created', models.DateTimeField(default=django.utils.timezone.now, verbose_name='created')),
+                ('groups', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', verbose_name='groups')),
+                ('user_permissions', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Permission', blank=True, help_text='Specific permissions for this user.', verbose_name='user permissions')),
+            ],
+            options={
+                'verbose_name': '\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a',
+                'verbose_name_plural': '\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u0438',
+            },
+        ),
+        migrations.CreateModel(
+            name='CompanyUnit',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=200, verbose_name='\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435')),
+                ('desc', models.TextField(null=True, verbose_name='\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435', blank=True)),
+                ('unit_type', models.CharField(max_length=15, verbose_name='\u0422\u0438\u043f', choices=[(b'', b'---------'), (b'dep', '\u041e\u0442\u0434\u0435\u043b'), (b'emp', '\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a')])),
+                ('active', models.BooleanField(default=False, verbose_name='\u0410\u043a\u0442\u0438\u0432\u0435\u043d')),
+                ('lft', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('rght', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('tree_id', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('level', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('parent', mptt.fields.TreeForeignKey(related_name='children', blank=True, to='account.CompanyUnit', null=True)),
+            ],
+            options={
+                'verbose_name': '\u042d\u043b\u0435\u043c\u0435\u043d\u0442 \u043e\u0440\u0433\u0430\u043d\u0438\u0437\u0430\u0446\u0438\u043e\u043d\u043d\u043e\u0439 \u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u044b',
+                'verbose_name_plural': '\u042d\u043b\u0435\u043c\u0435\u043d\u0442\u044b \u043e\u0440\u0433\u0430\u043d\u0438\u0437\u0430\u0446\u0438\u043e\u043d\u043d\u043e\u0439 \u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u044b',
+            },
+        ),
+    ]

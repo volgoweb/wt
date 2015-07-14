@@ -28,8 +28,5 @@ class PartnerForm(BootstrapFormMixin, forms.ModelForm):
         self.fields['author'].initial = self.request.user
 
     def clean_author(self):
-        print '----------------- clean_author'
-        print self.request.user
-        print self.cleaned_data
         self.cleaned_data['author'] = self.request.user
         return self.cleaned_data['author']

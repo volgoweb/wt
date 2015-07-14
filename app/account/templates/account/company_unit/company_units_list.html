@@ -1,0 +1,10 @@
+
+<table class="company_unit-page-items table table-hover col-md-8">
+    <tbody>
+        {% for node in tree %}
+            <tr class="company_unit-page-item">
+                <td class="company_unit-catalog__item" data-pk="{{ node.pk }}" style="padding-left: {% widthratio node.level 20 100 %}px;"><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

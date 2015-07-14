@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserChangeForm, UserCreationForm
 
-from .models import Account
+from .models import Account, CompanyUnit
 
 class AccountCreationForm(UserCreationForm):
     """A form for creating new users. Includes all the required
@@ -70,3 +70,15 @@ class AccountAdmin(UserAdmin):
 
 
 admin.site.register(Account, AccountAdmin)
+
+
+class CompanyUnitAdmin(admin.ModelAdmin):
+    # The forms to add and change user instances
+    list_display = ('id', 'name', 'parent', 'active')
+    list_filter = ('parent', 'active')
+    search_fields = ('name',)
+    ordering = ('parent', 'name',)
+    filter_horizontal = ()
+
+
+admin.site.register(CompanyUnit, CompanyUnitAdmin)

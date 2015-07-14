@@ -37,7 +37,7 @@ class WikiPageManager(TreeManager):
             tree = get_descendants(node)
         else:
             tree = []
-            lev1_pages = WikiPage.objects.filter(level=1)
+            lev1_pages = self.filter(level=1)
             if field_for_permission:
                 lev1_pages = filter_qs_by_perm(lev1_pages)
             for node in lev1_pages:

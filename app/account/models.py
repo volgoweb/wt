@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from collections import OrderedDict
 from django.db import models
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.models import (
     BaseUserManager,
     AbstractBaseUser,
@@ -9,6 +11,8 @@ from django.contrib.auth.models import (
 )
 from django.utils.translation import ugettext as _
 from django.utils import timezone
+from mptt.models import MPTTModel, TreeForeignKey
+from mptt.managers import TreeManager
 
 class AccountManager(BaseUserManager):
     def create_user(self, email, password):
@@ -36,6 +40,7 @@ class AccountManager(BaseUserManager):
 
     def get_by_natural_key(self, email):
         return self.get(email=email)
+
 
 class Account(AbstractBaseUser, PermissionsMixin):
     """
@@ -120,3 +125,69 @@ class Account(AbstractBaseUser, PermissionsMixin):
         return super(Account, self).save(*args, **kwargs)
 
     # TODO добавить метод для того, чтобы в фикстурах можно было по мылу указывать пользователей
+
+
+class CompanyUnitQueryset(models.query.QuerySet):
+    def active(self, *args, **kwargs):
+        return self.filter(active=True)
+
+
+class CompanyUnitManager(TreeManager):
+    def get_queryset(self, *args, **kwargs):
+        return CompanyUnitQueryset(self.model)
+
+    def get_tree(self, node=None, filtered_ids=[]):
+        """
+        node - головной объект, от которого строим дерево,
+        если он не указан, то строим дерево из всех объектов.
+        """
+        def get_descendants(node):
+            descendents = []
+            children = node.get_children()
+            children.filter(pk__in=filtered_ids)
+            for n in children:
+                n_descendents = get_descendants(n)
+                n_descendents = [n for n in n_descendents if n.pk in filtered_ids]
+                descendents += n_descendents
+            return [node] + descendents
+
+        if node:
+            tree = get_descendants(node)
+        else:
+            tree = []
+            lev1_pages = self.filter(level=1)
+            if filtered_ids:
+                lev1_pages = self.filter(pk__in=filtered_ids)
+            for node in lev1_pages:
+                tree += get_descendants(node)
+        from  more_itertools import unique_everseen
+        tree = list(unique_everseen(tree))
+        return tree
+
+
+class CompanyUnit(MPTTModel):
+    UNIT_TYPE_DEPARTMENT = 'dep'
+    UNIT_TYPE_EMPLOYEE = 'emp'
+    UNIT_TYPE_CHOICES = OrderedDict([
+        (UNIT_TYPE_DEPARTMENT, u'Отдел'),
+        (UNIT_TYPE_EMPLOYEE, u'Сотрудник'),
+    ])
+
+    name = models.CharField(max_length=200, verbose_name=u'Название')
+    desc = models.TextField(verbose_name=u'Описание', blank=True, null=True)
+    # TODO вынести пустой пункт choices в константы
+    unit_type = models.CharField(max_length=15, choices=[('', '---------')]+UNIT_TYPE_CHOICES.items(), verbose_name=u'Тип')
+    active = models.BooleanField(default=True, verbose_name=u'Активен')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+
+    objects = CompanyUnitManager()
+
+    class Meta:
+        verbose_name = u'Элемент организационной структуры'
+        verbose_name_plural = u'Элементы организационной структуры'
+
+    def __unicode__(self, *args, **kwargs):
+        return u'{name} ({unit_type}) №{pk}'.format(name=self.name, unit_type=self.unit_type, pk=self.pk)
+
+    def get_absolute_url(self, *args, **kwargs):
+        return reverse_lazy('account:company_unit_detail_page', kwargs={'pk': self.pk})

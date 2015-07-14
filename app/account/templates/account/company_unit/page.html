@@ -1,0 +1,28 @@
+{% extends "core/page.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+    {# <link rel="stylesheet" type="text/css" media="all" href="{% static "company_unit/css/company_unit.css" %}" /> #}
+{% endblock %}
+
+{% block sec_menu %}
+    {{ block.super }}
+
+    {% if filters_form %}
+        <form action="" method="GET" accept-charset="utf-8" class="filters-form">
+            {% for f in filters_form.visible_fields %}
+                {% include "core/form_field.html" with field=f %}
+            {% endfor %}
+
+            {% for f in filters_form.hidden_fields %}
+                {{ f }}
+            {% endfor %}
+
+            <div class="row-fluid">
+            {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" container_classes="pull-left" %}
+            {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="$(this.form).find('input[type=text]').val('');" container_classes="pull-left" %}
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

@@ -19,3 +19,4 @@ django-mptt
 django_select2
 django-axes
 ajaxuploader
+more_itertools

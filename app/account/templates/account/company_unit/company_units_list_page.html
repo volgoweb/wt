@@ -1,0 +1,27 @@
+{% extends "account/company_unit/page.html" %}
+{% load static %}
+{% load endless %}
+
+{% block page_title %}
+       {{ page_title}}
+{% endblock %}
+
+{% block content %}
+    <div class="company_units-list">
+        {# {% paginate company_units %} #}
+        {# {% get_pages %} #}
+        <div class="row-fluid">
+            {% if tree %}
+                {% include "account/company_unit/company_units_list.html" with tree=tree %}
+                {# {% include "helper/endless_pagination/pages.html" %} #}
+            {% else %}
+                <div class="company_units-list__empty bg-warning">
+                    Ничего нет
+                </div>
+            {% endif %}
+        </div>
+
+    </div> {# .tasks-list #}
+{% endblock %}
+
+
