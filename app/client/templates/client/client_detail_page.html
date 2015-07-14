@@ -1,0 +1,9 @@
+{% extends "client/page.html" %}
+
+{% block page_title %}Клиент "{{ client.name }}"{% endblock %}
+
+{% block content %}
+    <div class="client-detail__desc">
+        {{ client.desc|default:""|safe }}
+    </div>
+{% endblock %}

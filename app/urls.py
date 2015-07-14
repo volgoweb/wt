@@ -26,6 +26,7 @@ from app.route import urls as route_urls
 from app.notification import urls as notification_urls
 from app.wiki import urls as wiki_urls
 from app.partner import urls as partner_urls
+from app.client import urls as client_urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -44,6 +45,7 @@ urlpatterns = [
     url(r'^notifications/', include(notification_urls, namespace='notification')),
     url(r'^wiki/', include(wiki_urls, namespace='wiki')),
     url(r'^partners/', include(partner_urls, namespace='partner')),
+    url(r'^clients/', include(client_urls, namespace='client')),
 ]
 
 

@@ -73,6 +73,7 @@ INSTALLED_APPS = (
     'app.notification',
     'app.wiki',
     'app.partner',
+    'app.client',
 )
 
 MIDDLEWARE_CLASSES = (

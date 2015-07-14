@@ -1,0 +1,27 @@
+{% extends "client/page.html" %}
+{% load static %}
+{% load endless %}
+
+{% block page_title %}
+       {{ page_title}}
+{% endblock %}
+
+{% block content %}
+    <div class="clients-list">
+        {% paginate clients %}
+        {% get_pages %}
+        <div class="row-fluid">
+            {% if clients %}
+                {% include "client/clients_list.html" with clients=clients %}
+                {% include "helper/endless_pagination/pages.html" %}
+            {% else %}
+                <div class="clients-list__empty bg-warning">
+                    Нет клиентов
+                </div>
+            {% endif %}
+        </div>
+
+    </div> {# .tasks-list #}
+{% endblock %}
+
+
