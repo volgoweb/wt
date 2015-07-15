@@ -39,7 +39,10 @@ class WikiList(AjaxListView):
                 self.filters_values[key] = self.filters_form.cleaned_data.get(key)
 
     def get_queryset(self):
-        return WikiPage.objects.get_tree(perm=WikiPage.PERM_VIEW, user=self.request.user)
+        pages = WikiPage.objects.get_tree(perm=WikiPage.PERM_VIEW, user=self.request.user)
+        if self.kwargs.get('list_name') == 'my':
+            pages = filter(lambda p: p.performers.filter(pk=self.request.user.pk).exists(), pages)
+        return pages
 
     def get_context_data(self, **kwargs):
         # TODO брать из урла и переделать модуль endless_pagination, чтобы он использовал кол-во страниц из адреса или переменной вьюса.

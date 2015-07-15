@@ -1,24 +1,24 @@
-{% extends "core/page.html" %}
+{% extends "wiki/page.html" %}
 {% load static %}
 
-{% block scripts %}
-    {{ block.super }} 
-    {# <link rel="stylesheet" type="text/css" media="all" href="{% static "core/watable/watable.css" %}" /> #}
-    {# <script type="text/javascript" src="{% static 'core/watable/jquery.watable.js' %}"></script> #}
-    <script type="text/javascript" src="{% static 'core/quicksearch/jquery.quicksearch.js' %}"></script>
-    <link rel="stylesheet" type="text/css" media="all" href="{% static "wiki/css/wiki.css" %}" />
-{% endblock %}
+{# {% block scripts %} #}
+{#     {{ block.super }}  #}
+{#     {# <link rel="stylesheet" type="text/css" media="all" href="{% static "core/watable/watable.css" %}" /> #} #}
+{#     {# <script type="text/javascript" src="{% static 'core/watable/jquery.watable.js' %}"></script> #} #}
+{#     <script type="text/javascript" src="{% static 'core/quicksearch/jquery.quicksearch.js' %}"></script> #}
+{#     <link rel="stylesheet" type="text/css" media="all" href="{% static "wiki/css/wiki.css" %}" /> #}
+{# {% endblock %} #}
 
 {% block content %}
     <div class="row-fluid">
         <div class="wiki-catalog col-md-12">
-                <div class="control-group">
-                    <a href="{% url "wiki:add_wiki_page" %}" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-plus"></span> Добавить главу
-                    </a>
-                </div>
+                {# <div class="control-group"> #}
+                {#     <a href="{% url "wiki:add_wiki_page" %}" class="btn btn-primary"> #}
+                {#         <span class="glyphicon glyphicon-plus"></span> Добавить главу #}
+                {#     </a> #}
+                {# </div> #}
 
-                <hr>
+                {# <hr> #}
 
                 <div id="id_due_date" class="input-group date">
                     <input id="wiki-search" class="form-control" type="text" name="wiki_search" value="" placeholder="Поиск по названию ..." autofocus/>

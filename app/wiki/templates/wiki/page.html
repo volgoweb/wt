@@ -1,0 +1,33 @@
+{% extends "core/page.html" %}
+{% load static %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'core/quicksearch/jquery.quicksearch.js' %}"></script>
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "wiki/css/wiki.css" %}" />
+{% endblock %}
+
+{% block sec_menu %}
+    {{ block.super }}
+
+    <div class="btn-group">
+        <a href="{% url "wiki:add_wiki_page" %}" class="btn btn-primary">
+            <span class="glyphicon glyphicon-plus"></span> Добавить главу
+        </a>
+    </div>
+
+    <ul class="nav">
+        <li><a href="{% url "wiki:wiki_list_page" list_name="my" %}" class="sec-menu__link_my-pages">
+            <span class="glyphicon glyphicon-user"></span> Мои
+        </a></li>
+        <li><a href="{% url "wiki:wiki_list_page" list_name="all" %}" class="sec-menu__link_all-pages">
+            <span class="glyphicon glyphicon-eye-open"></span> Все доступные
+        </a></li>
+    </ul>
+{% endblock %}
+
+
