@@ -1,6 +1,11 @@
 {% extends "core/page.html" %}
 
-{% block page_title %}{{ page.title }}{% endblock %}
+{% block page_title %}
+    {{ page.title }}
+    {% if can_edit %}
+        <a href="{% url "wiki:edit_wiki_page" page.pk %}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     <div class="row-fluid">

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, UpdateView
 from endless_pagination.views import AjaxListView
 from endless_pagination import settings as endless_settings
 from django.views.decorators.csrf import csrf_exempt
@@ -11,7 +11,8 @@ from .forms import WikiListFilters, WikiPageForm
 class WikiList(AjaxListView):
     model = WikiPage
     template_name = 'wiki/wiki_list_page.html'
-    context_object_name = 'pages'
+    page_template = template_name
+    context_object_name = 'tree'
     # TODO создать кастомый queryset
     # queryset = Task.objects.filter(deleted=False)
     filters_form_class = WikiListFilters
@@ -38,12 +39,7 @@ class WikiList(AjaxListView):
                 self.filters_values[key] = self.filters_form.cleaned_data.get(key)
 
     def get_queryset(self):
-        qs = WikiPage.objects.filter(level=1).order_by('level')
-        # if len(self.request.GET) > 0:
-        self.define_filters()
-
-        self.queryset = qs
-        return qs
+        return WikiPage.objects.get_tree(perm=WikiPage.PERM_VIEW, user=self.request.user)
 
     def get_context_data(self, **kwargs):
         # TODO брать из урла и переделать модуль endless_pagination, чтобы он использовал кол-во страниц из адреса или переменной вьюса.
@@ -55,20 +51,9 @@ class WikiList(AjaxListView):
         # фильтры списка
         context['filters_form'] = self.filters_form
 
-        context['count_objects'] = self.queryset.count()
-
-
-        # def get_descendants(node):
-        #     descendents = []
-        #     children = node.get_children()
-        #     for n in children:
-        #         descendents += get_descendants(n)
-        #     return [node] + descendents
-        # tree = []
-        # for node in WikiPage.objects.filter(level=1):
-        #     tree += get_descendants(node)
-        context['tree'] = WikiPage.objects.get_tree()
+        context['count_objects'] = len(context['tree'])
         return context
+
 
 class AddWikiPage(CreateView):
     model = WikiPage
@@ -84,14 +69,6 @@ class AddWikiPage(CreateView):
         return kwargs
 
 
-class WikiPageDetail(DetailView):
-    model = WikiPage
-    template_name = 'wiki/wiki_page_detail.html'
-    context_object_name = 'page'
-    slug_field = 'pk'
-    slug_url_kwarg = 'pk'
-
-
 class WikiPageBlockDetail(DetailView):
     model = WikiPage
     template_name = 'wiki/wiki_page_detail_block.html'
@@ -104,4 +81,31 @@ class WikiPageBlockDetail(DetailView):
         context.update({
             'show_title': True,
         })
+        obj = self.get_object()
+        context['can_edit'] = obj.has_user_perm_in_wiki_page(user=self.request.user, perm=obj.PERM_EDIT)
         return context
+
+
+class WikiPageDetail(WikiPageBlockDetail):
+    template_name = 'wiki/wiki_page_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(WikiPageDetail, self).get_context_data(**kwargs)
+        context.update({
+            'show_title': False,
+        })
+        return context
+
+
+class EditWikiPage(UpdateView):
+    model = WikiPage
+    template_name = 'wiki/edit_wiki_page.html'
+    form_class = WikiPageForm
+    context_object_name = 'page'
+
+    def get_form_kwargs(self):
+        kwargs = super(EditWikiPage, self).get_form_kwargs()
+        kwargs.update({
+            'request': self.request,
+        })
+        return kwargs

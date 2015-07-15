@@ -1,0 +1,28 @@
+{% extends "core/page.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }}
+
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "django_select2/css/select2.min.css" %}" />
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "django_select2/css/select2-bootstrap.min.css" %}" />
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "wiki/css/wiki.css" %}" />
+
+    <script type="text/javascript" src="{% static 'django_select2/js/select2.min.js' %}"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+            $('#id_parent').select2();
+        });
+    </script>
+    {{ form.media }}
+{% endblock %}
+
+{% block content %}
+    <form action="" method="POST" accept-charset="utf-8" class="edit-wiki-form">
+        {% csrf_token %}
+        <table class="table">
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Сохранить" class="btn btn-primary"/>
+    </form>
+{% endblock %}

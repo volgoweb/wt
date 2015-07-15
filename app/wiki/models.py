@@ -3,23 +3,26 @@ from django.db import models
 from django.core.urlresolvers import reverse_lazy
 from mptt.models import MPTTModel, TreeForeignKey
 from mptt.managers import TreeManager
+from django.dispatch import receiver
+from django.db.models.signals import post_save, pre_save
+
+from app.account.models import CompanyUnit, Account
 
 
 class WikiPageQueryset(models.query.QuerySet):
     def active(self):
-        pass
+        return self.filter(deleted=False)
 
     def can_edit(self, user):
-        return self.filter(
-            editors=user.job
-        )
+        # TODO сделать правильно
+        return self.filter(editors=user.job)
 
 
 class WikiPageManager(TreeManager):
     def get_queryset(self):
         return WikiPageQueryset(self.model)#.active()
 
-    def get_tree(self, node=None, field_for_permission=None, user=None):
+    def get_tree(self, node=None, perm=None, user=None):
         """
         node - головной объект, от которого строим дерево,
         если он не указан, то строим дерево из всех объектов.
@@ -33,28 +36,21 @@ class WikiPageManager(TreeManager):
         def get_descendants(node):
             descendents = []
             children = node.get_children()
-            if field_for_permission:
-                children = filter_qs_by_perm(children)
             for n in children:
                 descendents += get_descendants(n)
             return [node] + descendents
-
-        def filter_qs_by_perm(qs):
-            perm_kwargs = {
-                field_for_permission: user.appointment,
-            }
-            return qs.filter(**perm_kwargs)
-
 
         if node:
             tree = get_descendants(node)
         else:
             tree = []
-            lev1_pages = self.filter(level=1)
-            if field_for_permission:
-                lev1_pages = filter_qs_by_perm(lev1_pages)
-            for node in lev1_pages:
+            lev0_pages = self.filter(level=0)
+            for node in lev0_pages:
                 tree += get_descendants(node)
+        if perm:
+            # TODO кэшировать список пользователей и по ним фильтровать
+            tree = filter(lambda node: node.has_user_perm_in_wiki_page(perm=perm, user=user), tree)
+
         return tree
 
 
@@ -69,20 +65,21 @@ class WikiPage(MPTTModel):
         'account.CompanyUnit',
         related_name='wiki_performer',
         verbose_name=u'Исполнители',
-        help_text=u'Те, для кого предназначена данная глава.'
+        help_text=u'Отделы или должности, для кого предназначена данная глава.',
     )
     subscribers = models.ManyToManyField(
         'account.CompanyUnit',
-        verbose_name=u'Читатели главы',
         related_name='wiki_subscriber',
-        help_text=u'Те, кто может читать главу и получать уведомления о ее изменении.',
+        verbose_name=u'Читатели главы',
+        help_text=u'Отделы или должности, кто может читать главу и получать уведомления о ее изменении.',
     )
     editors = models.ManyToManyField(
         'account.CompanyUnit',
         related_name='wiki_editor',
         verbose_name=u'Авторы главы',
-        help_text=u'Те, кто может редактировать главу и добавлять вложенные главы.',
+        help_text=u'Отделы или должности, кто может редактировать главу и добавлять вложенные главы.',
     )
+    deleted = models.BooleanField(default=False, verbose_name=u'Удаленная')
 
     objects = WikiPageManager()
 
@@ -102,13 +99,126 @@ class WikiPage(MPTTModel):
             html += node.render_descendants()
         return html
 
-    def has_user_perm_in_wiki_page(self, user, perm):
-        if perm == self.PERM_VIEW:
-            if self.performers.filter(pk=user.job.pk) \
-            or self.subscribers.filter(pk=user.job.pk):
-                return True
-        elif perm == self.PERM_EDIT:
-            if self.editors.filter(pk=user.job.pk):
-                return True
+    def is_company_unit_field_contains_user(self, field_name, user):
+        # field = getattr(self, field_name)
+        # if not user.job:
+        #     return False
+        # user_dep_pk = getattr(user.job.parent, 'pk', None)
+        # if field.filter(unit_type=CompanyUnit.UNIT_TYPE_EMPLOYEE, pk=user.job.pk):
+        #     return True
+        # deps = field.filter(unit_type=CompanyUnit.UNIT_TYPE_DEPARTMENT)
+        # # проходим по всем отделам, указанным в поле 
+        # for dep in deps:
+        #     # проверяем входит ли указанный сотрудник в какой-то отдел или подчиненный подотдел
+        #     descendants = dep.get_descendants(include_self=True)
+        #     descendant_ids = [d.pk for d in descendants]
+        #     if user_dep_pk in descendant_ids:
+        #         return True
+
+        # users = self.get_users_of_company_unit_field(field_name)
+        # if user in users:
+        #     return True
+
+        # TODO написать queryset метод для этого
+        extra = WikiPageExtra.objects.get(wiki_page=self)
+        if user in getattr(extra, '%s_users' % field_name).all():
+            return True
         return False
 
+    def has_user_perm_in_wiki_page(self, user, perm):
+        if user.is_superuser:
+            return True
+        if perm == self.PERM_VIEW:
+            if self.is_company_unit_field_contains_user(field_name='performers', user=user) \
+            or self.is_company_unit_field_contains_user(field_name='subscribers', user=user):
+                return True
+        elif perm == self.PERM_EDIT:
+            return self.has_user_perm_edit_in_wiki_page(user)
+        return False
+
+    def has_user_perm_edit_in_wiki_page(self, user):
+        if self.is_company_unit_field_contains_user(field_name='editors', user=user):
+            return True
+        else:
+            return False
+
+    def get_users_of_company_unit_field(self, field_name):
+        field = getattr(self, field_name)
+        all_units = []
+        for unit in field.all():
+            all_units += [unit]
+            if unit.unit_type == CompanyUnit.UNIT_TYPE_DEPARTMENT:
+                # для случаев, когда выбран отдел, а в отделе по иеррархии сначала идет начальник отдела,
+                # а ему (вглубь по дереву) подчиняются подчиненные выбираем всех подчиненных
+                def get_children_if_one_employee(children):
+                    if len(children) == 1:
+                        if children[0].unit_type == CompanyUnit.UNIT_TYPE_EMPLOYEE:
+                            sub_children = list(children[0].get_children())
+                            children += get_children_if_one_employee(sub_children)
+                    return children
+
+                children = get_children_if_one_employee(list(unit.get_children()))
+                children = filter(lambda u: u.unit_type == CompanyUnit.UNIT_TYPE_EMPLOYEE, children)
+                all_units += children
+        users = Account.objects.filter(job__in=all_units)
+        # assert False
+        return users
+
+
+class WikiPageExtra(models.Model):
+    wiki_page = models.ForeignKey('wiki.WikiPage', related_name='extra')
+    performers_users = models.ManyToManyField('account.Account',
+        related_name='wiki_performer_user',
+        verbose_name=u'Исполнители',
+        help_text=u'Сотрудники, для кого предназначена данная глава.'
+    )
+    subscribers_users = models.ManyToManyField('account.Account',
+        related_name='wiki_subscriber_user',
+        verbose_name=u'Читатели главы',
+        help_text=u'Сотрудники, кто может читать главу и получать уведомления о ее изменении.',
+    )
+    editors_users = models.ManyToManyField('account.Account',
+        related_name='wiki_editor_user',
+        verbose_name=u'Авторы главы',
+        help_text=u'Сотрудники, кто может редактировать главу и добавлять вложенные главы.',
+    )
+
+    def update_company_field_fields(self):
+        for field_name in ['performers', 'subscribers', 'editors']:
+            users = self.wiki_page.get_users_of_company_unit_field(field_name)
+            extra_field_name = '%s_users' % field_name
+            extra_field = getattr(self, extra_field_name, None)
+            if extra_field:
+                extra_field.clear()
+                extra_field.add(*users)
+
+
+
+@receiver(post_save, sender=WikiPage)
+def post_save_wiki_page(**kwargs):
+    # TODO перенести в ассинхронное выполнение через celery
+    wiki_page = kwargs.get('instance')
+    if kwargs.get('created'):
+        ext = WikiPageExtra(
+            wiki_page=wiki_page,
+        )
+        ext.save()
+    else:
+        ext = WikiPageExtra.objects.get(wiki_page=wiki_page)
+    ext.update_company_field_fields()
+    ext.save()
+
+
+@receiver(post_save, sender=Account)
+def post_save_account(**kwargs):
+    # TODO перенести в ассинхронное выполнение через celery
+    for ext in WikiPageExtra.objects.all():
+        ext.update_company_field_fields()
+        ext.save()
+
+@receiver(post_save, sender=CompanyUnit)
+def post_save_company_unit(**kwargs):
+    # TODO перенести в ассинхронное выполнение через celery
+    for ext in WikiPageExtra.objects.all():
+        ext.update_company_field_fields()
+        ext.save()

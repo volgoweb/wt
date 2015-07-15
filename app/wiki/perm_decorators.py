@@ -15,9 +15,7 @@ def has_user_perm_in_wiki_page(view_func, perm):
         p = get_object_or_404(WikiPage, pk=kwargs.get('pk', None))
         # проверка разрешен ли пользователю доступ на просмотр
         if p.has_user_perm_in_wiki_page(request.user, perm):
-            assert False
             return view_func(request, *args, **kwargs)
-        assert False
         raise PermissionDenied
 
     return wrapped_view

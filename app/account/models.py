@@ -14,6 +14,10 @@ from django.utils import timezone
 from mptt.models import MPTTModel, TreeForeignKey
 from mptt.managers import TreeManager
 
+"""
+# TODO Написать защиту от присвоении двух активных сотрудников на одну должность
+"""
+
 
 class CompanyUnitQueryset(models.query.QuerySet):
     def active(self, *args, **kwargs):
@@ -124,7 +128,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, verbose_name=u'Активен')
     # должность
     # job = models.CharField(_('job'), max_length = 50, null=True, blank=True)
-    job = models.ForeignKey('account.CompanyUnit', verbose_name=u'Должность', null=True, blank=True)
+    job = models.ForeignKey('account.CompanyUnit', related_name='user_job', verbose_name=u'Должность', null=True, blank=True)
     # дата создания учетки
     created = models.DateTimeField(_('created'), default=timezone.now)
 

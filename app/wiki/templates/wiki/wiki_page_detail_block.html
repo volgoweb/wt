@@ -1,6 +1,11 @@
 
 {% if show_title %}
-    <h3 class="wiki-page__title">{{ page.title }}</h3>
+    <h3 class="wiki-page__title">
+        {{ page.title }}
+        {% if can_edit %}
+            <a href="{% url "wiki:edit_wiki_page" page.pk %}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a>
+        {% endif %}
+    </h3>
 {% endif %}
 
 <div class="wiki-page__text">
