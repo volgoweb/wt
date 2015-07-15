@@ -70,19 +70,18 @@ class WikiList(AjaxListView):
         context['tree'] = WikiPage.objects.get_tree()
         return context
 
-
 class AddWikiPage(CreateView):
     model = WikiPage
     template_name = 'wiki/add_wiki_page.html'
     form_class = WikiPageForm
     # fields = '__all__'
 
-    # def get_form_kwargs(self):
-    #     kwargs = super(AddWikiPage, self).get_form_kwargs()
-    #     kwargs.update({
-    #         'request': self.request,
-    #     })
-    #     return kwargs
+    def get_form_kwargs(self):
+        kwargs = super(AddWikiPage, self).get_form_kwargs()
+        kwargs.update({
+            'request': self.request,
+        })
+        return kwargs
 
 
 class WikiPageDetail(DetailView):
