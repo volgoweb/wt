@@ -7,6 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from polymorphic import PolymorphicModel
 from django.core.exceptions import ValidationError
+from django.dispatch import receiver
+from django.db.models.signals import post_save, pre_save
 
 from helper import models as helper_models
 from .signals import task_saved
@@ -101,7 +103,7 @@ class Task(helper_models.FieldsLabelsMixin, PolymorphicModel):
     ])
 
     title = models.CharField(max_length=255, verbose_name=u'Название задачи')
-    desc = models.TextField(verbose_name=u'Описание задачи')
+    desc = models.TextField(verbose_name=u'Описание задачи', blank=True, null=True)
     performer = models.ForeignKey('account.Account', verbose_name=u'Исполнитель', related_name="task_performer")
     due_date = models.DateTimeField(null=True, blank=True, verbose_name=u'Крайний срок')
     comments = models.ManyToManyField('comment.Comment', verbose_name=u'Комментарий')
@@ -118,6 +120,8 @@ class Task(helper_models.FieldsLabelsMixin, PolymorphicModel):
     deleted = models.BooleanField(default=False, verbose_name=u'Удаленная')
 
     task_steps = models.ManyToManyField('task.TaskStep', verbose_name=u'Шаги задачи')
+
+    periodic_task = models.ForeignKey('task.PeriodicTask', related_name='periodic_task_in_task', verbose_name=u'Периодическая задача', blank=True, null=True)
 
     objects = TaskManager()
 
@@ -170,3 +174,37 @@ class Task(helper_models.FieldsLabelsMixin, PolymorphicModel):
                 self.step.end(task=self, request=self.request)
 
         task_saved.send(sender=self.__class__, task=self)
+
+
+class PeriodicTaskManager(models.Manager):
+    def create_next_task(self, task):
+        pass
+
+
+class PeriodicTask(Task):
+    PERIOD_DAY = 'day'
+    PERIOD_SOME_DAYS = 'some_days'
+    PERIOD_WEEK = 'week'
+    PERIOD_MONTH_BY_DAY = 'month_by_day'
+    PERIOD_YEAR_BY_DAY = 'year_by_day'
+
+    PERIOD_CHOICES = OrderedDict([
+        (PERIOD_DAY, u'Каждый день'),
+        (PERIOD_SOME_DAYS, u'Каждые несколько дней'),
+        (PERIOD_WEEK, u'Каждую неделю'),
+        (PERIOD_MONTH_BY_DAY, u'Каждый месяц (по дню месяца)'),
+        (PERIOD_YEAR_BY_DAY, u'Каждый год (по дню месяца)'),
+    ])
+
+    period = models.CharField(max_length=20, choices=PERIOD_CHOICES.items(), verbose_name=u'Период повторения')
+    period_days = models.IntegerField(blank=True, null=True, verbose_name=u'Количество дней')
+
+    objects = PeriodicTaskManager()
+
+
+@receiver(post_save, sender=Task)
+def post_save_task(**kwargs):
+    # TODO перенести в ассинхронное выполнение через celery
+    task = kwargs['instance']
+    if task.periodic_task and task.status in (task.STATUS_READY, task.STATUS_DECLINE):
+        PeriodicTask.objects.create_next_task(task)

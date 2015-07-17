@@ -23,22 +23,40 @@
 
     <ul class="nav">
         <li><a href="{% url "task:favorite_tasks_page" %}" class="sec-menu__link_favorite-tasks">
-            <span class="glyphicon glyphicon-star-empty"></span> Избранные <span class="badge">{{ task_counts.favorite }}</span>
+            <span class="glyphicon glyphicon-star-empty"></span> Избранные
+            {% if task_counts.favorite %}
+                <span class=" pull-right">{{ task_counts.favorite }}</span>
+            {% endif %}
         </a></li>
         <li><a href="{% url "task:today_tasks_page" %}" class="sec-menu__link_today-tasks">
-            <span class="glyphicon glyphicon-time"></span> Сегодня <span class="badge">{{ task_counts.today }}</span>
+            <span class="glyphicon glyphicon-time"></span> Сегодня
+            {% if task_counts.today %}
+                <span class=" pull-right">{{ task_counts.today }}</span>
+            {% endif %}
         </a></li>
         <li><a href="{% url "task:overdue_tasks_page" %}" class="sec-menu__link_overdue-tasks">
-            <span class="glyphicon glyphicon-fire"></span> Просроченные <span class="badge">{{ task_counts.overdue }}</span>
+            <span class="glyphicon glyphicon-fire"></span> Просроченные
+            {% if task_counts.overdue %}
+                <span class=" pull-right">{{ task_counts.overdue }}</span>
+            {% endif %}
         </a></li>
         <li><a href="{% url "task:later_tasks_page" %}" class="sec-menu__link_later-tasks">
-            <span class="glyphicon glyphicon-calendar"></span> Позже <span class="badge">{{ task_counts.later }}</span>
+            <span class="glyphicon glyphicon-calendar"></span> Позже
+            {% if task_counts.later %}
+                <span class=" pull-right">{{ task_counts.later }}</span>
+            {% endif %}
         </a></li>
         <li><a href="{% url "task:completed_tasks_page" %}" class="sec-menu__link_completed-tasks">
-            <span class="glyphicon glyphicon-saved"></span> Выполненные <span class="badge">{{ task_counts.completed }}</span>
+            <span class="glyphicon glyphicon-saved"></span> Выполненные
+            {% if task_counts.completed %}
+                <span class=" pull-right">{{ task_counts.completed }}</span>
+            {% endif %}
         </a></li>
         <li><a href="{% url "task:outbound_tasks_page" %}" class="sec-menu__link_outbound-tasks">
-            <span class="glyphicon glyphicon-export"></span> Исходящие <span class="badge">{{ task_counts.outbound }}</span>
+            <span class="glyphicon glyphicon-export"></span> Исходящие
+            {% if task_counts.outbound %}
+                <span class=" pull-right">{{ task_counts.outbound }}</span>
+            {% endif %}
         </a></li>
     </ul>
 {% endblock %}

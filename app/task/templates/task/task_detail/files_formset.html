@@ -21,13 +21,13 @@
         <div class="files-formset__items">
             {% for file_form in files_formset.forms %}
                 <div class="files-formset__item formset__item" style="overflow: hidden;">
+                    <div class="formset__errors bg-danger">
+                        {{ file_form.non_field_errors }}
+                    </div>
                     {{ file_form.id }}
                     {% include "core/form_field.html" with field=file_form.file label="" inline=True container_classes="pull-left" %}
                     <div class="pull-left">
                         {% include "helper/field/common/formset_delete_field.html" with delete_field=file_form.DELETE button_classes="btn-danger btn-formset-delete" button_title='<span class="glyphicon glyphicon-remove-sign"></span>' formset_container_class="files-formset__items" %}
-                    </div>
-                    <div class="form-field__errors bg-danger">
-                        {{ file_form.errors }}
                     </div>
                 </div>
             {% endfor %}

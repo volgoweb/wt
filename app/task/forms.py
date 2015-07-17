@@ -75,6 +75,7 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
 
         super(AddTaskForm, self).__init__(*args, **kwargs)
         self.instance.request = self.request
+        self.fields['performer'].initial = self.request.user
         if 'author' in self.fields:
             self.fields['author'].initial = self.request.user
             self.fields['author'].widget = self.fields['author'].hidden_widget()
@@ -83,6 +84,7 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
         if 'title' in self.fields:
             self.fields['title'].widget.attrs.update({
                 'autofocus': '',
+                'placeholder': u'Название новой задачи ...'
             })
 
         # self.add_files_formset()

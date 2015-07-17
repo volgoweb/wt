@@ -2,11 +2,63 @@
 {% load static %}
 {% load endless %}
 
+{% block js %}
+    {{ block.super }}
+
+    {{ form.media }}
+
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            var $add_task = $('.add-task-block');
+            $('.add-task__params').hide();
+            $add_task.find('.add-task__more-params').on('click', function(){
+                $('.add-task__params').show();
+            });
+
+            $add_task.find('input[name="title"]').on('keyPress', function(event){
+                if (event.keyCode === 13) {
+                    $add_task.find('form').submit();
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block page_title %}
        {{ page_title}}
 {% endblock %}
 
 {% block content %}
+    <div class="add-task-block">
+        <form action="{% url "task:add_task" %}?next={{ request.path }}" method="POST" accept-charset="utf-8">
+            {% csrf_token %}
+            <div class="input-group">
+                {{ form.title }}
+                <span class="input-group-btn">
+                    <input type="submit" class="btn btn-default" value="Добавить"><span class="glyphicon glyphicon-plus"></span></button>
+                </span>
+            </div><!-- /input-group -->
+
+            <div class="text-center">
+                <span class="add-task__more-params btn btn-xs" data-toggle="tooltip" data-placement="bottom" title="Заполнить остальные поля задачи"><span class="glyphicon glyphicon-triangle-bottom"></span></span>
+            </div>
+
+            <div class="add-task__params">
+                {% for field in form.hidden_fields %}
+                    {{ field }}
+                {% endfor %}
+
+                {% include "core/form_field.html" with field=form.is_favorite inline=True %}
+                {% include "core/form_field.html" with field=form.desc %}
+                {% include "core/form_field.html" with field=form.performer %}
+                {% include "core/form_field.html" with field=form.due_date %}
+                {# {% include "core/form_field.html" with field=form.files_formset %} #}
+                {% include "task/task_detail/files_formset.html" %}
+                <input type="submit" class="btn btn-primary" value="Добавить"/>
+            </div>
+        </form>
+    </div>
+
     <div class="tasks-list">
 
         {# <div class="tasks-list__filters row-fluid"> #}

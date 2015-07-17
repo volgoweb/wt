@@ -8,12 +8,12 @@
         <title>{% block head_title %}{% endblock %}</title>
 
         {% block scripts %}
-            {% compress css %}
+            {# {% compress css %} #}
                 {% block less %}
-                    <link rel="stylesheet" type="text/less" media="all" href="{% static "core/less/style.less" %}" />
-                    {# <link rel="stylesheet" type="text/css" media="all" href="{% static "core/less/CACHE/css/style.b5fa6e6d0d54.css" %}" /> #}
+                    {# <link rel="stylesheet" type="text/less" media="all" href="{% static "core/less/style.less" %}" /> #}
+                    <link rel="stylesheet" type="text/css" media="all" href="{% static "core/less/CACHE/css/style.8a8e984ead6c.css" %}" />
                 {% endblock %}
-            {% endcompress %}
+            {# {% endcompress %} #}
 
             {% block css %}
                 <link rel="stylesheet" type="text/css" media="all" href="{% static "helper/jquery-ui/jquery-ui.min.css" %}" />

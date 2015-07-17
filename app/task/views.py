@@ -8,12 +8,23 @@ from endless_pagination.views import AjaxListView
 from endless_pagination import settings as endless_settings
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS, FieldError
+from django.core.urlresolvers import reverse_lazy
 
 from .models import Task, TaskFile
 from .forms import TasksListFilters, TaskFileForm
 from app.task import forms as task_forms
 from app.core.models import FileItem
 from app.core.forms import FileItemForm
+
+
+FilesFormset = generic_inlineformset_factory(
+    FileItem,
+    form=FileItemForm,
+    ct_field='owner_type',
+    fk_field='owner_id',
+    fields=['file'],
+    extra=0,
+)
 
 
 class TasksList(AjaxListView):
@@ -96,6 +107,8 @@ class TasksList(AjaxListView):
         # self.define_filters()
 
         context['Task'] = Task
+        context['form'] = task_forms.AddTaskForm(request=self.request)
+        context['files_formset'] = FilesFormset()
 
         # фильтры списка
         # context['filters_form'] = self.filters_form
@@ -189,24 +202,11 @@ class TaskDetail(UpdateView):
     success_url = '/tasks/'
 
     def get_files_formset(self, *args, **kwargs):
-        extra = 1
         obj = self.get_object()
         qs = FileItem.objects.none()
         if getattr(obj, 'pk', None):
             task_type = ContentType.objects.get(app_label='task', model='task')
             qs = FileItem.objects.filter(owner_id=obj.pk, owner_type=task_type.pk)
-            # items = [(i.pk, i.file.url) for i in qs]
-            # assert False
-            if qs.count() > 0:
-                extra = 0
-        FilesFormset = generic_inlineformset_factory(
-            FileItem,
-            form=FileItemForm,
-            ct_field='owner_type',
-            fk_field='owner_id',
-            fields=['file'],
-            extra=extra,
-        )
         formset = FilesFormset(data=self.request.POST or None, files=self.request.FILES or None, queryset=qs, instance=obj)
         return formset
 
@@ -290,15 +290,7 @@ class AddTask(CreateView):
         return kwargs
 
     def get_files_formset(self, *args, **kwargs):
-        self.FilesFormset = generic_inlineformset_factory(
-            FileItem,
-            form=FileItemForm,
-            ct_field='owner_type',
-            fk_field='owner_id',
-            fields=['file'],
-            extra=1,
-        )
-        formset = self.FilesFormset(data=self.request.POST or None, files=self.request.FILES or None, instance=kwargs.get('instance', None))
+        formset = FilesFormset(data=self.request.POST or None, files=self.request.FILES or None, instance=kwargs.get('instance', None))
         return formset
 
     def get_context_data(self, *args, **kwargs):
@@ -316,9 +308,15 @@ class AddTask(CreateView):
                 files_formset.save()
             else:
                 is_invalid_formset = False
+        # else:
+        #     form_er = form.errors
+        #     assert False
 
         if is_invalid_formset:
             return super(AddTask, self).form_valid(form)
         else:
             return self.form_invalid(form)
+
+    def get_success_url(self, *args, **kwargs):
+        return self.request.GET.get('next')
 
