@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="col-lg-6 col-md-9 col-sm-12">
+<div class="col-lg-9 col-md-12 col-sm-12">
     <div class="bg-danger">
         {% if form.errors %}
             <p>Ошибка!</p>
@@ -27,12 +27,12 @@
     </div>
 
     <div class="row">
-        <div class="task__due-date col-md-4">
-            <label>Крайний срок:</label> <span>{{ task.due_date }}</span>
+        <div class="task__due-date col-md-6">
+            <label>Крайний срок:</label> <span>{{ task.due_date|default:"-" }}</span>
         </div>
 
-        <div class="task__performer col-md-4">
-            <label>Исполнитель:</label> <span>{{ task.performer }}</span>
+        <div class="task__performer col-md-6">
+            <label>Исполнитель:</label> <span>{{ task.performer|default:"-" }}</span>
         </div>
     </div>
 

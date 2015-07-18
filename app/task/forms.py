@@ -52,7 +52,7 @@ class TaskStepForm(BootstrapFormMixin, forms.ModelForm):
 class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ['step_id', 'step_type', 'deleted', 'comments', 'task_steps', 'files']
+        exclude = ['step_id', 'step_type', 'deleted', 'comments', 'task_steps', 'files', 'periodic_task']
         # fields = ['title', 'desc', 'status']
         widgets = {
             'due_date': DateTimeWidget(
@@ -75,7 +75,8 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
 
         super(AddTaskForm, self).__init__(*args, **kwargs)
         self.instance.request = self.request
-        self.fields['performer'].initial = self.request.user
+        if not getattr(self.instance, 'pk', None):
+            self.fields['performer'].initial = self.request.user
         if 'author' in self.fields:
             self.fields['author'].initial = self.request.user
             self.fields['author'].widget = self.fields['author'].hidden_widget()
@@ -84,7 +85,8 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
         if 'title' in self.fields:
             self.fields['title'].widget.attrs.update({
                 'autofocus': '',
-                'placeholder': u'Название новой задачи ...'
+                'placeholder': u'Введите название новой задачи и нажмите Enter ...',
+                'title': u'Введите название новой задачи и нажмите Enter',
             })
 
         # self.add_files_formset()

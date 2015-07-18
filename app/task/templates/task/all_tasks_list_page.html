@@ -11,7 +11,10 @@
         $(document).ready(function(){
             var $add_task = $('.add-task-block');
             $('.add-task__params').hide();
-            $add_task.find('.add-task__more-params').on('click', function(){
+            $add_task.find('.add-task__more-params').on('click', function(event){
+                event.stopPropagation();
+                event.preventDefault();
+                $(this).hide();
                 $('.add-task__params').show();
             });
 
@@ -19,6 +22,10 @@
                 if (event.keyCode === 13) {
                     $add_task.find('form').submit();
                 }
+            });
+
+            $add_task.find('.add-task__btn-cancel').on('click', function(event){
+                $('.add-task__params').hide();
             });
         });
     </script>
@@ -29,34 +36,36 @@
 {% endblock %}
 
 {% block content %}
-    <div class="add-task-block">
-        <form action="{% url "task:add_task" %}?next={{ request.path }}" method="POST" accept-charset="utf-8">
-            {% csrf_token %}
-            <div class="input-group">
-                {{ form.title }}
-                <span class="input-group-btn">
-                    <input type="submit" class="btn btn-default" value="Добавить"><span class="glyphicon glyphicon-plus"></span></button>
-                </span>
-            </div><!-- /input-group -->
+    <div class="add-task-block panel panel-default">
+        <div class="panel-body">
+            {# TODO вынести в отдельный шаблон #}
+            <form action="{% url "task:add_task" %}?next={{ request.path }}" method="POST" accept-charset="utf-8">
+                {% csrf_token %}
+                {# <div class="input-group"> #}
+                    {{ form.title }}
+                    {# <span class="input-group-btn"> #}
+                    {#     <input type="submit" class="btn btn-default" value="Добавить"><span class="glyphicon glyphicon-plus"></span></button> #}
+                    {# </span> #}
+                {# </div><!-- /input-group --> #}
 
-            <div class="text-center">
-                <span class="add-task__more-params btn btn-xs" data-toggle="tooltip" data-placement="bottom" title="Заполнить остальные поля задачи"><span class="glyphicon glyphicon-triangle-bottom"></span></span>
-            </div>
+                <a href="#" class="add-task__more-params btn btn-sm" data-toggle="tooltip" data-placement="bottom" title="Заполнить остальные поля задачи">Подробнее...</a>
 
-            <div class="add-task__params">
-                {% for field in form.hidden_fields %}
-                    {{ field }}
-                {% endfor %}
+                <div class="add-task__params">
+                    {% for field in form.hidden_fields %}
+                        {{ field }}
+                    {% endfor %}
 
-                {% include "core/form_field.html" with field=form.is_favorite inline=True %}
-                {% include "core/form_field.html" with field=form.desc %}
-                {% include "core/form_field.html" with field=form.performer %}
-                {% include "core/form_field.html" with field=form.due_date %}
-                {# {% include "core/form_field.html" with field=form.files_formset %} #}
-                {% include "task/task_detail/files_formset.html" %}
-                <input type="submit" class="btn btn-primary" value="Добавить"/>
-            </div>
-        </form>
+                    {% include "core/form_field.html" with field=form.is_favorite inline=True %}
+                    {% include "core/form_field.html" with field=form.desc %}
+                    {% include "core/form_field.html" with field=form.performer %}
+                    {% include "core/form_field.html" with field=form.due_date %}
+                    {# {% include "core/form_field.html" with field=form.files_formset %} #}
+                    {% include "task/task_detail/files_formset.html" %}
+                    <input type="submit" class="btn btn-primary" value="Добавить"/>
+                    <button type="button" class="add-task__btn-cancel btn btn-defautl">Отменить</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div class="tasks-list">

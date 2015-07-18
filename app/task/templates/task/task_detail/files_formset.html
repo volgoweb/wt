@@ -7,7 +7,7 @@
         {{ files_formset.media }}
 
         <div class="empty-form" style="display: none;">
-            <div class="files-formset__item formset__item" style="overflow: hidden;">
+            <div class="files-formset__item formset__item col-md-4" style="overflow: hidden;">
                 {{ files_formset.empty_form.id }}
                 <div class="pull-left">
                     {% include "core/form_field.html" with field=files_formset.empty_form.file label="" inline=True %}
@@ -18,9 +18,9 @@
             </div>
         </div>
 
-        <div class="files-formset__items">
+        <div class="files-formset__items row">
             {% for file_form in files_formset.forms %}
-                <div class="files-formset__item formset__item" style="overflow: hidden;">
+                <div class="files-formset__item formset__item col-md-4" style="overflow: hidden;">
                     <div class="formset__errors bg-danger">
                         {{ file_form.non_field_errors }}
                     </div>
@@ -32,9 +32,13 @@
                 </div>
             {% endfor %}
 
-        </div>
+            <div class="more-file-form-container col-md-4">
+                <button type="button" id="more-file-form" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> Добавить файл</button>
+            </div>
 
-        <input type="button" value="Еще" id="more-file-form">
+        </div>
+        <br>
+
         <script>
             $(document).ready(function() {
                 AjaxUploadWidget.autoDiscover('.files-formset__items');
@@ -43,7 +47,7 @@
                     var $total_forms = $('input[name$="TOTAL_FORMS"]');
                     var form_idx = $total_forms.val();
                     var new_form_html = $formset.find('.empty-form').html().replace(/__prefix__/g, form_idx);
-                    $('.files-formset__items').append(new_form_html);
+                    $('.more-file-form-container').before(new_form_html);
                     $total_forms.val(parseInt(form_idx) + 1);
                     var $new_form_item = $('.files-formset__items .formset__item').last();
                     $new_form_item.find('input[type="file"]').removeClass('ajax-upload-processed').click();

@@ -183,7 +183,7 @@ class CompletedTasksPage(TasksList):
 class OutboundTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().consigned(request.user).in_work()
+        return Task.objects.all().consigned(request.user, exclude_self_tasks=True).in_work()
 
     def get_context_data(self, **kwargs):
         context = super(OutboundTasksPage, self).get_context_data(**kwargs)

@@ -2,6 +2,7 @@
 import datetime
 from collections import OrderedDict
 from django.db import models
+from django.db.models import F
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -57,8 +58,11 @@ class TaskQueryset(models.query.QuerySet):
     def performed(self, user):
         return self.filter(performer=user)
 
-    def consigned(self, user):
-        return self.filter(author=user)
+    def consigned(self, user, exclude_self_tasks=False):
+        qs = self.filter(author=user)
+        if exclude_self_tasks:
+            qs = qs.exclude(performer=F('author'))
+        return qs
 
     def overdue(self, *args, **kwargs):
         now = datetime.datetime.now()
