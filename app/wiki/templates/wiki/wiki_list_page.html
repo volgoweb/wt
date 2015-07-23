@@ -31,6 +31,10 @@
                             <tr class="wiki-page-item">
                                 <td class="wiki-catalog__item" data-pk="{{ node.pk }}" style="padding-left: {% widthratio node.level 20 100 %}px;">{#<a href="{{ node.get_absolute_url }}">#}{{ node.title }}{#</a>#}</td>
                             </tr>
+                        {% empty %}
+                            <tr class="wiki-page-item">
+                                <td class="wiki-catalog__item">Ничего нет</td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>

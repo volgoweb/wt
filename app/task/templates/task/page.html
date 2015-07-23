@@ -22,12 +22,12 @@
     </div>
 
     <ul class="nav">
-        <li><a href="{% url "task:favorite_tasks_page" %}" class="sec-menu__link_favorite-tasks">
-            <span class="glyphicon glyphicon-star-empty"></span> Избранные
-            {% if task_counts.favorite %}
-                <span class=" pull-right">{{ task_counts.favorite }}</span>
-            {% endif %}
-        </a></li>
+        {# <li><a href="{% url "task:favorite_tasks_page" %}" class="sec-menu__link_favorite-tasks"> #}
+        {#     <span class="glyphicon glyphicon-star-empty"></span> Избранные #}
+        {#     {% if task_counts.favorite %} #}
+        {#         <span class=" pull-right">{{ task_counts.favorite }}</span> #}
+        {#     {% endif %} #}
+        {# </a></li> #}
         <li><a href="{% url "task:today_tasks_page" %}" class="sec-menu__link_today-tasks">
             <span class="glyphicon glyphicon-time"></span> Сегодня
             {% if task_counts.today %}

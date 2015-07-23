@@ -7,9 +7,18 @@
         {{ f }}
     {% endfor %}
 
+    {% for f in template_form.hidden_fields %}
+        {{ f }}
+    {% endfor %}
+
+    {% for f in template_form.visible_fields %}
+        {% include "core/form_field.html" with field=f inline=True %}
+    {% endfor %}
     {% for f in form.visible_fields %}
         {% include "core/form_field.html" with field=f inline=True %}
     {% endfor %}
+
+    {{ repeat_params_form.as_p }}
 
     {% include "task/task_detail/files_formset.html" %}
 {% endblock %}

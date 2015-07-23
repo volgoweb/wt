@@ -31,17 +31,17 @@ def notify_about_task(**kwargs):
     # TODO перенести в ассинхронное выполнение через celery
     task = kwargs.get('task')
     if task.is_new():
-        text = u'Добавлена новая задача "<a href="{link}">{title}</a>"'.format(link=task.get_absolute_url(), title=task.title)
+        text = u'Добавлена новая задача "<a href="{link}">{title}</a>"'.format(link=task.get_absolute_url(), title=task.template.title)
         n = Notification(
             text=text,
-            subscriber=task.performer,
+            subscriber=task.template.performer,
             obj=task,
         )
         n.save()
 
         try:
-            send_mail(u'Добавлена новая задача', text, 'dima_page@mail.ru', [task.performer.email], fail_silently=False)
+            send_mail(u'Добавлена новая задача', text, 'dima_page@mail.ru', [task.template.performer.email], fail_silently=False)
         except:
             pass
 
-task_saved.connect(notify_about_task)
+# task_saved.connect(notify_about_task)

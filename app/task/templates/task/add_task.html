@@ -9,21 +9,29 @@
 
 {% block content %}
 <div class="col-lg-6 col-md-9 col-sm-12">
-    <form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data">
+    <form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data" class="task-form">
         {% csrf_token %}
         <div class="form__errors bg-danger">
             {{ form.non_field_errors }}
+            {{ template.form.non_field_errors }}
         </div>
 
         {% for field in form.hidden_fields %}
             {{ field }}
         {% endfor %}
+        {% for field in template_form.hidden_fields %}
+            {{ field }}
+        {% endfor %}
 
-        {% include "core/form_field.html" with field=form.title %}
-        {% include "core/form_field.html" with field=form.is_favorite inline=True %}
-        {% include "core/form_field.html" with field=form.desc %}
-        {% include "core/form_field.html" with field=form.performer %}
+        {% include "core/form_field.html" with field=template_form.title %}
+        {% include "core/form_field.html" with field=template_form.desc %}
+        {% include "core/form_field.html" with field=template_form.performer %}
         {% include "core/form_field.html" with field=form.due_date %}
+
+        <div class="task-form__repeat-params">
+            {% include "core/form_field.html" with field=repeat_params_form.period %}
+        </div>
+
         {# {% include "core/form_field.html" with field=form.files_formset %} #}
         {% include "task/task_detail/files_formset.html" %}
 

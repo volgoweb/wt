@@ -52,7 +52,7 @@ class TaskStepForm(BootstrapFormMixin, forms.ModelForm):
 class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ['step_id', 'step_type', 'deleted', 'comments', 'task_steps', 'files', 'periodic_task']
+        exclude = ['deleted', 'template']
         # fields = ['title', 'desc', 'status']
         widgets = {
             'due_date': DateTimeWidget(
@@ -70,24 +70,105 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.can_edit = kwargs.pop('can_edit', None)
-
-        # self.Meta.widgets['status'] = forms.widgets.HiddenInput()
-
+        self.is_shortform = kwargs.pop('is_shortform', None)
         super(AddTaskForm, self).__init__(*args, **kwargs)
-        self.instance.request = self.request
-        if not getattr(self.instance, 'pk', None):
-            self.fields['performer'].initial = self.request.user
+
         if 'author' in self.fields:
             self.fields['author'].initial = self.request.user
             self.fields['author'].widget = self.fields['author'].hidden_widget()
         if 'status' in self.fields:
             self.fields['status'].widget = forms.widgets.HiddenInput()
+
+    def clean_author(self, *args, **kwargs):
+        return self.request.user
+
+    # def save(self, *args, **kwargs):
+    #     task = super(AddTaskForm, self).save(*args, **kwargs)
+    #     if self.files_formset.is_valid():
+    #         items = self.files_formset.save()
+    #         self.instance.files.add(*items)
+    #         self.instance.save()
+    #         print 'items'
+    #         print items
+    #         # self.instance.files.add(*items)
+    #     else:
+    #         err = self.files_formset.errors
+    #         print '--------- files_formset  errors:'
+    #         print err
+
+    #     # if self.task_steps_formset.is_valid():
+    #     #     items = self.task_steps_formset.save()
+    #     #     for item in items:
+    #     #         self.instance.task_steps.add(item)
+    #     return task
+
+
+class TaskForm(AddTaskForm):
+    def __init__(self, *args, **kwargs):
+        # self.Meta.widgets['status'] = forms.widgets.RadioSelect()
+        super(TaskForm, self).__init__(*args, **kwargs)
+        self.filter_fields(can_edit=self.can_edit)
+        self.fields['status'].widget = forms.widgets.RadioSelect(choices=self.fields['status'].choices)
+
+    def filter_fields(self, can_edit=False):
+        if not can_edit:
+            for f in self.fields.values():
+                f.widget = f.hidden_widget()
+
+
+class TasksListFilters(BootstrapFormMixin, forms.Form):
+    # TODO подумать, можно ли как-то ограничить список,
+    # чтобы в нем были лишь сотрудники, задачи которых
+    # авторизованный пользователь имеет право смотреть... 
+    # ну либо те сотрудники, на которых висят задачи.
+    # TODO добавить значение "я"
+    performer = forms.ModelChoiceField(
+        queryset=Account.objects.all(),
+        required=False,
+        label=TaskTemplate.performer.field.verbose_name,
+    )
+    status = forms.ChoiceField(
+        choices=[('', '---------')]+Task.STATUSES.items(),
+        required=False,
+        label=u'Статус',
+    )
+
+
+class RepeatParamsForm(BootstrapFormMixin, forms.ModelForm):
+    class Meta:
+        model = RepeatParams
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(RepeatParamsForm, self).__init__(*args, **kwargs)
+        self.fields['period'].required = False
+
+
+class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
+    class Meta:
+        model = TaskTemplate
+        exclude = ['step_id', 'step_type', 'files', 'task_steps', 'repeat_params']
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.can_edit = kwargs.pop('can_edit', None)
+        self.is_shortform = kwargs.pop('is_shortform', None)
+
+        # self.Meta.widgets['status'] = forms.widgets.HiddenInput()
+
+        super(TaskTemplateForm, self).__init__(*args, **kwargs)
+        self.instance.request = self.request
+        if not getattr(self.instance, 'pk', None):
+            self.fields['performer'].initial = self.request.user
         if 'title' in self.fields:
             self.fields['title'].widget.attrs.update({
                 'autofocus': '',
-                'placeholder': u'Введите название новой задачи и нажмите Enter ...',
-                'title': u'Введите название новой задачи и нажмите Enter',
             })
+            if self.is_shortform:
+                self.fields['title'].widget.attrs.update({
+                    'placeholder': u'Введите название новой задачи и нажмите Enter ...',
+                    'title': u'Введите название новой задачи и нажмите Enter',
+                })
 
         # self.add_files_formset()
         # self.add_task_steps_formset()
@@ -140,61 +221,3 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
             label=u'Шаги',
         )
 
-    def clean_author(self, *args, **kwargs):
-        return self.request.user
-
-    # def save(self, *args, **kwargs):
-    #     task = super(AddTaskForm, self).save(*args, **kwargs)
-    #     if self.files_formset.is_valid():
-    #         items = self.files_formset.save()
-    #         self.instance.files.add(*items)
-    #         self.instance.save()
-    #         print 'items'
-    #         print items
-    #         # self.instance.files.add(*items)
-    #     else:
-    #         err = self.files_formset.errors
-    #         print '--------- files_formset  errors:'
-    #         print err
-
-    #     # if self.task_steps_formset.is_valid():
-    #     #     items = self.task_steps_formset.save()
-    #     #     for item in items:
-    #     #         self.instance.task_steps.add(item)
-    #     return task
-
-
-class TaskForm(AddTaskForm):
-    class Meta:
-        model = Task
-        exclude = AddTaskForm.Meta.exclude + ['title', 'desc', 'performer', 'due_date']
-        widgets = AddTaskForm.Meta.widgets
-
-    def __init__(self, *args, **kwargs):
-        # self.Meta.widgets['status'] = forms.widgets.RadioSelect()
-        super(TaskForm, self).__init__(*args, **kwargs)
-        self.filter_fields(can_edit=self.can_edit)
-        self.fields['status'].widget = forms.widgets.RadioSelect(choices=self.fields['status'].choices)
-
-    def filter_fields(self, can_edit=False):
-        if not can_edit:
-            for f in self.fields.values():
-                f.widget = f.hidden_widget()
-
-
-class TasksListFilters(BootstrapFormMixin, forms.Form):
-    # TODO подумать, можно ли как-то ограничить список,
-    # чтобы в нем были лишь сотрудники, задачи которых
-    # авторизованный пользователь имеет право смотреть... 
-    # ну либо те сотрудники, на которых висят задачи.
-    # TODO добавить значение "я"
-    performer = forms.ModelChoiceField(
-        queryset=Account.objects.all(),
-        required=False,
-        label=Task.performer.field.verbose_name,
-    )
-    status = forms.ChoiceField(
-        choices=[('', '---------')]+Task.STATUSES.items(),
-        required=False,
-        label=u'Статус',
-    )

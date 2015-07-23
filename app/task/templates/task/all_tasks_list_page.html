@@ -59,7 +59,7 @@
                     {% include "core/form_field.html" with field=form.desc %}
                     {% include "core/form_field.html" with field=form.performer %}
                     {% include "core/form_field.html" with field=form.due_date %}
-                    {# {% include "core/form_field.html" with field=form.files_formset %} #}
+                    {{ repeat_params_form.as_p }}
                     {% include "task/task_detail/files_formset.html" %}
                     <input type="submit" class="btn btn-primary" value="Добавить"/>
                     <button type="button" class="add-task__btn-cancel btn btn-defautl">Отменить</button>

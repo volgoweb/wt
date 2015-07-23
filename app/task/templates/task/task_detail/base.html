@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block page_title %}
-    Задача "{{ task.title }}"
+    Задача "{{ task.template.title }}"
 {% endblock %}
 
 {% block content %}
@@ -27,24 +27,23 @@
     </div>
 
     <div class="row">
-        <div class="task__due-date col-md-6">
-            <label>Крайний срок:</label> <span>{{ task.due_date|default:"-" }}</span>
-        </div>
+        {# <div class="task__due-date col-md-6"> #}
+        {#     <label>Крайний срок:</label> <span>{{ task.due_date|default:"-" }}</span> #}
+        {# </div> #}
 
-        <div class="task__performer col-md-6">
-            <label>Исполнитель:</label> <span>{{ task.performer|default:"-" }}</span>
-        </div>
+        {# <div class="task__performer col-md-6"> #}
+        {#     <label>Исполнитель:</label> <span>{{ task.template.performer|default:"-" }}</span> #}
+        {# </div> #}
     </div>
 
     {% if not can_edit %}
         {% include "core/field_view.html" with value=task.get_status_display label=task.get_field_labels.status inline=True %}
-        {% include "core/field_view.html" with value=task.comment label=task.get_field_labels.comment hide_if_empty=True %}
     {% endif %}
     
-    <div class="task__desc">
-        <label>Описание:</label> 
-        {{ task.desc }}
-    </div>
+    {# <div class="task__desc"> #}
+    {#     <label>Описание:</label>  #}
+    {#     {{ task.template.desc }} #}
+    {# </div> #}
 
     {% if can_edit %}
         <form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data">

@@ -1,6 +1,5 @@
 
 {% for t in tasks %}
-    {# <tr> #}
     <div class="task-item row-fluid">
         <div class="task-item__row1">
             <span class="task-item__status">
@@ -20,7 +19,7 @@
                 {% endif %}
             </span>
 
-            <a href="{% url "task:task_detail" t.pk %}">{{ t.title }}</a>
+            <a href="{% url "task:task_detail" t.pk %}">{{ t.template.title }}</a>
         </div>
 
         <div class="task-item__row2">
@@ -29,7 +28,7 @@
             {% endif %}
 
             {% if show_performer %}
-                <span class="badge">{{ t.performer }}</span>
+                <span class="badge">{{ t.template.performer }}</span>
             {% endif %}
             {# <span class="task-item__comments badge">2 комментария</span> #}
         </div>
