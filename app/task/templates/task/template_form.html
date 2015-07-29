@@ -1,0 +1,40 @@
+{% extends "task/page.html" %}
+
+{% block scripts %}
+    {{ block.super }}
+    {{ form.media }}
+    {{ files_formset.media }}
+{% endblock %}
+
+{% block content %}
+<div class="col-lg-6 col-md-9 col-sm-12">
+    <form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data" class="task-form">
+        {% csrf_token %}
+        <div class="form__errors bg-danger">
+            {{ form.non_field_errors }}
+        </div>
+
+        {% for field in form.hidden_fields %}
+            {{ field }}
+        {% endfor %}
+
+        {% include "core/form_field.html" with field=form.title %}
+        {% include "core/form_field.html" with field=form.desc %}
+        {% include "core/form_field.html" with field=form.performer %}
+        {% include "core/form_field.html" with field=form.due_date %}
+
+        <div class="task-form__repeat-params">
+            {% include "core/form_field.html" with field=form.period %}
+        </div>
+
+        {# {% include "core/form_field.html" with field=form.files_formset %} #}
+        {% include "task/task_detail/files_formset.html" %}
+
+        {# {% for field in form.visible_fields %} #}
+        {#     {% include "core/form_field.html" with field=field %} #}
+        {# {% endfor %} #}
+        
+        <input type="submit" class="btn btn-primary" value="Сохранить"/>
+    </form>
+</div>
+{% endblock %}

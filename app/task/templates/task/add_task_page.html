@@ -1,0 +1,34 @@
+{% extends "task/page.html" %}
+
+{% block page_title %}Новая задача{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    {{ form.media }}
+{% endblock %}
+
+{% block content %}
+<div class="col-lg-6 col-md-9 col-sm-12">
+    <form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data" class="task-form">
+        {% csrf_token %}
+        <div class="form__errors bg-danger">
+            {{ form.non_field_errors }}
+        </div>
+
+
+        <table>
+            {{ template_form.as_table }}
+            {{ form.as_table }}
+        </table>
+
+        {# {% include "core/form_field.html" with field=form.files_formset %} #}
+        {% include "task/task_detail/files_formset.html" %}
+
+        {# {% for field in form.visible_fields %} #}
+        {#     {% include "core/form_field.html" with field=field %} #}
+        {# {% endfor %} #}
+        
+        <input type="submit" class="btn btn-primary" value="Сохранить"/>
+    </form>
+</div>
+{% endblock %}

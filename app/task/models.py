@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+from dateutil import relativedelta
 from collections import OrderedDict
 from django.db import models
 from django.db.models import F
@@ -67,9 +68,25 @@ class TaskTemplateManager(models.Manager):
 
 
 class TaskTemplate(helper_models.FieldsLabelsMixin, PolymorphicModel):
+    PERIOD_DAY = 'day'
+    PERIOD_SOME_DAYS = 'some_days'
+    PERIOD_WEEK = 'week'
+    PERIOD_MONTH_BY_DAY = 'month_by_day'
+    PERIOD_YEAR_BY_DAY = 'year_by_day'
+
+    PERIOD_CHOICES = OrderedDict([
+        (PERIOD_DAY, u'Каждый день'),
+        # (PERIOD_SOME_DAYS, u'Каждые несколько дней'),
+        (PERIOD_WEEK, u'Каждую неделю'),
+        (PERIOD_MONTH_BY_DAY, u'Каждый месяц (по дню месяца)'),
+        (PERIOD_YEAR_BY_DAY, u'Каждый год (по дню месяца)'),
+    ])
+
     title = models.CharField(max_length=255, verbose_name=u'Название задачи')
     desc = models.TextField(verbose_name=u'Описание задачи', blank=True, null=True)
     performer = models.ForeignKey('account.Account', verbose_name=u'Исполнитель', related_name='%(class)s_performer')
+    author = models.ForeignKey('account.Account', verbose_name=u'Автор', related_name='%(class)s_author')
+    due_date = models.DateTimeField(null=True, blank=True, verbose_name=u'Крайний срок')
     # TODO добавить поля для клиента и партнера
 
     step_type = models.ForeignKey(ContentType, related_name='%(class)s_step_type', blank=True, null=True)
@@ -79,12 +96,74 @@ class TaskTemplate(helper_models.FieldsLabelsMixin, PolymorphicModel):
     task_steps = models.ManyToManyField('task.TaskStep', verbose_name=u'Шаги задачи', related_name='%(class)s_task_steps')
     files = models.ManyToManyField('task.TaskFile', verbose_name=u'Вложения', related_name='%(class)s_files')
 
-    repeat_params = models.ForeignKey('task.RepeatParams', related_name='repeat_params', verbose_name=u'Настройки повторения', blank=True, null=True)
+    period = models.CharField(max_length=20, choices=PERIOD_CHOICES.items(), verbose_name=u'Период повторения', blank=True, null=True)
+    # period_days = models.IntegerField(blank=True, null=True, verbose_name=u'Количество дней')
+    # start_datetime = models.DateTimeField(verbose_name=u'Дата отсчета периода повторения')
 
     objects = TaskTemplateManager()
 
     def __unicode__(self):
         return u'#{0} {1}'.format(self.pk, self.title)
+
+    def add_task(self):
+        task = Task(
+            template=self,
+            due_date=self.due_date,
+            author=self.author,
+        )
+        task.save()
+        return task
+
+    def create_repeating_tasks(self, author=None):
+        # удаляем все экземпляры повторяющихся задач, если они есть
+        Task.objects.filter(template=self, is_repeating_clone=True).delete()
+
+        dates = self.get_repeating_due_dates(start_date=self.due_date)
+        task = self.task.get()
+        if not author:
+            author = task.author
+        for d in dates:
+            task = Task(
+                template=self,
+                due_date=d,
+                author=author,
+                is_repeating_clone=True,
+            )
+            task.save()
+
+    def get_repeating_due_dates(self, start_date=None):
+        """
+        Возвращает список дат срока исполнения всех повторяющихся задач,
+        начиная от указанной даты (если она не указана, то от самой начальной)
+        и на 2 года в будущее (от сегодня).
+        """
+        now = datetime.datetime.now()
+        if not start_date:
+            start_date = self.due_date.date()
+        delta = self.get_timedelta_period()
+        end_date = now + relativedelta.relativedelta(years=2)
+        dates = []
+        def add_next_date(d):
+            d += delta
+            if d.date() < end_date.date():
+                dates.append(d)
+                add_next_date(d)
+
+        add_next_date(start_date)
+        return dates
+
+    def get_timedelta_period(self):
+        if self.period == self.PERIOD_DAY:
+            return datetime.timedelta(days=1)
+        elif self.period == self.PERIOD_WEEK:
+            return datetime.timedelta(days=7)
+        elif self.period == self.PERIOD_MONTH_BY_DAY:
+            return relativedelta.relativedelta(months=1)
+        elif self.period == self.PERIOD_YEAR_BY_DAY:
+            return relativedelta.relativedelta(years=1)
+        else:
+            raise(u'Не удалось определить период повторения, выраженный в timedelta')
+
 
 
 class TaskQueryset(models.query.QuerySet):
@@ -154,10 +233,12 @@ class TaskManager(models.Manager):
 class Task(models.Model):
     STATUS_DECLINE = 'decline'
     STATUS_IN_WORK = 'in_work'
+    STATUS_AWATING_EXECUTION = 'awaiting'
     STATUS_READY = 'ready'
     STATUSES = OrderedDict([
         (STATUS_DECLINE, u'Отклонена'),
-        (STATUS_IN_WORK, u'В работе'),
+        (STATUS_AWATING_EXECUTION, u'Ожидает выполнения'),
+        (STATUS_IN_WORK, u'Выполняется'),
         (STATUS_READY, u'Готова'),
     ])
 
@@ -175,6 +256,7 @@ class Task(models.Model):
     status = models.CharField(max_length=20, choices=STATUSES.items(), default=STATUS_IN_WORK, verbose_name=u'Статус задачи')
     # is_favorite = models.BooleanField(default=False, verbose_name=u'Избранная')
     deleted = models.BooleanField(default=False, verbose_name=u'Удаленная')
+    is_repeating_clone = models.BooleanField(default=False, verbose_name=u'Клон повторяющейся задачи')
 
     objects = TaskManager()
 
@@ -239,40 +321,23 @@ class RepeatParamsManager(models.Manager):
         next_task.save()
 
 
-class RepeatParams(models.Model):
-    PERIOD_DAY = 'day'
-    PERIOD_SOME_DAYS = 'some_days'
-    PERIOD_WEEK = 'week'
-    PERIOD_MONTH_BY_DAY = 'month_by_day'
-    PERIOD_YEAR_BY_DAY = 'year_by_day'
-
-    PERIOD_CHOICES = OrderedDict([
-        (PERIOD_DAY, u'Каждый день'),
-        # (PERIOD_SOME_DAYS, u'Каждые несколько дней'),
-        (PERIOD_WEEK, u'Каждую неделю'),
-        (PERIOD_MONTH_BY_DAY, u'Каждый месяц (по дню месяца)'),
-        (PERIOD_YEAR_BY_DAY, u'Каждый год (по дню месяца)'),
-    ])
-
-    period = models.CharField(max_length=20, choices=PERIOD_CHOICES.items(), verbose_name=u'Период повторения')
-    # period_days = models.IntegerField(blank=True, null=True, verbose_name=u'Количество дней')
-
-    objects = RepeatParamsManager()
-
-    def get_next_due_date(self, prev_due_date):
-        if self.period == self.PERIOD_DAY:
-            return prev_due_date + datetime.timedelta(days=1)
-        elif self.period == self.PERIOD_WEEK:
-            return prev_due_date + datetime.timedelta(days=7)
-        elif self.period == self.PERIOD_MONTH_BY_DAY:
-            return prev_due_date + datetime.timedelta(months=1)
-        elif self.period == self.PERIOD_YEAR_BY_DAY:
-            return prev_due_date + datetime.timedelta(years=1)
-
+# @receiver(post_save, sender=Task)
+# def post_save_task(instance, **kwargs):
+#     # TODO перенести в ассинхронное выполнение через celery
+#     task = instance
+#     created = kwargs.get('created')
+#     # TODO сделать проверку изменились ли параметры повторения или нет
+#     if hasattr(task.template, 'repeat_params') and not task.is_repeating_clone:
+#         task.template.create_repeating_tasks()
 
 @receiver(post_save, sender=Task)
-def post_save_task(**kwargs):
-    # TODO перенести в ассинхронное выполнение через celery
-    task = kwargs['instance']
-    if hasattr(task.template, 'repeat_params') and task.status in (task.STATUS_READY, task.STATUS_DECLINE):
-        RepeatParams.objects.create_next_task(task)
+def post_save_task(instance, **kwargs):
+    task = instance
+    template = task.template
+    if template.period and not task.is_repeating_clone:
+        template.create_repeating_tasks()
+
+@receiver(post_save, sender=TaskTemplate)
+def post_save_task_template(instance, created, **kwargs):
+    if created:
+        instance.add_task()

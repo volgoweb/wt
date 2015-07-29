@@ -10,8 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS, FieldError
 from django.core.urlresolvers import reverse_lazy
 
-from .models import Task, TaskFile, TaskTemplate, RepeatParams
-from .forms import TasksListFilters, TaskFileForm, RepeatParamsForm
+from .models import Task, TaskFile, TaskTemplate
+from .forms import TasksListFilters, TaskFileForm
 from app.task import forms as task_forms
 from app.core.models import FileItem
 from app.core.forms import FileItemForm
@@ -27,20 +27,7 @@ FilesFormset = generic_inlineformset_factory(
 )
 
 
-class RepeatParamsMixin(object):
-    def get_repeat_params_form(self, repeat_params_obj=None):
-        form = RepeatParamsForm(data=self.request.POST or None, instance=repeat_params_obj, prefix='repeat')
-        return form
-
-    def save_repeat_params_and_tpl(self, task_tpl):
-        repeat_params_form = self.get_repeat_params_form(getattr(task_tpl, 'repeat_params', None))
-        if repeat_params_form.is_valid() and self.request.POST['repeat-period']:
-            repeat_params = repeat_params_form.save()
-            task_tpl.repeat_params = repeat_params
-            task_tpl.save()
-
-
-class TasksList(RepeatParamsMixin, AjaxListView):
+class TasksList(AjaxListView):
     model = Task
     template_name = 'task/all_tasks_list_page.html'
     context_object_name = 'tasks'
@@ -120,10 +107,8 @@ class TasksList(RepeatParamsMixin, AjaxListView):
         # self.define_filters()
 
         context['Task'] = Task
-        context['form'] = task_forms.AddTaskForm(request=self.request, is_shortform=True)
-        context['template_form'] = task_forms.TaskTemplateForm(request=self.request, is_shortform=True)
+        context['form'] = task_forms.TaskTemplateForm(request=self.request, is_shortform=True)
         context['files_formset'] = FilesFormset()
-        context['repeat_params_form'] = self.get_repeat_params_form()
 
         # фильтры списка
         # context['filters_form'] = self.filters_form
@@ -210,7 +195,7 @@ class OutboundTasksPage(TasksList):
         return context
 
 
-class TaskDetail(RepeatParamsMixin, UpdateView):
+class TaskDetail(UpdateView):
     model = Task
     # form_class = TaskForm
     template_name = 'task/task_detail.html'
@@ -246,7 +231,7 @@ class TaskDetail(RepeatParamsMixin, UpdateView):
     def get_form_kwargs(self):
         kwargs = super(TaskDetail, self).get_form_kwargs()
         obj = self.get_object()
-        if obj.status  == Task.STATUS_IN_WORK and obj.template.performer == self.request.user:
+        if obj.status  in (Task.STATUS_IN_WORK, Task.STATUS_AWATING_EXECUTION) and obj.template.performer == self.request.user:
             self.can_edit = True
         else:
             self.can_edit = False
@@ -258,7 +243,13 @@ class TaskDetail(RepeatParamsMixin, UpdateView):
 
     def get_template_form(self):
         obj = self.get_object()
-        form = task_forms.TaskTemplateForm(data=self.request.POST or None, instance=obj.template, prefix='tpl', request=self.request)
+        form = task_forms.TaskTemplateForm(
+            data=self.request.POST or None,
+            instance=obj.template,
+            prefix='tpl',
+            request=self.request,
+            task=obj,
+        )
         return form
 
     def get_context_data(self, **kwargs):
@@ -276,22 +267,26 @@ class TaskDetail(RepeatParamsMixin, UpdateView):
             'task_results': obj.get_results(),
             'template_form': self.get_template_form(),
             'files_formset': self.get_files_formset(),
-            'repeat_params_form': self.get_repeat_params_form(obj.template.repeat_params),
         })
         return context
 
     def form_valid(self, form):
         is_invalid_formset = True
-        if form.is_valid():
-            obj = form.save(commit=False)
+        if self.request.POST.get('repeat-period') and not self.request.POST.get('due_date'):
+            due_date_errors = form.errors.get('due_date', '')
+            form.errors['due_date'] = due_date_errors + u' При выборе периода повторения обязательно укажите срок исполнения.'
+            return self.form_invalid(form)
+        template_form = self.get_template_form()
+        if form.is_valid() and template_form.is_valid():
+            task = form.save(commit=False)
+            task_tpl = template_form.save(commit=False)
             files_formset = self.get_files_formset()
             if files_formset.is_valid():
-                obj = form.save(commit=True)
+                task = form.save(commit=True)
+                task_tpl = template_form.save(commit=True)
                 files_formset.save()
             else:
                 is_invalid_formset = False
-
-        self.save_repeat_params_and_tpl(obj)
 
         if is_invalid_formset:
             return super(TaskDetail, self).form_valid(form)
@@ -303,14 +298,15 @@ class TaskDetail(RepeatParamsMixin, UpdateView):
         return '/tasks/task/{0}'.format(obj.pk)
 
 
-class AddTask(RepeatParamsMixin, CreateView):
-    model = Task
-    template_name = 'task/add_task.html'
-    form_class = task_forms.AddTaskForm
-    success_url = '/tasks/today/'
+class TemplateFormMixin(object):
+    model = TaskTemplate
+    # template_name = 'task/add_task.html'
+    template_name = 'task/template_form.html'
+    form_class = task_forms.TaskTemplateForm
+    # success_url = '/tasks/today/'
 
     def get_form_kwargs(self):
-        kwargs = super(AddTask, self).get_form_kwargs()
+        kwargs = super(TemplateFormMixin, self).get_form_kwargs()
         kwargs.update({
             'request': self.request,
         })
@@ -320,43 +316,34 @@ class AddTask(RepeatParamsMixin, CreateView):
         formset = FilesFormset(data=self.request.POST or None, files=self.request.FILES or None, instance=kwargs.get('instance', None))
         return formset
 
-    def get_template_form(self):
-        form = task_forms.TaskTemplateForm(data=self.request.POST or None, prefix='tpl', request=self.request)
-        return form
-
     def get_context_data(self, *args, **kwargs):
-        context = super(AddTask, self).get_context_data(*args, **kwargs)
+        context = super(TemplateFormMixin, self).get_context_data(*args, **kwargs)
         context['files_formset'] = self.get_files_formset()
-        context['repeat_params_form'] = self.get_repeat_params_form()
-        context['template_form'] = self.get_template_form()
         return context
 
     def form_valid(self, form):
         is_valid_formset = True
-        template_form = self.get_template_form()
-        if form.is_valid() and template_form.is_valid():
-            task = form.save(commit=False)
-            task_tpl = template_form.save(commit=False)
-            files_formset = self.get_files_formset(instance=task_tpl)
-            if files_formset.is_valid():
-                task = form.save(commit=True)
-                task_tpl = template_form.save(commit=True)
-                task.template = task_tpl
-                task.save()
-                files_formset.save()
-                self.save_repeat_params_and_tpl(task_tpl)
-            else:
-                is_valid_formset = False
-        # else:
-        #     form_er = form.errors
-        #     tpl_form_er = template_form.errors
-        #     assert False
+        task_tpl = form.save(commit=False)
+        files_formset = self.get_files_formset(instance=task_tpl)
+        if files_formset.is_valid():
+            task_tpl = form.save(commit=True)
+            files_formset.save()
+        else:
+            is_valid_formset = False
+            print '------------------ files_formset.is_INvalid'
 
         if is_valid_formset:
-            return super(AddTask, self).form_valid(form)
+            return super(TemplateFormMixin, self).form_valid(form)
         else:
             return self.form_invalid(form)
 
+    def form_invalid(self, form):
+        err = form.errors
+        assert False
+
+
+class TaskAddForm(TemplateFormMixin, CreateView):
+    template_name = 'task/add_task.html'
+
     def get_success_url(self, *args, **kwargs):
         return self.request.GET.get('next', '/tasks/today/')
-

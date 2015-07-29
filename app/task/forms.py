@@ -65,6 +65,7 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
                 },
             ),
             'status': forms.widgets.RadioSelect(),
+            'is_repeating_clone': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -142,23 +143,25 @@ class TasksListFilters(BootstrapFormMixin, forms.Form):
     )
 
 
-class RepeatParamsForm(BootstrapFormMixin, forms.ModelForm):
-    class Meta:
-        model = RepeatParams
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super(RepeatParamsForm, self).__init__(*args, **kwargs)
-        self.fields['period'].required = False
-
-
 class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = TaskTemplate
-        exclude = ['step_id', 'step_type', 'files', 'task_steps', 'repeat_params']
+        exclude = ['step_id', 'step_type', 'files', 'task_steps']
+        widgets = {
+            'due_date': DateTimeWidget(
+                usel10n=True,
+                bootstrap_version=3,
+                options={
+                    'format': 'dd.mm.yyyy hh:ii',
+                    'autoclose': True,
+                    'showMeridian' : True
+                },
+            ),
+        }
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
+        self.task = kwargs.pop('task', None)
         self.can_edit = kwargs.pop('can_edit', None)
         self.is_shortform = kwargs.pop('is_shortform', None)
 
@@ -168,12 +171,18 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
         self.instance.request = self.request
         tpl_pk = getattr(self.instance, 'pk', None)
         if tpl_pk:
-            task = self.instance.task.get()
             performer = getattr(self.instance, 'performer', None)
-            if performer and self.request.user != task.author:
+            if performer and self.request.user != self.task.author:
                 self.fields = {}
         else:
             self.fields['performer'].initial = self.request.user
+
+        if self.task:
+            self.fields['due_date'].widget = self.fields['due_date'].hidden_widget()
+
+        if 'author' in self.fields:
+            self.fields['author'].initial = self.request.user
+            self.fields['author'].widget = self.fields['author'].hidden_widget()
 
         if 'title' in self.fields:
             self.fields['title'].widget.attrs.update({

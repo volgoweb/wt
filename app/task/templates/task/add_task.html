@@ -1,45 +1,19 @@
-{% extends "task/page.html" %}
 
-{% block page_title %}Новая задача{% endblock %}
-
-{% block scripts %}
-    {{ block.super }}
+<form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data" class="task-form">
+    {% csrf_token %}
     {{ form.media }}
-{% endblock %}
 
-{% block content %}
-<div class="col-lg-6 col-md-9 col-sm-12">
-    <form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data" class="task-form">
-        {% csrf_token %}
-        <div class="form__errors bg-danger">
-            {{ form.non_field_errors }}
-            {{ template.form.non_field_errors }}
-        </div>
+    <div class="form__errors bg-danger">
+        {{ form.non_field_errors }}
+    </div>
 
-        {% for field in form.hidden_fields %}
-            {{ field }}
-        {% endfor %}
-        {% for field in template_form.hidden_fields %}
-            {{ field }}
-        {% endfor %}
+    <table>
+        {{ template_form.as_table }}
+        {{ form.as_table }}
+    </table>
 
-        {% include "core/form_field.html" with field=template_form.title %}
-        {% include "core/form_field.html" with field=template_form.desc %}
-        {% include "core/form_field.html" with field=template_form.performer %}
-        {% include "core/form_field.html" with field=form.due_date %}
+    {# {% include "core/form_field.html" with field=form.files_formset %} #}
+    {% include "task/task_detail/files_formset.html" %}
 
-        <div class="task-form__repeat-params">
-            {% include "core/form_field.html" with field=repeat_params_form.period %}
-        </div>
-
-        {# {% include "core/form_field.html" with field=form.files_formset %} #}
-        {% include "task/task_detail/files_formset.html" %}
-
-        {# {% for field in form.visible_fields %} #}
-        {#     {% include "core/form_field.html" with field=field %} #}
-        {# {% endfor %} #}
-        
-        <input type="submit" class="btn btn-primary" value="Сохранить"/>
-    </form>
-</div>
-{% endblock %}
+    <input type="submit" class="btn btn-primary" value="Сохранить"/>
+</form>

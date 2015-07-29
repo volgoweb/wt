@@ -55,11 +55,10 @@
                         {{ field }}
                     {% endfor %}
 
-                    {% include "core/form_field.html" with field=form.is_favorite inline=True %}
                     {% include "core/form_field.html" with field=form.desc %}
                     {% include "core/form_field.html" with field=form.performer %}
                     {% include "core/form_field.html" with field=form.due_date %}
-                    {{ repeat_params_form.as_p }}
+                    {% include "core/form_field.html" with field=form.period %}
                     {% include "task/task_detail/files_formset.html" %}
                     <input type="submit" class="btn btn-primary" value="Добавить"/>
                     <button type="button" class="add-task__btn-cancel btn btn-defautl">Отменить</button>

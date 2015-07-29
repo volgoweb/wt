@@ -3,22 +3,24 @@
 {% block task_form_fields %}
     {{ block.super }}
 
-    {% for f in form.hidden_fields %}
-        {{ f }}
-    {% endfor %}
+    {# {% for f in form.hidden_fields %} #}
+    {#     {{ f }} #}
+    {# {% endfor %} #}
 
-    {% for f in template_form.hidden_fields %}
-        {{ f }}
-    {% endfor %}
+    {# {% for f in template_form.hidden_fields %} #}
+    {#     {{ f }} #}
+    {# {% endfor %} #}
 
-    {% for f in template_form.visible_fields %}
-        {% include "core/form_field.html" with field=f inline=True %}
-    {% endfor %}
-    {% for f in form.visible_fields %}
-        {% include "core/form_field.html" with field=f inline=True %}
-    {% endfor %}
-
-    {{ repeat_params_form.as_p }}
+    <table>
+        {{ template_form.as_table }}
+        {{ form.as_table }}
+    </table>
+    {# {% for f in template_form.visible_fields %} #}
+    {#     {% include "core/form_field.html" with field=f inline=True %} #}
+    {# {% endfor %} #}
+    {# {% for f in form.visible_fields %} #}
+    {#     {% include "core/form_field.html" with field=f inline=True %} #}
+    {# {% endfor %} #}
 
     {% include "task/task_detail/files_formset.html" %}
 {% endblock %}

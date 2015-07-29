@@ -15,5 +15,5 @@ urlpatterns = patterns('',
     url(r'^outbound/$', login_required(OutboundTasksPage.as_view()), name='outbound_tasks_page'),
 
     url(r'^task/(?P<pk>\d+)/$', login_required(TaskDetail.as_view()), name='task_detail'),
-    url(r'^task/add/$', login_required(AddTask.as_view()), name='add_task'),
+    url(r'^task/add/$', login_required(TaskAddForm.as_view()), name='add_task'),
 )
