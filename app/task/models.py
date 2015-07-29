@@ -163,7 +163,7 @@ class Task(models.Model):
 
     template = models.ForeignKey(
         'task.TaskTemplate',
-        related_name='template',
+        related_name='task',
         blank=True,
         null=True,
         verbose_name=u'Шаблон',
@@ -182,7 +182,7 @@ class Task(models.Model):
         ordering = ['-created']
 
     def __unicode__(self):
-        return u'#{0} {1}'.format(self.pk, self.title)
+        return u'#{0}'.format(self.pk)
 
     def get_absolute_url(self):
         return reverse('task:task_detail', kwargs={'pk':self.pk})

@@ -110,6 +110,14 @@ class TaskForm(AddTaskForm):
         self.filter_fields(can_edit=self.can_edit)
         self.fields['status'].widget = forms.widgets.RadioSelect(choices=self.fields['status'].choices)
 
+        task_pk = getattr(self.instance, 'pk', None)
+        if task_pk:
+            performer = self.instance.template.performer
+            if performer and self.request.user != self.instance.author:
+                for fname in self.fields:
+                    if fname not in ('status',):
+                        del(self.fields[fname])
+
     def filter_fields(self, can_edit=False):
         if not can_edit:
             for f in self.fields.values():
@@ -158,8 +166,15 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
 
         super(TaskTemplateForm, self).__init__(*args, **kwargs)
         self.instance.request = self.request
-        if not getattr(self.instance, 'pk', None):
+        tpl_pk = getattr(self.instance, 'pk', None)
+        if tpl_pk:
+            task = self.instance.task.get()
+            performer = getattr(self.instance, 'performer', None)
+            if performer and self.request.user != task.author:
+                self.fields = {}
+        else:
             self.fields['performer'].initial = self.request.user
+
         if 'title' in self.fields:
             self.fields['title'].widget.attrs.update({
                 'autofocus': '',
@@ -220,4 +235,3 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
             formset=render_to_string('task/task_detail/task_steps_formset.html', {'task_steps_formset': formset}),
             label=u'Шаги',
         )
-

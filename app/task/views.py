@@ -264,8 +264,14 @@ class TaskDetail(RepeatParamsMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(TaskDetail, self).get_context_data(**kwargs)
         obj = self.get_object()
+        performer = obj.template.performer
+        if performer and self.request.user != obj.author:
+            performer_view = True
+        else:
+            performer_view = False
         context.update({
             'task': self.get_object(),
+            'performer_view': performer_view,
             'can_edit': self.can_edit,
             'task_results': obj.get_results(),
             'template_form': self.get_template_form(),
