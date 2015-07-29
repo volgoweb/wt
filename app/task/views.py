@@ -330,20 +330,16 @@ class TemplateFormMixin(object):
             files_formset.save()
         else:
             is_valid_formset = False
-            print '------------------ files_formset.is_INvalid'
+            # print '------------------ files_formset.is_INvalid'
 
         if is_valid_formset:
             return super(TemplateFormMixin, self).form_valid(form)
         else:
             return self.form_invalid(form)
 
-    def form_invalid(self, form):
-        err = form.errors
-        assert False
-
 
 class TaskAddForm(TemplateFormMixin, CreateView):
-    template_name = 'task/add_task.html'
+    template_name = 'task/add_task_page.html'
 
     def get_success_url(self, *args, **kwargs):
         return self.request.GET.get('next', '/tasks/today/')

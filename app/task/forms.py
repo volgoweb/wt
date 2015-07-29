@@ -244,3 +244,10 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
             formset=render_to_string('task/task_detail/task_steps_formset.html', {'task_steps_formset': formset}),
             label=u'Шаги',
         )
+
+    def clean(self):
+        self.cleaned_data = super(TaskTemplateForm, self).clean()
+        due_date = self.cleaned_data.get('due_date')
+        if self.cleaned_data.get('period') and not due_date:
+            raise forms.ValidationError({'due_date': u'Крайний срок обязателен при выбранном периоде повторения.'})
+        return self.cleaned_data

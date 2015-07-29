@@ -105,15 +105,6 @@ class TaskTemplate(helper_models.FieldsLabelsMixin, PolymorphicModel):
     def __unicode__(self):
         return u'#{0} {1}'.format(self.pk, self.title)
 
-    def add_task(self):
-        task = Task(
-            template=self,
-            due_date=self.due_date,
-            author=self.author,
-        )
-        task.save()
-        return task
-
     def create_repeating_tasks(self, author=None):
         # удаляем все экземпляры повторяющихся задач, если они есть
         Task.objects.filter(template=self, is_repeating_clone=True).delete()
@@ -340,4 +331,9 @@ def post_save_task(instance, **kwargs):
 @receiver(post_save, sender=TaskTemplate)
 def post_save_task_template(instance, created, **kwargs):
     if created:
-        instance.add_task()
+        task = Task(
+            template=instance,
+            due_date=instance.due_date,
+            author=instance.author,
+        )
+        task.save()
