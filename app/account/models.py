@@ -87,6 +87,18 @@ class CompanyUnit(MPTTModel):
     def get_absolute_url(self, *args, **kwargs):
         return reverse_lazy('account:company_unit_detail_page', kwargs={'pk': self.pk})
 
+    def get_user(self):
+        users = Account.objects.filter(
+            is_active=True,
+            job=self,
+        )
+        if users.count() > 1:
+            # TODO обработать этот момент 
+            assert False
+        elif users.count() == 1:
+            return users[0]
+        return None
+
 
 class AccountManager(BaseUserManager):
     def create_user(self, email, password):
@@ -128,7 +140,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, verbose_name=u'Активен')
     # должность
     # job = models.CharField(_('job'), max_length = 50, null=True, blank=True)
-    job = models.ForeignKey('account.CompanyUnit', related_name='user_job', verbose_name=u'Должность', null=True, blank=True)
+    job = models.ForeignKey('account.CompanyUnit', related_name='account', verbose_name=u'Должность', null=True, blank=True)
     # дата создания учетки
     created = models.DateTimeField(_('created'), default=timezone.now)
 

@@ -14,7 +14,7 @@ from ajax_upload.widgets import AjaxClearableFileInput
 from .models import *
 from helper.forms import BootstrapFormMixin
 from helper.fields import FormsetField
-from app.account.models import Account
+from app.account.models import Account, CompanyUnit
 from app.core.models import FileItem
 from app.core.forms import FileItemForm
 
@@ -157,6 +157,7 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
                     'showMeridian' : True
                 },
             ),
+            'performer': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -176,6 +177,11 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
                 self.fields = {}
         else:
             self.fields['performer'].initial = self.request.user
+            self.fields['performer_unit'].initial = self.request.user.job
+        self.fields['performer_unit'].queryset = CompanyUnit.objects.all().employee()
+        choices = [(o.pk, u'{0} ({1})'.format(o.get_user() or '', o.name)) for o in self.fields['performer_unit'].queryset]
+        choices.sort(key=lambda x: x[1])
+        self.fields['performer_unit'].widget.choices = choices
 
         if self.task:
             self.fields['due_date'].widget = self.fields['due_date'].hidden_widget()
@@ -250,4 +256,10 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
         due_date = self.cleaned_data.get('due_date')
         if self.cleaned_data.get('period') and not due_date:
             raise forms.ValidationError({'due_date': u'Крайний срок обязателен при выбранном периоде повторения.'})
+
+        performer_unit = self.cleaned_data['performer_unit']
+        if performer_unit:
+            performer_user = performer_unit.get_user()
+            if performer_user:
+                self.cleaned_data['performer'] = performer_user
         return self.cleaned_data

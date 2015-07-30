@@ -85,6 +85,8 @@ class TaskTemplate(helper_models.FieldsLabelsMixin, PolymorphicModel):
     title = models.CharField(max_length=255, verbose_name=u'Название задачи')
     desc = models.TextField(verbose_name=u'Описание задачи', blank=True, null=True)
     performer = models.ForeignKey('account.Account', verbose_name=u'Исполнитель', related_name='%(class)s_performer')
+    # должностная единица
+    performer_unit = models.ForeignKey('account.CompanyUnit', verbose_name=u'Исполнитель', related_name='%(class)s_performer_unit')
     author = models.ForeignKey('account.Account', verbose_name=u'Автор', related_name='%(class)s_author')
     due_date = models.DateTimeField(null=True, blank=True, verbose_name=u'Крайний срок')
     # TODO добавить поля для клиента и партнера
