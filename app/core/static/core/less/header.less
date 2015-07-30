@@ -1,6 +1,6 @@
 #main-navbar {
     margin-bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.8);
     border: none;
 }
 
@@ -20,7 +20,7 @@
 
 .sec-menu {
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.8);
     padding-top: 15px;
 }
 
@@ -41,18 +41,20 @@
 .sec-menu__link_today-tasks .badge {
     background-color: @brand-success;
 }
+*/
 
-.active .sec-menu__link_overdue-tasks,
-.sec-menu__link_overdue-tasks:hover,
-.sec-menu__link_overdue-tasks:focus,
-.sec-menu__link_overdue-tasks {
-   color: @brand-danger; 
-   background-color: transparent !important;
-}
-.sec-menu__link_overdue-tasks .badge {
-    background-color: @brand-danger;
+// .active .sec-menu__link_overdue-tasks,
+// .sec-menu__link_overdue-tasks:hover,
+// .sec-menu__link_overdue-tasks:focus,
+// .sec-menu__link_overdue-tasks {
+//    color: @brand-danger; 
+//    background-color: transparent !important;
+// }
+.sec-menu__link_overdue-tasks .sec-menu__count {
+    color: @brand-danger;
 }
 
+/*
 .active .sec-menu__link_favorite-tasks,
 .sec-menu__link_favorite-tasks:hover,
 .sec-menu__link_favorite-tasks:focus,
