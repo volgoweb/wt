@@ -8,12 +8,12 @@
         <title>{% block head_title %}{% endblock %}</title>
 
         {% block scripts %}
-            {# {% compress css %} #}
+            {% compress css %}
                 {% block less %}
-                    {# <link rel="stylesheet" type="text/less" media="all" href="{% static "core/less/style.less" %}" /> #}
-                    <link rel="stylesheet" type="text/css" media="all" href="{% static "core/less/CACHE/css/style.19079d6e972b.css" %}" />
+                    <link rel="stylesheet" type="text/less" media="all" href="{% static "core/less/style.less" %}" />
+                    {# <link rel="stylesheet" type="text/css" media="all" href="{% static "core/less/CACHE/css/style.19079d6e972b.css" %}" /> #}
                 {% endblock %}
-            {# {% endcompress %} #}
+            {% endcompress %}
 
             {% block css %}
                 <link rel="stylesheet" type="text/css" media="all" href="{% static "helper/jquery-ui/jquery-ui.min.css" %}" />
@@ -37,7 +37,7 @@
                 <script src="{% static "ajax_upload/js/jquery.iframe-transport.js" %}"></script>
 
                 <script type="text/javascript" src="{% static 'endless_pagination/js/endless-pagination.js' %}"></script>
-                <script type="text/javascript" src="{% static 'core/js/endless_custom.js' %}"></script>
+                {# <script type="text/javascript" src="{% static 'core/js/endless_custom.js' %}"></script> #}
             {% endblock %}
         {% endblock %}
     </head>

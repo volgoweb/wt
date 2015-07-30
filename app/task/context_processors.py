@@ -6,6 +6,7 @@ from .views import (
     LaterTasksPage,
     CompletedTasksPage,
     OutboundTasksPage,
+    RepeatingTasksPage,
 )
 
 
@@ -20,6 +21,7 @@ def task_counts(request):
                 'later': LaterTasksPage.get_base_count_from_class(request),
                 'completed': CompletedTasksPage.get_base_count_from_class(request),
                 'outbound': OutboundTasksPage.get_base_count_from_class(request),
+                'repeating': RepeatingTasksPage.get_base_count_from_class(request),
             }
         }
     return context

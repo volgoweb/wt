@@ -132,7 +132,7 @@ class TaskTemplate(helper_models.FieldsLabelsMixin, PolymorphicModel):
         if not start_date:
             start_date = self.due_date.date()
         delta = self.get_timedelta_period()
-        end_date = now + relativedelta.relativedelta(years=2)
+        end_date = now + relativedelta.relativedelta(years=10)
         dates = []
         def add_next_date(d):
             d += delta
@@ -198,6 +198,9 @@ class TaskQueryset(models.query.QuerySet):
 
     # def favorite(self, *args, **kwargs):
     #     return self.filter(is_favorite=True)
+
+    def repeating(self, *args, **kwargs):
+        return self.filter(is_repeating_clone=False)
 
 
 class TaskManager(models.Manager):

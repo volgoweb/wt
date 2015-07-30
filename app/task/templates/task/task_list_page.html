@@ -1,0 +1,48 @@
+{% load static %}
+{% load endless %}
+
+{% paginate tasks %}
+{% get_pages %}
+
+<div class="endless_page_template">
+    <div>
+    {% for t in tasks %}
+        <div class="task-item row-fluid">
+            <div class="task-item__row1">
+                <span class="task-item__status">
+                    {% if t.status == Task.STATUS_DECLINE %}
+                        <span class="task-icon_decline glyphicon glyphicon-ban-circle"></span>
+                    {% else %}
+                        <input
+                            type="checkbox"
+                            name="task-complete"
+                            value=""
+                            data-task-pk="{{ task.pk }}"
+                            class="task-item__complete form-control pull-left"
+                            {% if t.status == Task.STATUS_READY %}
+                                checked="checked"
+                            {% endif %}
+                        />
+                    {% endif %}
+                </span>
+
+                <a href="{% url "task:task_detail" t.pk %}">{{ t.template.title }}</a>
+            </div>
+
+            <div class="task-item__row2">
+                {% if show_due_date %}
+                    <span class="badge">{{ t.due_date|date:"FULL_DATETIME_FORMAT" }}</span>
+                {% endif %}
+
+                {% if show_performer %}
+                    <span class="badge">{{ t.template.performer }}</span>
+                {% endif %}
+                {# <span class="task-item__comments badge">2 комментария</span> #}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    {% include "helper/endless_pagination/pages.html" %}
+
+    <script type="text/javascript" src="{% static 'core/js/endless_custom.js' %}"></script>
+</div>

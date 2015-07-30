@@ -195,6 +195,21 @@ class OutboundTasksPage(TasksList):
         return context
 
 
+class RepeatingTasksPage(TasksList):
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
+        return Task.objects.all().consigned(request.user).repeating()
+
+    def get_context_data(self, **kwargs):
+        context = super(RepeatingTasksPage, self).get_context_data(**kwargs)
+        context.update({
+            'page_title': u'Задачи повторяющиеся',
+            'show_performer': False,
+            'show_due_date': False,
+        })
+        return context
+
+
 class TaskDetail(UpdateView):
     model = Task
     # form_class = TaskForm

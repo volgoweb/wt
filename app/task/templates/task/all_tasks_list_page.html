@@ -84,13 +84,10 @@
         {#     </form> #}
         {# </div> #}
 
-        {% paginate tasks %}
-        {% get_pages %}
         <div class="row-fluid">
             {# <p class="lead">Найдено: <strong>{{ count_objects }}</strong></p> #}
             {% if tasks %}
-                {% include "task/tasks_list.html" with tasks=tasks %}
-                {% include "helper/endless_pagination/pages.html" %}
+                {% include "task/task_list_page.html" with tasks=tasks %}
             {% else %}
                 <div class="tasks-list__empty bg-warning">
                     Нет задач

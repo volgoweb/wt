@@ -58,6 +58,12 @@
                 <span class=" pull-right">{{ task_counts.outbound }}</span>
             {% endif %}
         </a></li>
+        <li><a href="{% url "task:repeating_tasks_page" %}" class="sec-menu__link_repeating-tasks">
+            <span class="glyphicon glyphicon-repeat"></span> Повторяющиеся
+            {% if task_counts.repeating %}
+                <span class=" pull-right">{{ task_counts.repeating }}</span>
+            {% endif %}
+        </a></li>
     </ul>
 {% endblock %}
 
