@@ -232,7 +232,7 @@ class Task(models.Model):
     STATUS_AWATING_EXECUTION = 'awaiting'
     STATUS_READY = 'ready'
     STATUSES = OrderedDict([
-        (STATUS_DECLINE, u'Отклонена'),
+        (STATUS_DECLINE, u'Отклонена исполнителем'),
         (STATUS_AWATING_EXECUTION, u'Ожидает выполнения'),
         (STATUS_IN_WORK, u'Выполняется'),
         (STATUS_READY, u'Готова'),
@@ -270,19 +270,23 @@ class Task(models.Model):
         # Возвращает список заголовков и значений полей, отвечающих за результат выполнения.
         # Такие поля как 'комментарий', 'статус' и поля из дочерних классов.
         # """
-        fields = self._meta.fields
         values = []
-        for f in fields:
-            if f.name not in ('id', 'polymorphic_ctype', 'title', 'desc', 'step_id', 'step_type', 'task_ptr', 'template'):
-                getting_human_value_method = getattr(self, 'get_{0}_display'.format(f.name), None)
-                if callable(getting_human_value_method):
-                    val = getting_human_value_method()
-                else:
-                    val = getattr(self, f.name)
-                values.append({
-                    'label': f.verbose_name,
-                    'value': val,
-                })
+        for obj in (self, self.template):
+            fields = obj._meta.fields
+            for f in fields:
+                if f.name not in ('id', 'polymorphic_ctype', 'step_id', 'step_type', 'template', 'performer', 'is_repeating_clone', 'deleted'):
+                    getting_human_value_method = getattr(obj, 'get_{0}_display'.format(f.name), None)
+                    if callable(getting_human_value_method):
+                        val = getting_human_value_method()
+                    else:
+                        val = getattr(obj, f.name)
+                    if f.name == 'performer_unit':
+                        # TODO вынести в какой-то общий метод или helper функцию
+                        val = u'{0} ({1})'.format(val.get_user(), val.name)
+                    values.append({
+                        'label': f.verbose_name,
+                        'value': val or '',
+                    })
         return values
 
     def is_new(self):

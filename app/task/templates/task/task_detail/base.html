@@ -36,10 +36,6 @@
         {# </div> #}
     </div>
 
-    {% if not can_edit %}
-        {% include "core/field_view.html" with value=task.get_status_display label=task.get_field_labels.status inline=True %}
-    {% endif %}
-    
     {# <div class="task__desc"> #}
     {#     <label>Описание:</label>  #}
     {#     {{ task.template.desc }} #}

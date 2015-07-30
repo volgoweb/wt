@@ -246,7 +246,8 @@ class TaskDetail(UpdateView):
     def get_form_kwargs(self):
         kwargs = super(TaskDetail, self).get_form_kwargs()
         obj = self.get_object()
-        if obj.status  in (Task.STATUS_IN_WORK, Task.STATUS_AWATING_EXECUTION) and obj.template.performer == self.request.user:
+        if obj.template.performer == self.request.user or \
+           obj.template.author == self.request.user:
             self.can_edit = True
         else:
             self.can_edit = False

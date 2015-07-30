@@ -24,3 +24,13 @@
 
     {% include "task/task_detail/files_formset.html" %}
 {% endblock %}
+
+{% block task_results_view %}
+    {% for row in task_results %}
+        {% include "core/field_view.html" with value=row.value label=row.label inline=True %}
+    {# <div class="task-field-view"> #}
+    {#     <label>{{ row.label }}</label> #}
+    {#     <span>{{ row.value }}</span> #}
+    {# </div> #}
+    {% endfor %}
+{% endblock %}
