@@ -1,0 +1,50 @@
+{% extends "task/page.html" %}
+{% load static %}
+{% load endless %}
+
+{% block js %}
+    {{ block.super }}
+
+    {{ form.media }}
+{% endblock %}
+
+{% block page_title %}
+       {{ page_title}}
+{% endblock %}
+
+{% block sec_menu %}
+    {{ block.super }}
+
+    {% if list_name == view.LIST_ALL %}
+        <div class="tasks-list__filters row-fluid">
+            <form action="" method="GET" accept-charset="utf-8" class="filters-form">
+                {% for f in filters_form.visible_fields %}
+                    {% include "core/form_field.html" with field=f %}
+                {% endfor %}
+
+                {% for f in filters_form.hidden_fields %}
+                    {{ f }}
+                {% endfor %}
+
+                {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %}
+                {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="this.form.reset(); $('select').val(''); this.form.submit();" %}
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="tasks-list">
+        <div class="row-fluid">
+            {# <p class="lead">Найдено: <strong>{{ count_objects }}</strong></p> #}
+            {% if tasks %}
+                {% include "task/tasks_list_all_block.html" %}
+            {% else %}
+                <div class="tasks-list__empty bg-warning">
+                    Нет задач
+                </div>
+            {% endif %}
+        </div>
+
+    </div> {# .tasks-list #}
+{% endblock %}

@@ -68,26 +68,10 @@
     </div>
 
     <div class="tasks-list">
-
-        {# <div class="tasks-list__filters row-fluid"> #}
-        {#     <form action="" method="GET" accept-charset="utf-8" class="form-inline"> #}
-        {#         {% for f in filters_form.visible_fields %} #}
-        {#             {% include "core/form_field.html" with field=f %} #}
-        {#         {% endfor %} #}
-
-        {#         {% for f in filters_form.hidden_fields %} #}
-        {#             {{ f }} #}
-        {#         {% endfor %} #}
-
-        {#         {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %} #}
-        {#         {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="this.form.reset();" %} #}
-        {#     </form> #}
-        {# </div> #}
-
         <div class="row-fluid">
             {# <p class="lead">Найдено: <strong>{{ count_objects }}</strong></p> #}
             {% if tasks %}
-                {% include "task/task_list_page.html" %}
+                {% include "task/tasks_list_block.html" %}
             {% else %}
                 <div class="tasks-list__empty bg-warning">
                     Нет задач

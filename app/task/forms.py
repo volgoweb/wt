@@ -136,6 +136,11 @@ class TasksListFilters(BootstrapFormMixin, forms.Form):
         required=False,
         label=TaskTemplate.performer.field.verbose_name,
     )
+    author = forms.ModelChoiceField(
+        queryset=Account.objects.all(),
+        required=False,
+        label=TaskTemplate.author.field.verbose_name,
+    )
     status = forms.ChoiceField(
         choices=[('', '---------')]+Task.STATUSES.items(),
         required=False,

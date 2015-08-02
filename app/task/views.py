@@ -29,7 +29,7 @@ FilesFormset = generic_inlineformset_factory(
 
 class TasksList(AjaxListView):
     model = Task
-    template_name = 'task/all_tasks_list_page.html'
+    template_name = 'task/tasks_list_page.html'
     context_object_name = 'tasks'
     # TODO создать кастомый queryset
     # queryset = Task.objects.filter(deleted=False)
@@ -38,11 +38,19 @@ class TasksList(AjaxListView):
     LIST_MY_OVERDUE = 'my-overdue'
     LIST_MY_NO_DATE = 'my-no-date'
     LIST_MY_FUTURE = 'my-future'
+    LIST_MY_COMPLETED = 'my-completed'
+    LIST_MY_OUTBOUND = 'my-outbound'
+    LIST_MY_REPEATING = 'my-repeating'
+    LIST_ALL = 'all'
     LIST_NAMES = [
         LIST_MY_TODAY,
         LIST_MY_OVERDUE,
         LIST_MY_NO_DATE,
         LIST_MY_FUTURE,
+        LIST_MY_COMPLETED,
+        LIST_MY_OUTBOUND,
+        LIST_MY_REPEATING,
+        LIST_ALL,
     ]
 
     # @csrf_exempt
@@ -81,23 +89,25 @@ class TasksList(AjaxListView):
 
     def get_queryset(self):
         qs = self.get_base_queryset()
-        # if len(self.request.GET) > 0:
-        # self.define_filters()
+        if len(self.request.GET) > 0:
+            self.define_filters()
 
-        # filter_performer = self.filters_values.get('performer')
-        # if filter_performer:
-        #     qs = qs.filter(performer=filter_performer)
+            filter_performer = self.filters_values.get('performer')
+            if filter_performer:
+                qs = qs.filter(template__performer=filter_performer)
 
-        # filter_project = self.filters_values.get('project')
-        # if filter_project:
-        #     # TODO заменить методами кастомного queryset
-        #     qs = qs.filter(inforeason__project=filter_project)
+            filter_author = self.filters_values.get('author')
+            if filter_author:
+                qs = qs.filter(template__author=filter_author)
 
-        # filter_status = self.filters_values.get('status')
-        # if filter_status:
-        #     qs = qs.filter(status=filter_status)
-        # self.queryset = qs
+            filter_status = self.filters_values.get('status')
+            if filter_status:
+                qs = qs.filter(status=filter_status)
+        self.queryset = qs
         return qs
+
+    def get_page_template(self, *args, **kwargs):
+        return 'task/tasks_list_block.html'
 
     def get_context_data(self, **kwargs):
         # TODO брать из урла и переделать модуль endless_pagination, чтобы он использовал кол-во страниц из адреса или переменной вьюса.
@@ -133,6 +143,7 @@ class TodayTasksPage(TasksList):
         context = super(TodayTasksPage, self).get_context_data(**kwargs)
         context.update({
             'page_title': u'Задачи на сегодня',
+            'list_name': self.LIST_MY_TODAY,
             'show_due_date': False,
         })
         return context
@@ -147,6 +158,7 @@ class OverdueTasksPage(TasksList):
         context = super(OverdueTasksPage, self).get_context_data(**kwargs)
         context.update({
             'page_title': u'Задачи просроченные',
+            'list_name': self.LIST_MY_OVERDUE,
             'show_due_date': True,
         })
         return context
@@ -161,6 +173,7 @@ class LaterTasksPage(TasksList):
         context = super(LaterTasksPage, self).get_context_data(**kwargs)
         context.update({
             'page_title': u'Задачи на будущее',
+            'list_name': self.LIST_MY_FUTURE,
             'show_due_date': True,
         })
         return context
@@ -175,6 +188,7 @@ class CompletedTasksPage(TasksList):
         context = super(CompletedTasksPage, self).get_context_data(**kwargs)
         context.update({
             'page_title': u'Задачи выполненные',
+            'list_name': self.LIST_MY_COMPLETED,
             'show_due_date': True,
         })
         return context
@@ -189,6 +203,7 @@ class OutboundTasksPage(TasksList):
         context = super(OutboundTasksPage, self).get_context_data(**kwargs)
         context.update({
             'page_title': u'Задачи исходящие',
+            'list_name': self.LIST_MY_OUTBOUND,
             'show_performer': True,
             'show_due_date': True,
         })
@@ -204,8 +219,39 @@ class RepeatingTasksPage(TasksList):
         context = super(RepeatingTasksPage, self).get_context_data(**kwargs)
         context.update({
             'page_title': u'Задачи повторяющиеся',
+            'list_name': self.LIST_MY_REPEATING,
             'show_performer': False,
             'show_due_date': False,
+        })
+        return context
+
+
+class AllTasksPage(TasksList):
+    template_name = 'task/tasks_list_all_page.html'
+
+    def __init__(self, *args, **kwargs):
+        super(TasksList, self).__init__(*args, **kwargs)
+        self.default_filters = {
+            'performer': None,
+            'author': None,
+            'status': None,
+        }
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
+        return Task.objects.all()
+
+    def get_page_template(self, *args, **kwargs):
+        return 'task/tasks_list_all_block.html'
+
+    def get_context_data(self, **kwargs):
+        self.define_filters()
+        context = super(AllTasksPage, self).get_context_data(**kwargs)
+        context.update({
+            'filters_form': self.filters_form,
+            'page_title': u'Задачи все',
+            'list_name': self.LIST_ALL,
+            'show_performer': True,
+            'show_due_date': True,
         })
         return context
 

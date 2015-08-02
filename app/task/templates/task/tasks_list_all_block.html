@@ -1,0 +1,35 @@
+{% load static %}
+{% load endless %}
+
+{% paginate tasks %}
+{% get_pages %}
+
+<div class="endless_page_template">
+    <table class="table table-condenced table-stripped">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Статус</th>
+                <th>Автор</th>
+                <th>Исполнитель</th>
+                <th>Срок исполнения</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for t in tasks %}
+                <tr>
+                    <td><a href="{% url "task:task_detail" t.pk %}">{{ t.template.title }}</a></td>
+                    <td>{{ t.get_status_display }}</td>
+                    <td>{{ t.template.author }}</td>
+                    <td>{{ t.template.performer }} </td>
+                    <td>{{ t.due_date|date:"FULL_DATETIME_FORMAT" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% include "helper/endless_pagination/pages.html" %}
+
+    <script type="text/javascript" src="{% static 'core/js/endless_custom.js' %}"></script>
+</div>

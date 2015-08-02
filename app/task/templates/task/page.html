@@ -64,6 +64,12 @@
                 <span class="sec-menu__count pull-right">{{ task_counts.repeating }}</span>
             {% endif %}
         </a></li>
+        <li><a href="{% url "task:all_tasks_page" %}" class="sec-menu__link_all-tasks">
+            <span class="glyphicon glyphicon-list-alt"></span> Все
+            {# {% if task_counts.all %} #}
+                {# <span class="sec-menu__count pull-right">{{ task_counts.all }}</span> #}
+            {# {% endif %} #}
+        </a></li>
     </ul>
 {% endblock %}
 
