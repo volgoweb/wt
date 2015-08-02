@@ -7,7 +7,7 @@
 <div class="endless_page_template">
     <div>
     {% for t in tasks %}
-        <div class="task-item row-fluid">
+        <div class="task-item row-fluid {% if t.is_overdue %}task-item_overdue{% endif %}">
             <div class="task-item__row1">
                 <span class="task-item__status">
                     {% if t.status == Task.STATUS_DECLINE %}
@@ -35,7 +35,7 @@
                 {% endif %}
 
                 {% if show_performer %}
-                    <span class="badge">{{ t.template.performer }}</span>
+                    <span class="badge">{{ t.template.performer_unit }}</span>
                 {% endif %}
                 {# <span class="task-item__comments badge">2 комментария</span> #}
             </div>

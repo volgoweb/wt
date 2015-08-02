@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+from django.utils import timezone
 from dateutil import relativedelta
 from collections import OrderedDict
 from django.db import models
@@ -303,6 +304,16 @@ class Task(models.Model):
         """
         if self.status in (self.STATUS_READY, self.STATUS_DECLINE):
             return True
+        return False
+
+    def is_overdue(self):
+        if self.due_date and self.status not in (self.STATUS_DECLINE, self.STATUS_READY):
+            now = timezone.now()
+            print '------------------ now:'
+            print now
+            print self.due_date
+            if self.due_date < now:
+                return True
         return False
 
     def save(self, *args, **kwargs):

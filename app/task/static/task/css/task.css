@@ -59,3 +59,8 @@
 .add-task-block form {
     margin-bottom: 0;
 }
+
+.task-item_overdue,
+.task-item_overdue a {
+    color: red;
+}

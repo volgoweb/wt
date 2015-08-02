@@ -8,17 +8,17 @@
 
 {% block sec_menu %}
     {{ block.super }}
-
     <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="glyphicon glyphicon-plus"></span> Добавить
+        <a href="{% url "task:add_task" %}" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Добавить задачу</a>
+    {#     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> #}
+    {#         <span class="glyphicon glyphicon-plus"></span> Добавить #}
             {# <span class="caret"></span> #}
-        </button>
-        <ul class="dropdown-menu">
-            <li><a href="{% url "task:add_task" %}">Добавить задачу</a></li>
+    {#     </button> #}
+    {#     <ul class="dropdown-menu"> #}
+    {#         <li><a href="{% url "task:add_task" %}">Добавить задачу</a></li> #}
             {# TODO DEMO-пункт меню #}
-            <li><a href="{% url "route:route1:start_route" %}">Запустить бизнес-процесс <strong>"Согласование договора"</strong></a></li>
-        </ul>
+    {#         <li><a href="{% url "route:route1:start_route" %}">Запустить бизнес-процесс <strong>"Согласование договора"</strong></a></li> #}
+    {#     </ul> #}
     </div>
 
     <ul class="nav">

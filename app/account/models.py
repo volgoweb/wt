@@ -13,6 +13,7 @@ from django.utils.translation import ugettext as _
 from django.utils import timezone
 from mptt.models import MPTTModel, TreeForeignKey
 from mptt.managers import TreeManager
+from timezones.fields import TimeZoneField
 
 """
 # TODO Написать защиту от присвоении двух активных сотрудников на одну должность
@@ -141,6 +142,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     # должность
     # job = models.CharField(_('job'), max_length = 50, null=True, blank=True)
     job = models.ForeignKey('account.CompanyUnit', related_name='account', verbose_name=u'Должность', null=True, blank=True)
+    time_zone = TimeZoneField(verbose_name=u'Часовой пояс')
     # дата создания учетки
     created = models.DateTimeField(_('created'), default=timezone.now)
 

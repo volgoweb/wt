@@ -62,6 +62,7 @@ INSTALLED_APPS = (
     'axes',
     # 'ajaxuploader',
     'ajax_upload',
+    'timezones',
 
     'helper',
     'app.core',
@@ -126,7 +127,7 @@ AUTHENTICATION_BACKENDS = (
 
 LANGUAGE_CODE = 'ru-ru'
 
-# TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = 'Europe/Moscow'
 USE_TZ = True
 
 USE_I18N = True

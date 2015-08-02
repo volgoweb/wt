@@ -56,7 +56,7 @@
                     {% endfor %}
 
                     {% include "core/form_field.html" with field=form.desc %}
-                    {% include "core/form_field.html" with field=form.performer %}
+                    {% include "core/form_field.html" with field=form.performer_unit %}
                     {% include "core/form_field.html" with field=form.due_date %}
                     {% include "core/form_field.html" with field=form.period %}
                     {% include "task/task_detail/files_formset.html" %}
@@ -87,7 +87,7 @@
         <div class="row-fluid">
             {# <p class="lead">Найдено: <strong>{{ count_objects }}</strong></p> #}
             {% if tasks %}
-                {% include "task/task_list_page.html" with tasks=tasks %}
+                {% include "task/task_list_page.html" %}
             {% else %}
                 <div class="tasks-list__empty bg-warning">
                     Нет задач
