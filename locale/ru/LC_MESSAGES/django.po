@@ -1,0 +1,287 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-08-03 10:38+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: app/account/models.py:111
+msgid "Users must have an email address"
+msgstr ""
+
+#: app/account/models.py:140
+msgid "email address"
+msgstr ""
+
+#: app/account/models.py:141
+msgid "first name"
+msgstr ""
+
+#: app/account/models.py:142
+msgid "middle name"
+msgstr ""
+
+#: app/account/models.py:143
+msgid "last name"
+msgstr ""
+
+#: app/account/models.py:151
+msgid "created"
+msgstr ""
+
+#: app/lib/ajax_upload/models.py:8
+msgid "creation date"
+msgstr ""
+
+#: app/lib/ajax_upload/models.py:9
+msgid "file"
+msgstr ""
+
+#: app/lib/ajax_upload/models.py:13
+msgid "uploaded file"
+msgstr ""
+
+#: app/lib/ajax_upload/models.py:14
+msgid "uploaded files"
+msgstr ""
+
+#: app/lib/ajax_upload/tests/tests.py:56
+msgid "This field is required."
+msgstr ""
+
+#: app/lib/ajax_upload/tests/tests.py:108 app/lib/ajax_upload/widgets.py:57
+msgid "File path not allowed:"
+msgstr ""
+
+#: app/lib/tagging/fields.py:100
+#, python-format
+msgid "%s can only be set on instances."
+msgstr ""
+
+#: app/lib/tagging/forms.py:22
+msgid "The '\"' character is not allowed."
+msgstr ""
+
+#: app/lib/tagging/forms.py:36
+#, python-format
+msgid "A tag may be no more than %s characters long."
+msgstr ""
+
+#: app/lib/tagging/forms.py:42
+#, python-format
+msgid "A tag's namespace may be no more than %s characters long."
+msgstr ""
+
+#: app/lib/tagging/forms.py:46
+#, python-format
+msgid "A tag's name may be no more than %s characters long."
+msgstr ""
+
+#: app/lib/tagging/forms.py:50
+#, python-format
+msgid "A tag's value may be no more than %s characters long."
+msgstr ""
+
+#: app/lib/tagging/forms.py:77
+#, python-format
+msgid "Each tag may be no more than %s characters long."
+msgstr ""
+
+#: app/lib/tagging/forms.py:79
+#, python-format
+msgid "Each tag's namespace may be no more than %s characters long."
+msgstr ""
+
+#: app/lib/tagging/forms.py:81
+#, python-format
+msgid "Each tag's name may be no more than %s characters long."
+msgstr ""
+
+#: app/lib/tagging/forms.py:83
+#, python-format
+msgid "Each tag's value may be no more than %s characters long."
+msgstr ""
+
+#: app/lib/tagging/models.py:64
+#, python-format
+msgid "No tags were given: \"%s\"."
+msgstr ""
+
+#: app/lib/tagging/models.py:66
+#, python-format
+msgid "Multiple tags were given: \"%s\"."
+msgstr ""
+
+#: app/lib/tagging/models.py:483
+msgid "namespace"
+msgstr ""
+
+#: app/lib/tagging/models.py:484
+msgid "name"
+msgstr ""
+
+#: app/lib/tagging/models.py:485
+msgid "value"
+msgstr ""
+
+#: app/lib/tagging/models.py:492 app/lib/tagging/models.py:507
+msgid "tag"
+msgstr ""
+
+#: app/lib/tagging/models.py:493
+msgid "tags"
+msgstr ""
+
+#: app/lib/tagging/models.py:508
+msgid "content type"
+msgstr ""
+
+#: app/lib/tagging/models.py:509
+msgid "object id"
+msgstr ""
+
+#: app/lib/tagging/models.py:517
+msgid "tagged item"
+msgstr ""
+
+#: app/lib/tagging/models.py:518
+msgid "tagged items"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:19
+#, python-format
+msgid "tags_for_model tag was given an invalid model: %s"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:32
+#, python-format
+msgid "tag_cloud_for_model tag was given an invalid model: %s"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:56
+#, python-format
+msgid "tagged_objects tag was given an invalid model: %s"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:89
+#, python-format
+msgid "%s tag requires either three or five arguments"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:91
+#: app/lib/tagging/templatetags/tagging_tags.py:143
+#: app/lib/tagging/templatetags/tagging_tags.py:198
+#, python-format
+msgid "second argument to %s tag must be 'as'"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:94
+#: app/lib/tagging/templatetags/tagging_tags.py:147
+#, python-format
+msgid "if given, fourth argument to %s tag must be 'with'"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:96
+#, python-format
+msgid "if given, fifth argument to %s tag must be 'counts'"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:141
+#, python-format
+msgid "%s tag requires either three or between five and seven arguments"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:155
+#, python-format
+msgid "%(tag)s tag's '%(option)s' option was not a valid integer: '%(value)s'"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:164
+#, python-format
+msgid "%(tag)s tag's '%(option)s' option was not a valid choice: '%(value)s'"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:170
+#, python-format
+msgid "%(tag)s tag was given an invalid option: '%(option)s'"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:175
+#, python-format
+msgid "%(tag)s tag was given a badly formatted option: '%(option)s'"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:196
+#, python-format
+msgid "%s tag requires exactly three arguments"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:221
+#, python-format
+msgid "%s tag requires exactly five arguments"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:223
+#, python-format
+msgid "second argument to %s tag must be 'in'"
+msgstr ""
+
+#: app/lib/tagging/templatetags/tagging_tags.py:225
+#, python-format
+msgid "fourth argument to %s tag must be 'as'"
+msgstr ""
+
+#: app/lib/tagging/utils.py:366
+msgid ""
+"If a list or tuple of tags is provided, they must all be tag names, Tag "
+"objects or Tag ids."
+msgstr ""
+
+#: app/lib/tagging/utils.py:368
+msgid "The tag input given was invalid."
+msgstr ""
+
+#: app/lib/tagging/utils.py:528
+#, python-format
+msgid "Invalid distribution algorithm specified: %s."
+msgstr ""
+
+
+#, fluent_comments
+msgid "Post"
+msgstr "Добавить"
+
+msgid "Preview"
+msgstr "Предварительный просмотр"
+
+msgid "Comment"
+msgstr "Текст комментария"
+
+msgid "on %(submit_date)s"
+msgstr "%(submit_date)s"
+
+msgid "Preview your comment"
+msgstr "Предварительный просмотр комментария"
+
+msgid "Post your comment"
+msgstr "Добавьте свой комментарий"
+
+msgid "Please correct the error below%s(plural)sPlease correct the errors below"
+msgstr "Пожалуйста, поправьте ошибки %s(plural)s"
+
+msgid "Anonymous"
+msgstr ""

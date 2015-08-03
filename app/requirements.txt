@@ -21,3 +21,6 @@ django-axes
 ajaxuploader
 more_itertools
 django-timezones
+django-crispy-forms
+django-contrib-comments
+django-fluent-comments

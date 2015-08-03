@@ -1,4 +1,5 @@
 {% extends "task/task_detail/base.html" %}
+{% load comments %}
 
 {% block task_form_fields %}
     {{ block.super }}
@@ -23,6 +24,7 @@
     {# {% endfor %} #}
 
     {% include "task/task_detail/files_formset.html" %}
+
 {% endblock %}
 
 {% block task_results_view %}

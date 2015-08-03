@@ -1,11 +1,17 @@
 {% extends "task/page.html" %}
 {% load static %}
 {% load route_tags %}
+{% load comments %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "fluent_comments/css/ajaxcomments.css" %}" />
+{% endblock %}
 
 {% block js %}
     {{ block.super }}
     
-    <script type="text/javascript" src="{% static 'helper/js/single_choice_checkboxes.js' %}"></script>
+    <script type="text/javascript" src="{% static 'fluent_comments/js/ajaxcomments.js' %}"></script>
 {% endblock %}
 
 {% block scripts %}
@@ -56,5 +62,23 @@
     {% endif %}
 
     {% route_step_actions task.step request %}
+
+
+    <h3>Комментарии</h3>
+    {% render_comment_list for task %}
+    {% render_comment_form for task %}
+    {# {% get_comment_form for task as comment_form %} #}
+    {# <table> #}
+    {#   <form action="{% comment_form_target %}" method="post" class="js-comments-form"> #}
+    {#     {% csrf_token %} #}
+    {#     {{ comment_form.as_table }} #}
+    {#     <tr> #}
+    {#       <td colspan="2"> #}
+    {#         <input type="submit" name="submit" value="Добавить комментарий" class="btn btn-primary btn-sm"> #}
+            {# <input type="submit" name="preview" value="Preview"> #}
+    {#       </td> #}
+    {#     </tr> #}
+    {#   </form> #}
+    {# </table> #}
 </div>
 {% endblock %}

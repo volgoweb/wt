@@ -36,6 +36,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
+
 
 # Application definition
 
@@ -46,6 +48,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'fluent_comments',
+    'crispy_forms',
+    'django_comments',
+    'django.contrib.sites',
 
     'easy_thumbnails',
     'polymorphic',
@@ -125,7 +132,11 @@ AUTHENTICATION_BACKENDS = (
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = 'ru'
+LANGUAGES = (
+    ('ru', 'Russian'),
+    ('en', 'English'),
+)
 
 TIME_ZONE = 'Europe/Moscow'
 USE_TZ = True
@@ -133,6 +144,10 @@ USE_TZ = True
 USE_I18N = True
 
 USE_L10N = True
+
+LOCALE_PATHS = (
+    'locale',
+)
 
 DATE_INPUT_FORMATS= ('%d.%m.%Y',)
 DATE_FORMAT = 'd.m.Y'
@@ -180,6 +195,19 @@ TEMPLATE_LOADERS = (
 IMAGES_UPLOAD_FOLDER = 'images/'
 
 AJAXIMAGE_AUTH_TEST = lambda u: True
+
+#
+# fluent_comments
+#
+COMMENTS_APP = 'fluent_comments'
+FLUENT_COMMENTS_EXCLUDE_FIELDS = ['name', 'email', 'url']
+# end fluent_comments
+
+#
+# crispy_forms
+#
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+# end crispy_forms
 
 #
 # Compressor:
