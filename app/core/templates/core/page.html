@@ -58,7 +58,7 @@
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                   <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">События</a></li>
+                    <li class="active"><a href="{% url "notification:notifications_list_page" %}">События</a></li>
                     <li><a href="{% url "task:today_tasks_page" %}">Задачи</a></li>
                     <li><a href="{% url "wiki:wiki_list_page" list_name="all" %}">Книга знаний</a></li>
                     <li><a href="{% url "partner:partners_list_page" %}">Партнеры</a></li>

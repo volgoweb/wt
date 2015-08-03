@@ -27,11 +27,10 @@ class Notification(PolymorphicModel):
         ordering = ('-created',)
 
 
-# @receiver(task_saved, sender=Task)
-def notify_about_task(**kwargs):
+@receiver(task_saved, sender=Task)
+def notify_about_task(task, created, **kwargs):
     # TODO перенести в ассинхронное выполнение через celery
-    task = kwargs.get('task')
-    if task.is_new():
+    if created:
         text = u'Добавлена новая задача "<a href="{link}">{title}</a>"'.format(link=task.get_absolute_url(), title=task.template.title)
         n = Notification(
             text=text,

@@ -15,6 +15,7 @@ from .forms import TasksListFilters, TaskFileForm
 from app.task import forms as task_forms
 from app.core.models import FileItem
 from app.core.forms import FileItemForm
+from .signals import task_saved
 
 
 FilesFormset = generic_inlineformset_factory(
@@ -351,6 +352,7 @@ class TaskDetail(UpdateView):
                 is_invalid_formset = False
 
         if is_invalid_formset:
+            task_saved.send(sender=Task, task=task, created=False)
             return super(TaskDetail, self).form_valid(form)
         else:
             return self.form_invalid(form)
@@ -395,6 +397,7 @@ class TemplateFormMixin(object):
             # print '------------------ files_formset.is_INvalid'
 
         if is_valid_formset:
+            task_saved.send(sender=Task, task=task_tpl.task.get(), created=True)
             return super(TemplateFormMixin, self).form_valid(form)
         else:
             return self.form_invalid(form)
