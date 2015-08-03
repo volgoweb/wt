@@ -167,6 +167,14 @@ class TaskQueryset(models.query.QuerySet):
     def in_work(self):
         return self.filter(status=self.model.STATUS_IN_WORK)
 
+    def in_work_or_wait(self):
+        return self.filter(
+            status__in=(
+                self.model.STATUS_IN_WORK,
+                self.model.STATUS_AWATING_EXECUTION,
+            ),
+        )
+
     def performed(self, user):
         return self.filter(template__performer=user)
 
@@ -177,7 +185,7 @@ class TaskQueryset(models.query.QuerySet):
         return qs
 
     def overdue(self, *args, **kwargs):
-        now = datetime.datetime.now()
+        now = timezone.now()
         return self.filter(due_date__lt=now)
 
     def today(self, *args, **kwargs):
@@ -309,9 +317,6 @@ class Task(models.Model):
     def is_overdue(self):
         if self.due_date and self.status not in (self.STATUS_DECLINE, self.STATUS_READY):
             now = timezone.now()
-            print '------------------ now:'
-            print now
-            print self.due_date
             if self.due_date < now:
                 return True
         return False

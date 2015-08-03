@@ -132,13 +132,13 @@ class TasksList(AjaxListView):
 # class FavoriteTasksPage(TasksList):
 #     @classmethod
 #     def get_base_queryset_from_class(cls, request):
-#         return Task.objects.all().performed(request.user).in_work().favorite()
+#         return Task.objects.all().performed(request.user).in_work_or_wait().favorite()
 
 
 class TodayTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().performed(request.user).in_work().today()
+        return Task.objects.all().performed(request.user).in_work_or_wait().today()
 
     def get_context_data(self, **kwargs):
         context = super(TodayTasksPage, self).get_context_data(**kwargs)
@@ -153,7 +153,7 @@ class TodayTasksPage(TasksList):
 class OverdueTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().performed(request.user).in_work().today()
+        return Task.objects.all().performed(request.user).in_work_or_wait().overdue()
 
     def get_context_data(self, **kwargs):
         context = super(OverdueTasksPage, self).get_context_data(**kwargs)
@@ -168,7 +168,7 @@ class OverdueTasksPage(TasksList):
 class LaterTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().performed(request.user).in_work().later_than_today_or_without_due()
+        return Task.objects.all().performed(request.user).in_work_or_wait().later_than_today_or_without_due()
 
     def get_context_data(self, **kwargs):
         context = super(LaterTasksPage, self).get_context_data(**kwargs)
@@ -198,7 +198,7 @@ class CompletedTasksPage(TasksList):
 class OutboundTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().consigned(request.user, exclude_self_tasks=True).in_work()
+        return Task.objects.all().consigned(request.user, exclude_self_tasks=True).in_work_or_wait()
 
     def get_context_data(self, **kwargs):
         context = super(OutboundTasksPage, self).get_context_data(**kwargs)
