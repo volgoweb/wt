@@ -7,6 +7,7 @@ from polymorphic import PolymorphicModel
 from django.db.models.signals import post_save, pre_save
 import django.dispatch
 from django.core.mail import send_mail
+from django_comments.signals import comment_was_posted
 
 from app.task.models import Task
 from app.task.signals import task_saved
@@ -45,3 +46,26 @@ def notify_about_task(**kwargs):
             pass
 
 # task_saved.connect(notify_about_task)
+
+@receiver(comment_was_posted)
+def notify_about_adding_comment(*args, **kwargs):
+    comment = kwargs.get('comment')
+    obj = comment.content_object
+    subscribers = []
+    if type(obj) == Task:
+        task = obj
+        subscribers.append(obj.author)
+        subscribers.append(obj.template.performer)
+        for u in subscribers:
+            text = u'Добавлен комментарий к задаче "<a href="{link}">{title}</a>"'.format(link=task.get_absolute_url(), title=task.template.title)
+            n = Notification(
+                text=text,
+                subscriber=u,
+                obj=comment,
+            )
+            n.save()
+
+        try:
+            send_mail(u'Добавлен комментарий', text, 'dima_page@mail.ru', [u.email for u in subscribers], fail_silently=False)
+        except:
+            pass
