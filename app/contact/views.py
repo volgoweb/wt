@@ -80,6 +80,11 @@ class ContactsListPage(AjaxListView):
         return 'contact/contacts_list.html'
 
 
+class ClientsListPage(ContactsListPage):
+    def get_base_queryset(self):
+        return Contact.objects.filter(deleted=False, is_client=True).order_by('full_name')
+
+
 class ContactDetailPage(UpdateView):
     model = Contact
     form_class = ContactForm

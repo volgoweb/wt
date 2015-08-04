@@ -83,6 +83,7 @@ INSTALLED_APPS = (
     'app.partner',
     'app.client',
     'app.contact',
+    'app.crm',
 )
 
 MIDDLEWARE_CLASSES = (

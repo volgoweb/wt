@@ -1,0 +1,33 @@
+{% load static %}
+{% load endless %}
+
+{% paginate deals %}
+{% get_pages %}
+
+
+<div class="endless_page_template">
+    <table class="sales_deals-list table table-stripped table-condensed">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Статус</th>
+                <th>Ответственный</th>
+                <th>Контакт клиента</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in deals %}
+                <tr>
+                    <td><a href="{% url "crm:sales_deal_detail_page" d.pk %}">{{ d.title }}</a></td>
+                    <td>{{ d.get_status_display }}</td>
+                    <td>{{ d.responsible }}</td>
+                    <td>{{ d.client_contact }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% include "helper/endless_pagination/pages.html" %}
+
+    <script type="text/javascript" src="{% static 'core/js/endless_custom.js' %}"></script>
+</div>

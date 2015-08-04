@@ -28,6 +28,7 @@ from app.wiki import urls as wiki_urls
 from app.partner import urls as partner_urls
 from app.client import urls as client_urls
 from app.contact import urls as contact_urls
+from app.crm import urls as crm_urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -50,6 +51,7 @@ urlpatterns = [
     url(r'^partners/', include(partner_urls, namespace='partner')),
     url(r'^contacts/', include(contact_urls, namespace='contact')),
     url(r'^clients/', include(client_urls, namespace='client')),
+    url(r'^crm/', include(crm_urls, namespace='crm')),
 ]
 
 

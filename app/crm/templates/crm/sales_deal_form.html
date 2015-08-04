@@ -1,4 +1,4 @@
-{% extends "contact/page.html" %}
+{% extends "crm/page.html" %}
 {% load static %}
 
 {% block scripts %}
@@ -8,11 +8,11 @@
     {{ form.media }}
 {% endblock %}
 
-{% block page_title %}Новый контакт{% endblock %}
+{% block page_title %}Новая сделка{% endblock %}
 
 {% block content %}
     <div class="col-lg-6 col-md-9 col-sm-12">
-        <form action="" method="POST" accept-charset="utf-8" class="add-contact-form">
+        <form action="" method="POST" accept-charset="utf-8" class="sales-deal-form">
             {% csrf_token %}
             <table class="table">
                 {{ form.as_table }}

@@ -159,7 +159,6 @@ class TaskTemplate(helper_models.FieldsLabelsMixin, PolymorphicModel):
             raise(u'Не удалось определить период повторения, выраженный в timedelta')
 
 
-
 class TaskQueryset(models.query.QuerySet):
     def not_deleted(self):
         return self.filter(deleted=False)

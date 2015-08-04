@@ -1,14 +1,14 @@
-{% extends "contact/page.html" %}
+{% extends "crm/page.html" %}
 {% load static %}
 {% load endless %}
 
-{% block page_title %}Контакты{% endblock %}
+{% block page_title %}Сделки{% endblock %}
 
 {% block content %}
-    <div class="contacts-list-page">
+    <div class="sales_deals-list-page">
         <div class="row-fluid">
-            {% if contacts %}
-                {% include "contact/contacts_list.html" %}
+            {% if deals %}
+                {% include "crm/sales_deals_list.html" %}
             {% else %}
                 <div class="list-empty bg-warning">
                     Ничего не найдено
@@ -16,7 +16,7 @@
             {% endif %}
         </div>
 
-    </div> {# .contacts-list #}
+    </div> {# .sales_deals-list #}
 {% endblock %}
 
 
