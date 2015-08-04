@@ -1,6 +1,0 @@
-
-msgid "Post"
-msgstr "Добавить"
-
-msgid "Preview"
-msgstr "Предварительный просмотр"

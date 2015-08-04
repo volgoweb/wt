@@ -82,6 +82,7 @@ INSTALLED_APPS = (
     'app.wiki',
     'app.partner',
     'app.client',
+    'app.contact',
 )
 
 MIDDLEWARE_CLASSES = (

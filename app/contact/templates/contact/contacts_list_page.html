@@ -1,0 +1,24 @@
+{% extends "contact/page.html" %}
+{% load static %}
+{% load endless %}
+
+{% block page_title %}
+       {{ page_title}}
+{% endblock %}
+
+{% block content %}
+    <div class="contacts-list-page">
+        <div class="row-fluid">
+            {% if contacts %}
+                {% include "contact/contacts_list.html" with contacts=contacts %}
+            {% else %}
+                <div class="contacts-list__empty bg-warning">
+                    Ничего не найдено
+                </div>
+            {% endif %}
+        </div>
+
+    </div> {# .contacts-list #}
+{% endblock %}
+
+
