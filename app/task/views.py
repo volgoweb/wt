@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import ListView, UpdateView, CreateView
 from django.forms.models import modelformset_factory
+from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.contrib.contenttypes.models import ContentType
 from django.http import Http404, HttpResponse
@@ -340,8 +341,8 @@ class TaskDetail(UpdateView):
             form.errors['due_date'] = due_date_errors + u' При выборе периода повторения обязательно укажите срок исполнения.'
             return self.form_invalid(form)
         template_form = self.get_template_form()
-        if form.is_valid() and template_form.is_valid():
-            task = form.save(commit=False)
+        if template_form.is_valid():
+            task = self.get_object()
             task_tpl = template_form.save(commit=False)
             files_formset = self.get_files_formset()
             if files_formset.is_valid():
@@ -398,7 +399,7 @@ class TemplateFormMixin(object):
 
         if is_valid_formset:
             task_saved.send(sender=Task, task=task_tpl.task.get(), created=True)
-            return super(TemplateFormMixin, self).form_valid(form)
+            return HttpResponseRedirect(self.get_success_url())
         else:
             return self.form_invalid(form)
 

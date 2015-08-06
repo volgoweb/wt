@@ -188,9 +188,9 @@ class TaskQueryset(models.query.QuerySet):
         return self.filter(due_date__lt=now)
 
     def today(self, *args, **kwargs):
-        today = datetime.date.today()
-        start_of_today = datetime.datetime(today.year, today.month, today.day, 00, 00, 01)
-        end_of_today = datetime.datetime(today.year, today.month, today.day, 23, 59, 59)
+        now = timezone.now()
+        start_of_today = datetime.datetime(now.year, now.month, now.day, 00, 00, 01)
+        end_of_today = datetime.datetime(now.year, now.month, now.day, 23, 59, 59)
         return self.filter(
             due_date__range=(start_of_today, end_of_today),
         )
