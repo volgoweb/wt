@@ -5,6 +5,12 @@
 {% block scripts %}
     {{ block.super }}
     {{ form.media }}
+
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            $('#id_due_date').default_datetimepicker();
+        });
+    </script>
 {% endblock %}
 
 {% block content %}

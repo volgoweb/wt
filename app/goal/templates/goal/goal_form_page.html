@@ -1,0 +1,31 @@
+{% extends "goal/page.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }}
+
+    {# <link rel="stylesheet" type="text/css" media="all" href="{% static "wiki/css/wiki.css" %}" /> #}
+    {{ form.media }}
+
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            $('#id_date_from').default_datepicker();
+            $('#id_date_to').default_datepicker();
+        });
+    </script>
+{% endblock %}
+
+{% block page_title %}
+    {% if form.instance.pk %}
+        Цель "{{ form.instance.title }}"
+    {% else %}
+        Добавление цели
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if form.fields %}
+        {% include "core/form.html" %}
+    {% endif %}
+{% endblock %}
+

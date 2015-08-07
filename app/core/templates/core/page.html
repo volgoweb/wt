@@ -19,6 +19,7 @@
                 <link rel="stylesheet" type="text/css" media="all" href="{% static "helper/jquery-ui/jquery-ui.min.css" %}" />
                 <link rel="stylesheet" type="text/css" media="all" href="{% static "helper/jquery-ui/jquery-ui.theme.min.css" %}" />
                 <link rel="stylesheet" type="text/css" media="all" href="{% static "helper/jquery-ui/jquery-ui.structure.min.css" %}" />
+                <link rel="stylesheet" type="text/css" media="all" href="{% static "core/datetimepicker/jquery.datetimepicker.css" %}" />
 
                 <link href="{% static "ajax_upload/css/ajax-upload-widget.css" %}" rel="stylesheet" type="text/css"/>
 
@@ -31,6 +32,11 @@
                 <script type="text/javascript" src="{% static 'core/bootstrap/js/dropdown.js' %}"></script>
                 <script type="text/javascript" src="{% static 'core/bootstrap/js/tooltip.js' %}"></script>
                 <script type="text/javascript" src="{% static 'core/bootstrap/js/collapse.js' %}"></script>
+
+                {# <script type="text/javascript" src="{% static 'core/moment/moment.js' %}"></script> #}
+                {# <script type="text/javascript" src="{% static 'core/moment/locale/ru.js' %}"></script> #}
+                <script type="text/javascript" src="{% static 'core/datetimepicker/jquery.datetimepicker.js' %}"></script>
+
                 <script type="text/javascript" src="{% static 'helper/jquery-ui/jquery-ui.min.js' %}"></script>
                 <script type="text/javascript" src="{% static 'helper/js/date_utils.js' %}"></script>
                 <script type="text/javascript" src="{% static 'helper/js/init_datepicker.js' %}"></script>
@@ -64,6 +70,7 @@
                     <li class="active"><a href="{% url "notification:notifications_list_page" %}">События</a></li>
                     <li><a href="{% url "task:today_tasks_page" %}">Задачи</a></li>
                     <li><a href="{% url "crm:sales_deals_list_page" %}">CRM</a></li>
+                    <li><a href="{% url "goal:my_goals_list_page" %}">Цели</a></li>
                     <li><a href="{% url "contact:contacts_list_page" %}">Контакты</a></li>
                     <li><a href="{% url "wiki:wiki_list_page" list_name="all" %}">Книга знаний</a></li>
                     <li><a href="{% url "account:company_units_list_page" %}">Сотрудники</a></li>

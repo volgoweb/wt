@@ -1,0 +1,23 @@
+{% extends "goal/page.html" %}
+{% load static %}
+{% load endless %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+    <div class="goals-list-page">
+        <div class="row-fluid">
+            {% if goals %}
+                {% include "goal/goals_list.html" %}
+            {% else %}
+                <div class="list-empty bg-warning">
+                    Ничего не найдено
+                </div>
+            {% endif %}
+        </div>
+
+    </div> {# .goals-list #}
+{% endblock %}
+
+
+

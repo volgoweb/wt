@@ -42,11 +42,11 @@ class AccountAdmin(UserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('id', 'last_name', 'first_name', 'email', 'is_superuser')
+    list_display = ('id', 'last_name', 'first_name', 'email', 'department', 'job', 'is_superuser')
     list_filter = ('is_superuser',)
     fieldsets = (
         (None, {'fields': ('email', 'password',)}),
-        ('Personal info', {'fields': ('first_name', 'middle_name', 'last_name', 'job', 'time_zone')}),
+        ('Personal info', {'fields': ('first_name', 'middle_name', 'last_name', 'department', 'job', 'time_zone')}),
         ('Permissions', {
             'fields': (
                 'is_active',

@@ -61,7 +61,7 @@ INSTALLED_APPS = (
     'compressor',
     'endless_pagination',
     'ckeditor',
-    'datetimewidget',
+    # 'datetimewidget',
     # 'tagging',
     # 'tagging_autosuggest',
     'mptt',
@@ -85,6 +85,7 @@ INSTALLED_APPS = (
     'app.client',
     'app.contact',
     'app.crm',
+    'app.goal',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -37,15 +37,15 @@ class TaskStepForm(BootstrapFormMixin, forms.ModelForm):
         model = TaskStep
         fields = '__all__'
         widgets = {
-            'date': DateTimeWidget(
-                usel10n=True,
-                bootstrap_version=3,
-                options={
-                    'format': 'dd.mm.yyyy hh:ii',
-                    'autoclose': True,
-                    'showMeridian' : True
-                },
-            ),
+            # 'date': DateTimeWidget(
+            #     usel10n=True,
+            #     bootstrap_version=3,
+            #     options={
+            #         'format': 'dd.mm.yyyy hh:ii',
+            #         'autoclose': True,
+            #         'showMeridian' : True
+            #     },
+            # ),
         }
 
 
@@ -55,15 +55,15 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
         exclude = ['deleted', 'template']
         # fields = ['title', 'desc', 'status']
         widgets = {
-            'due_date': DateTimeWidget(
-                usel10n=True,
-                bootstrap_version=3,
-                options={
-                    'format': 'dd.mm.yyyy hh:ii',
-                    'autoclose': True,
-                    'showMeridian' : True
-                },
-            ),
+            # 'due_date': DateTimeWidget(
+            #     usel10n=True,
+            #     bootstrap_version=3,
+            #     options={
+            #         'format': 'dd.mm.yyyy hh:ii',
+            #         'autoclose': True,
+            #         'showMeridian' : True
+            #     },
+            # ),
             'status': forms.widgets.RadioSelect(),
             'is_repeating_clone': forms.HiddenInput(),
         }
@@ -153,15 +153,15 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
         model = TaskTemplate
         exclude = ['step_id', 'step_type', 'files', 'task_steps']
         widgets = {
-            'due_date': DateTimeWidget(
-                usel10n=True,
-                bootstrap_version=3,
-                options={
-                    'format': 'dd.mm.yyyy hh:ii',
-                    'autoclose': True,
-                    'showMeridian' : True
-                },
-            ),
+            # 'due_date': DateTimeWidget(
+            #     usel10n=True,
+            #     bootstrap_version=3,
+            #     options={
+            #         'format': 'dd.mm.yyyy hh:ii',
+            #         'autoclose': True,
+            #         'showMeridian' : True
+            #     },
+            # ),
             'performer': forms.HiddenInput(),
         }
 

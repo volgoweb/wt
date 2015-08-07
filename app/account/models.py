@@ -145,7 +145,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, verbose_name=u'Активен')
     # должность
     # job = models.CharField(_('job'), max_length = 50, null=True, blank=True)
-    job = models.ForeignKey('account.CompanyUnit', related_name='account', verbose_name=u'Должность', null=True, blank=True)
+    job = models.ForeignKey('account.CompanyUnit', limit_choices_to={'unit_type': CompanyUnit.UNIT_TYPE_EMPLOYEE}, related_name='account_of_job', verbose_name=u'Должность', null=True, blank=True)
+    department = models.ForeignKey('account.CompanyUnit', limit_choices_to={'unit_type': CompanyUnit.UNIT_TYPE_DEPARTMENT}, related_name='account_of_department', verbose_name=u'Отдел', null=True, blank=True)
     time_zone = TimeZoneField(verbose_name=u'Часовой пояс')
     # дата создания учетки
     created = models.DateTimeField(_('created'), default=timezone.now)
