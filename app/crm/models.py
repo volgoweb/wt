@@ -1,10 +1,32 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.db.models import Count
 
 from helper.models import Dictionary
+from app.task.models import Task
+from app.task.signals import task_saved
 
 class DealStatus(Dictionary):
     pass
+
+
+class SalesDealQueryset(models.query.QuerySet):
+    def with_responsible(self, user):
+        return self.filter(responsible_unit=user.job)
+
+
+class SalesDealManager(models.Manager):
+    def get_queryset(self, *args, **kwargs):
+        return SalesDealQueryset(self.model).all()
+
+    def count_of_responisble_by_status(self, user):
+        qs = self.get_queryset().with_responsible(user)
+        values = qs.values('status').annotate(count_rows=Count('status'))
+        counts = {}
+        for v in values:
+            counts[v.get('status')] = v.get('count_rows')
+        return counts
+
 
 class SalesDeal(models.Model):
     title = models.CharField(max_length=255, verbose_name=u'Название')
@@ -21,8 +43,34 @@ class SalesDeal(models.Model):
     author = models.ForeignKey('account.Account', verbose_name=u'Автор', related_name='sales_deal_of_author')
     deleted = models.BooleanField(default=False, verbose_name=u'Удаленная')
 
+    objects = SalesDealManager()
+
+    def get_next_task(self):
+        tasks = self.tasks.filter(status__in=Task.OPENED_STATUSES).order_by('due_date')
+        if tasks:
+            return tasks[0]
+
+    def is_open(self, *args, **kwargs):
+        if getattr(self.status, 'pk', None) != 'closed':
+            return True
+        else:
+            return False
+
     def save(self, *args, **kwargs):
         if self.responsible_unit:
             user = self.responsible_unit.get_user()
             self.responsible = user
         return super(SalesDeal, self).save(*args, **kwargs)
+
+
+def task_saved_handler(task, created, request, **kwargs):
+    if created:
+        deal_pk = request.GET.get('sales_deal', None)
+        if deal_pk:
+            try:
+                deal = SalesDeal.objects.get(pk=deal_pk)
+                deal.tasks.add(task)
+                deal.save()
+            except:
+                pass
+task_saved.connect(task_saved_handler)

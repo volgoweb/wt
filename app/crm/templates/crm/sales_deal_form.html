@@ -1,5 +1,6 @@
 {% extends "crm/page.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block scripts %}
     {{ block.super }}
@@ -11,7 +12,7 @@
 {% block page_title %}Новая сделка{% endblock %}
 
 {% block content %}
-    <div class="col-lg-6 col-md-9 col-sm-12">
+    <div class="deal-detail__form col-lg-6 col-md-6 col-sm-12">
         <form action="" method="POST" accept-charset="utf-8" class="sales-deal-form">
             {% csrf_token %}
             <table class="table">
@@ -20,4 +21,29 @@
             <input type="submit" value="Сохранить" class="btn btn-primary"/>
         </form>
     </div>
+
+    {% if form.instance.pk %}
+        <div class="deal-detail__tasks col-lg-6 col-md-6 col-sm-12">
+            {% if next_task %}
+                <p class="deal-detail-tasks__next-task text-success well">
+                    <span class="badge next-task__due-date {% if next_task.is_overdue %}badge next-task__due-date_overdue{% endif %}">
+                        {{ next_task.due_date|naturaltime }}
+                    </span> ближайшая задача 
+                    "<a href="{% url "task:task_detail" next_task.pk %}" class="{% if next_task.is_overdue %}task-item_overdue{% endif %}">
+                        {{ next_task.template.title }}
+                    </a>"
+                </p>
+            {% else %}
+                {% if form.instance.is_open %}
+                    <p class="well">Создайте задачу!</p>
+                {% endif %}
+            {% endif %}
+
+            <p>
+                <a href="{% url "task:add_task" %}?sales_deal={{ form.instance.pk }}&next={% url "crm:sales_deal_detail_page" form.instance.pk %}" class="btn btn-warning pull-left">Добавить задачу</a>
+            </p>
+
+            {% include "crm/deal_tasks.html" %}
+        </div>
+    {% endif %}
 {% endblock %}

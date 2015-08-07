@@ -1,0 +1,8 @@
+<div class="deal-statistics__items">
+    {% for row in statistics %}
+        <div class="deal-statistics__item col-md-4 col-sm-4">
+            <label>{{ row.title }}:</label>
+            <span>{{ row.count }}</span>
+        </div>
+    {% endfor %}
+</div>

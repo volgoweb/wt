@@ -3,7 +3,7 @@
 
 {% block css %}
     {{ block.super }}
-    {# <link rel="stylesheet" type="text/css" media="all" href="{% static "partner/css/partner.css" %}" /> #}
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "crm/css/crm.css" %}" />
 {% endblock %}
 
 {% block sec_menu %}
@@ -14,7 +14,7 @@
         <span class="glyphicon glyphicon-plus"></span> Добавить <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
-        <li><a href="{% url "contact:add_contact_page" %}">Добавить клиента/лид</a></li>
+        <li><a href="{% url "contact:add_contact_page" %}?is_lead=1">Добавить клиента/лид</a></li>
         <li><a href="{% url "crm:sales_deal_add_page" %}">Добавить сделку</a></li>
       </ul>
     </div>
@@ -28,24 +28,5 @@
         </a></li>
     </ul>
 
-    <hr>
-
-    {% if filters_form %}
-        <h4 class="text-primary">Фильтры</h4>
-        <form action="" method="GET" accept-charset="utf-8" class="filters-form form-inline">
-            {% for f in filters_form.visible_fields %}
-                {% include "core/form_field.html" with field=f label='' %}
-            {% endfor %}
-
-            {% for f in filters_form.hidden_fields %}
-                {{ f }}
-            {% endfor %}
-
-            <p>
-                {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %}
-                {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="$('.filters-form input[type=text]').val(''); this.form.submit();" %}
-            </p>
-        </form>
-    {% endif %}
 {% endblock %}
 

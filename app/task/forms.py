@@ -186,7 +186,7 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
         self.fields['performer_unit'].queryset = CompanyUnit.objects.all().employee()
         choices = [(o.pk, u'{0} ({1})'.format(o.get_user() or '', o.name)) for o in self.fields['performer_unit'].queryset]
         choices.sort(key=lambda x: x[1])
-        self.fields['performer_unit'].widget.choices = choices
+        self.fields['performer_unit'].widget.choices = [('', '----------')] + choices
 
         if self.task:
             self.fields['due_date'].widget = self.fields['due_date'].hidden_widget()

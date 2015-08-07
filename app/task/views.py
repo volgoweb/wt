@@ -353,7 +353,7 @@ class TaskDetail(UpdateView):
                 is_invalid_formset = False
 
         if is_invalid_formset:
-            task_saved.send(sender=Task, task=task, created=False)
+            task_saved.send(sender=Task, task=task, created=False, request=self.request)
             return super(TaskDetail, self).form_valid(form)
         else:
             return self.form_invalid(form)
@@ -398,7 +398,7 @@ class TemplateFormMixin(object):
             # print '------------------ files_formset.is_INvalid'
 
         if is_valid_formset:
-            task_saved.send(sender=Task, task=task_tpl.task.get(), created=True)
+            task_saved.send(sender=Task, task=task_tpl.task.get(), created=True, request=self.request)
             return HttpResponseRedirect(self.get_success_url())
         else:
             return self.form_invalid(form)

@@ -245,6 +245,14 @@ class Task(models.Model):
         (STATUS_IN_WORK, u'Выполняется'),
         (STATUS_READY, u'Готова'),
     ])
+    OPENED_STATUSES = [
+        STATUS_IN_WORK,
+        STATUS_AWATING_EXECUTION,
+    ]
+    CLOSED_STATUSES = [
+        STATUS_DECLINE,
+        STATUS_READY,
+    ]
 
     template = models.ForeignKey(
         'task.TaskTemplate',

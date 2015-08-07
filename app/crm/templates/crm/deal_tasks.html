@@ -1,0 +1,42 @@
+{% load humanize %}
+
+<table class="table table-condensed table-stripped">
+    <thead>
+        <tr>
+            <th>Статус</th>
+            <th>Название</th>
+            <th>Крайний срок</th>
+            {# <th></th> #}
+            {# <th></th> #}
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for t in tasks %}
+            <tr class="deal-tasks__item {% if t.is_overdue %}task-item_overdue{% endif %}">
+                <td>
+                    <span class="task-item__status">
+                        {% if t.status == Task.STATUS_DECLINE %}
+                            <span class="task-icon_decline glyphicon glyphicon-ban-circle"></span>
+                        {% else %}
+                            <input
+                                type="checkbox"
+                                name="task-complete"
+                                value=""
+                                data-task-pk="{{ task.pk }}"
+                                class="task-item__complete form-control pull-left"
+                                {% if t.status == Task.STATUS_READY %}
+                                    checked="checked"
+                                {% endif %}
+                            />
+                        {% endif %}
+                    </span>
+                </td>
+
+                <td><a href="{% url "task:task_detail" t.pk %}">{{ t.template.title }}</a></td>
+                
+                <td><span class="badge">{{ t.due_date|naturaltime }}</span>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

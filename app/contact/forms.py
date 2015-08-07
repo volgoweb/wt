@@ -27,11 +27,12 @@ class ContactForm(BootstrapFormMixin, forms.ModelForm):
         self.request = kwargs.pop('request', None)
         super(ContactForm, self).__init__(*args, **kwargs)
         self.fields['author'].initial = self.request.user
+        if self.request.GET.get('is_lead'):
+            self.fields['is_lead'].initial = True
 
     def clean_author(self):
         self.cleaned_data['author'] = self.request.user
         return self.cleaned_data['author']
-
 
 
 class CompanyForm(BootstrapFormMixin, forms.ModelForm):

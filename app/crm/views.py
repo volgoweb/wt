@@ -13,6 +13,7 @@ from django.core.urlresolvers import reverse_lazy
 
 from .models import SalesDeal
 from .forms import SalesDealsFilters, SalesDealForm
+from app.task.models import Task
 
 class SalesDealsListPage(AjaxListView):
     model = SalesDeal
@@ -23,6 +24,9 @@ class SalesDealsListPage(AjaxListView):
     def __init__(self, *args, **kwargs):
         super(SalesDealsListPage, self).__init__(*args, **kwargs)
         self.default_filters = {
+            'status': '',
+            'responsible': '',
+            'company': '',
         }
 
     def define_filters(self):
@@ -40,15 +44,23 @@ class SalesDealsListPage(AjaxListView):
                 self.filters_values[key] = self.filters_form.cleaned_data.get(key)
 
     def get_base_queryset(self):
-        return self.model.objects.all()
+        return self.model.objects.all().order_by('-edited')
 
     def get_queryset(self):
         qs = self.get_base_queryset()
         self.define_filters()
 
-        # filter_performer = self.filters_values.get('performer')
-        # if filter_performer:
-        #     qs = qs.filter(template__performer=filter_performer)
+        filter_status = self.filters_values.get('status')
+        if filter_status:
+            qs = qs.filter(status=filter_status)
+
+        filter_responsible = self.filters_values.get('responsible')
+        if filter_responsible:
+            qs = qs.filter(responsible=filter_responsible)
+
+        filter_company = self.filters_values.get('company')
+        if filter_company:
+            qs = qs.filter(client_company=filter_company)
 
         self.queryset = qs
         return qs
@@ -76,6 +88,15 @@ class SalesDealDetail(UpdateView):
     template_name = 'crm/sales_deal_form.html'
     form_class = SalesDealForm
 
+    def get_tasks(self):
+        obj = self.get_object()
+        tasks = obj.tasks.all().order_by('-due_date')
+        return tasks
+
+    def get_next_task(self):
+        obj = self.get_object()
+        return obj.get_next_task()
+
     def get_form_kwargs(self):
         kwargs = super(SalesDealDetail, self).get_form_kwargs()
         kwargs.update({
@@ -83,8 +104,18 @@ class SalesDealDetail(UpdateView):
         })
         return kwargs
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(SalesDealDetail, self).get_context_data(*args, **kwargs)
+        context.update({
+            'tasks': self.get_tasks(),
+            'Task': Task,
+            'next_task': self.get_next_task(),
+        })
+        return context
+
     def get_success_url(self):
         return self.request.GET.get('next', '/crm/')
+
 
 class SalesDealAddPage(CreateView):
     model = SalesDeal
@@ -99,4 +130,4 @@ class SalesDealAddPage(CreateView):
         return kwargs
 
     def get_success_url(self):
-        return self.request.GET.get('next', '/crm/')
+        return self.request.GET.get('next', '/crm/sales-deals')

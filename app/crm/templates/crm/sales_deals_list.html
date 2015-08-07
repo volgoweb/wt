@@ -1,5 +1,6 @@
 {% load static %}
 {% load endless %}
+{% load humanize %}
 
 {% paginate deals %}
 {% get_pages %}
@@ -13,15 +14,19 @@
                 <th>Статус</th>
                 <th>Ответственный</th>
                 <th>Контакт клиента</th>
+                <th>Изменена</th>
+                <th>Срок ближайшей задачи</th>
             </tr>
         </thead>
         <tbody>
             {% for d in deals %}
                 <tr>
                     <td><a href="{% url "crm:sales_deal_detail_page" d.pk %}">{{ d.title }}</a></td>
-                    <td>{{ d.get_status_display }}</td>
+                    <td>{{ d.status.title }}</td>
                     <td>{{ d.responsible }}</td>
                     <td>{{ d.client_contact }}</td>
+                    <td>{{ d.edited|naturaltime }}</td>
+                    <td>{{ d.get_next_task.due_date|naturaltime }}</td>
                 </tr>
             {% endfor %}
         </tbody>

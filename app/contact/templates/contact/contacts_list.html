@@ -1,5 +1,6 @@
 {% load static %}
 {% load endless %}
+{% load humanize %}
 
 {% paginate contacts %}
 {% get_pages %}
@@ -13,6 +14,8 @@
                 <th>Компания</th>
                 <th>Телефон</th>
                 <th>Мобильный телефон</th>
+                <th>Тип</th>
+                <th>Дата создания</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +25,14 @@
                     <td>{{ contact.company|default:"" }}</td>
                     <td>{{ contact.phone }}</td>
                     <td>{{ contact.mobile_phone }}</td>
+                    <td>
+                        {% if contact.is_client %}
+                            <p>Клиент</p>
+                        {% elif contact.is_lead %}
+                            <p>Потенциальный клиент</p>
+                        {% endif %}
+                    </td>
+                    <td>{{ contact.created|naturaltime }}</td>
                 </tr>
             {% endfor %}
         </tbody>

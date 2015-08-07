@@ -10,6 +10,11 @@
 <div class="col-lg-6 col-md-9 col-sm-12">
     <form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data" class="task-form">
         {% csrf_token %}
+
+        {% if request.GET.sales_deal %}
+            <input type="hidden" name="sales_deal" value="{{ request.GET.sales_deal}}"/>
+        {% endif %}
+
         <div class="form__errors bg-danger">
             {{ form.non_field_errors }}
         </div>
