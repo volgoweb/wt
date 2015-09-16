@@ -18,3 +18,7 @@ class CompanyUnitForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = CompanyUnit
         exclude = ['active']
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(CompanyUnitForm, self).__init__(*args, **kwargs)

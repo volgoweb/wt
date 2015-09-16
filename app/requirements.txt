@@ -24,3 +24,4 @@ django-timezones
 django-crispy-forms
 django-contrib-comments
 django-fluent-comments
+django-sitetree

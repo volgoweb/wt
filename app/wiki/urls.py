@@ -10,6 +10,7 @@ from .perm_decorators import (
 )
 
 urlpatterns = patterns('',
+    url(r'^$', WikiList.as_view(), name='main_page'),
     url(r'^(?P<list_name>my|all)/$', WikiList.as_view(), name='wiki_list_page'),
     # url(r'^(?P<list_name>my|all)/$', WikiList.as_view(), name='wiki_my_list_page'),
     url(r'^wiki-page/(?P<pk>\d+)/$', has_access_to_view_wiki_page(WikiPageDetail.as_view()), name='wiki_page_detail'),

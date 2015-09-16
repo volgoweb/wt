@@ -71,6 +71,7 @@ INSTALLED_APPS = (
     # 'ajaxuploader',
     'ajax_upload',
     'timezones',
+    'sitetree',
 
     'helper',
     'app.core',

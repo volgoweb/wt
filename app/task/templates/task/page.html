@@ -1,11 +1,12 @@
 {% extends "core/page.html" %}
 {% load static %}
+{% load sitetree %}
 
 
 {% block sec_menu %}
     {{ block.super }}
     <div class="btn-group">
-        <a href="{% url "task:add_task" %}" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Добавить задачу</a>
+        <a href="{% url "task:add_task" %}" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Добавить задачу</a>
     {#     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> #}
     {#         <span class="glyphicon glyphicon-plus"></span> Добавить #}
             {# <span class="caret"></span> #}
@@ -17,55 +18,8 @@
     {#     </ul> #}
     </div>
 
-    <ul class="nav">
-        {# <li><a href="{% url "task:favorite_tasks_page" %}" class="sec-menu__link_favorite-tasks"> #}
-        {#     <span class="glyphicon glyphicon-star-empty"></span> Избранные #}
-        {#     {% if task_counts.favorite %} #}
-        {#         <span class="sec-menu__count pull-right">{{ task_counts.favorite }}</span> #}
-        {#     {% endif %} #}
-        {# </a></li> #}
-        <li><a href="{% url "task:today_tasks_page" %}" class="sec-menu__link_today-tasks">
-            <span class="glyphicon glyphicon-time"></span> Сегодня
-            {% if task_counts.today %}
-                <span class="sec-menu__count pull-right">{{ task_counts.today }}</span>
-            {% endif %}
-        </a></li>
-        <li><a href="{% url "task:overdue_tasks_page" %}" class="sec-menu__link_overdue-tasks">
-            <span class="glyphicon glyphicon-fire"></span> Просроченные
-            {% if task_counts.overdue %}
-                <span class="sec-menu__count pull-right">{{ task_counts.overdue }}</span>
-            {% endif %}
-        </a></li>
-        <li><a href="{% url "task:later_tasks_page" %}" class="sec-menu__link_later-tasks">
-            <span class="glyphicon glyphicon-calendar"></span> Позже
-            {% if task_counts.later %}
-                <span class="sec-menu__count pull-right">{{ task_counts.later }}</span>
-            {% endif %}
-        </a></li>
-        <li><a href="{% url "task:completed_tasks_page" %}" class="sec-menu__link_completed-tasks">
-            <span class="glyphicon glyphicon-saved"></span> Выполненные
-            {% if task_counts.completed %}
-                <span class="sec-menu__count pull-right">{{ task_counts.completed }}</span>
-            {% endif %}
-        </a></li>
-        <li><a href="{% url "task:outbound_tasks_page" %}" class="sec-menu__link_outbound-tasks">
-            <span class="glyphicon glyphicon-export"></span> Исходящие
-            {% if task_counts.outbound %}
-                <span class="sec-menu__count pull-right">{{ task_counts.outbound }}</span>
-            {% endif %}
-        </a></li>
-        <li><a href="{% url "task:repeating_tasks_page" %}" class="sec-menu__link_repeating-tasks">
-            <span class="glyphicon glyphicon-repeat"></span> Повторяющиеся
-            {% if task_counts.repeating %}
-                <span class="sec-menu__count pull-right">{{ task_counts.repeating }}</span>
-            {% endif %}
-        </a></li>
-        <li><a href="{% url "task:all_tasks_page" %}" class="sec-menu__link_all-tasks">
-            <span class="glyphicon glyphicon-list-alt"></span> Все
-            {# {% if task_counts.all %} #}
-                {# <span class="sec-menu__count pull-right">{{ task_counts.all }}</span> #}
-            {# {% endif %} #}
-        </a></li>
-    </ul>
+    <br>
+    <br>
+    {% sitetree_menu from "main_menu" include "tasks" template 'core/sec_menu.html' %}
 {% endblock %}
 

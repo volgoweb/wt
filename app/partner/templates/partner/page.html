@@ -22,6 +22,8 @@
                 {{ f }}
             {% endfor %}
 
+            {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success btn-sm" container_classes="pull-left" %}
+            <a href="#" class="btn btn-sm pull-left" onClick="$(this.form).find('input[type=text]').val('');">Сбросить</a>
             {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %}
             {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="this.form.reset();" %}
         </form>

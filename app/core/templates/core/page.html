@@ -1,6 +1,7 @@
 {% load static %}
 {% load compress %}
 {% load authentication %}
+{% load sitetree %}
 
 <html>
     <head>
@@ -65,18 +66,22 @@
                     <a href="http://click-and-click.ru" target="_blank" class="logo"></a>
                 </div>
 
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
-                  <ul class="nav navbar-nav">
-                    <li class="active"><a href="{% url "notification:notifications_list_page" %}">События</a></li>
-                    <li><a href="{% url "task:today_tasks_page" %}">Задачи</a></li>
-                    <li><a href="{% url "crm:sales_deals_list_page" %}">CRM</a></li>
-                    <li><a href="{% url "goal:my_goals_list_page" %}">Цели</a></li>
-                    <li><a href="{% url "contact:contacts_list_page" %}">Контакты</a></li>
-                    <li><a href="{% url "wiki:wiki_list_page" list_name="all" %}">Книга знаний</a></li>
-                    <li><a href="{% url "account:company_units_list_page" %}">Сотрудники</a></li>
+                {% sitetree_menu from "main_menu" include "root" template 'sitetree/menu_bootstrap3.html' %}
+                <ul class="nav navbar-nav pull-right">
                     {% auth_menu %}
-                  </ul>
-                </div><!-- /.navbar-collapse -->
+                </ul>
+                {# <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6"> #}
+                {#   <ul class="nav navbar-nav"> #}
+                {#     <li class="active"><a href="{% url "notification:notifications_list_page" %}">События</a></li> #}
+                {#     <li><a href="{% url "task:today_tasks_page" %}">Задачи</a></li> #}
+                {#     <li><a href="{% url "crm:sales_deals_list_page" %}">CRM</a></li> #}
+                {#     <li><a href="{% url "goal:my_goals_list_page" %}">Цели</a></li> #}
+                {#     <li><a href="{% url "contact:contacts_list_page" %}">Контакты</a></li> #}
+                {#     <li><a href="{% url "wiki:wiki_list_page" list_name="all" %}">Книга знаний</a></li> #}
+                {#     <li><a href="{% url "account:company_units_list_page" %}">Сотрудники</a></li> #}
+                {#     {% auth_menu %} #}
+                {#   </ul> #}
+                {# </div><!-- /.navbar-collapse --> #}
               </div>
             </nav>
 

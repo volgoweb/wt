@@ -64,3 +64,25 @@
 .task-item_overdue a {
     color: red;
 }
+
+.sec-menu__item_tasks_today .sec-menu-item__icon:before {
+    content: "\e023";
+}
+.sec-menu__item_tasks_overdue .sec-menu-item__icon:before {
+    content: "\e104";
+}
+.sec-menu__item_tasks_later .sec-menu-item__icon:before {
+    content: "\e109";
+}
+.sec-menu__item_tasks_completed .sec-menu-item__icon:before {
+    content: "\e089";
+}
+.sec-menu__item_tasks_outbound .sec-menu-item__icon:before {
+    content: "\e066";
+}
+.sec-menu__item_tasks_repeating .sec-menu-item__icon:before {
+    content: "\e030";
+}
+.sec-menu__item_tasks_all .sec-menu-item__icon:before {
+    content: "\e032";
+}

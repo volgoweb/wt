@@ -7,6 +7,7 @@ from .views import *
 
 urlpatterns = patterns('',
     # url(r'^?(?P<list>{0})?/$'.format('|'.join(TasksList.LIST_NAMES)), login_required(TasksList.as_view()), name='tasks_list'),
+    url(r'^$', login_required(TodayTasksPage.as_view()), name='main_page'),
     url(r'^today/$', login_required(TodayTasksPage.as_view()), name='today_tasks_page'),
     # url(r'^favorite/$', login_required(FavoriteTasksPage.as_view()), name='favorite_tasks_page'),
     url(r'^overdue/$', login_required(OverdueTasksPage.as_view()), name='overdue_tasks_page'),

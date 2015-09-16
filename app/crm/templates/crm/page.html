@@ -1,5 +1,6 @@
 {% extends "core/page.html" %}
 {% load static %}
+{% load sitetree %}
 
 {% block css %}
     {{ block.super }}
@@ -10,7 +11,7 @@
     {{ block.super }}
 
     <div class="btn-group">
-      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="glyphicon glyphicon-plus"></span> Добавить <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
@@ -19,14 +20,9 @@
       </ul>
     </div>
 
-    <ul class="nav">
-        <li><a href="{% url "crm:sales_deals_list_page" %}" class="sec-menu__link_deals">
-            <span class="glyphicon glyphicon-shopping-cart"></span> Сделки
-        </a></li>
-        <li><a href="{% url "contact:clients_list_page" %}" class="sec-menu__link_clients">
-            <span class="glyphicon glyphicon-user"></span> Клиенты
-        </a></li>
-    </ul>
+    <br>
+    <br>
+    {% sitetree_menu from "main_menu" include "crm" template 'core/sec_menu.html' %}
 
 {% endblock %}
 

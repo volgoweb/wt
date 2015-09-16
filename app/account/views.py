@@ -100,6 +100,8 @@ class CompanyUnitsListPage(AjaxListView):
         # фильтры списка
         context['filters_form'] = self.filters_form
 
+        context['CompanyUnit'] = CompanyUnit
+
         # context['count_objects'] = self.queryset.count()
         from django.template import RequestContext
         return RequestContext(self.request, context)

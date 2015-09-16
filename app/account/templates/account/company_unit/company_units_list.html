@@ -3,7 +3,10 @@
     <tbody>
         {% for node in tree %}
             <tr class="company_unit-page-item">
-                <td class="company_unit-catalog__item" data-pk="{{ node.pk }}" style="padding-left: {% widthratio node.level 20 100 %}px;"><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></td>
+                <td class="company_unit-catalog__item" data-pk="{{ node.pk }}" style="padding-left: {% widthratio node.level 20 400 %}px;">
+                    <strong>{{ node.name }}</strong>{% if node.unit_type == CompanyUnit.UNIT_TYPE_EMPLOYEE %} 
+                    ({{ node.get_user }}){% endif %}
+                </td>
             </tr>
         {% endfor %}
     </tbody>

@@ -2,3 +2,10 @@
 .next-task__due-date_overdue {
     background-color: red;
 }
+
+.sec-menu__item_crm_sales_deals .sec-menu-item__icon:before {
+    content: "\e116";
+}
+.sec-menu__item_crm_clients .sec-menu-item__icon:before {
+    content: "\e008";
+}

@@ -1,5 +1,6 @@
 {% extends "core/page.html" %}
 {% load static %}
+{% load sitetree %}
 
 {% block css %}
     {{ block.super }}
@@ -10,31 +11,13 @@
     {{ block.super }}
 
     <div class="btn-group">
-        <a href="{% url "goal:add_goal_page" %}" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Добавить цель</a>
+        <a href="{% url "goal:add_goal_page" %}" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Добавить цель</a>
     </div>
 
-    <hr>
+    <br>
+    <br>
 
-    <ul class="nav">
-        <li><a href="{% url "goal:company_goals_list_page" %}" class="sec-menu__link_company-goals">
-            Цели компании
-            {% if goal_counts.company_goals %}
-                <span class="sec-menu__count pull-right">{{ goal_counts.company_goals }}</span>
-            {% endif %}
-        </a></li>
-        <li><a href="{% url "goal:department_goals_list_page" %}" class="sec-menu__link_department-goals">
-            Цели отдела
-            {% if goal_counts.department_goals %}
-                <span class="sec-menu__count pull-right">{{ goal_counts.department_goals }}</span>
-            {% endif %}
-        </a></li>
-        <li><a href="{% url "goal:my_goals_list_page" %}" class="sec-menu__link_my-goals">
-            Мои цели
-            {% if goal_counts.my_goals %}
-                <span class="sec-menu__count pull-right">{{ goal_counts.my_goals }}</span>
-            {% endif %}
-        </a></li>
-    </ul>
+    {% sitetree_menu from "main_menu" include "goals" template 'core/sec_menu.html' %}
 
     {# {% if filters_form %} #}
     {#     <h4 class="text-primary">Фильтры</h4> #}

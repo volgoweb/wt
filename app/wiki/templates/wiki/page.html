@@ -1,5 +1,6 @@
 {% extends "core/page.html" %}
 {% load static %}
+{% load sitetree %}
 
 {% block js %}
     {{ block.super }}
@@ -15,19 +16,14 @@
     {{ block.super }}
 
     <div class="btn-group">
-        <a href="{% url "wiki:add_wiki_page" %}" class="btn btn-primary">
+        <a href="{% url "wiki:add_wiki_page" %}" class="btn btn-success">
             <span class="glyphicon glyphicon-plus"></span> Добавить главу
         </a>
     </div>
 
-    <ul class="nav">
-        <li><a href="{% url "wiki:wiki_list_page" list_name="my" %}" class="sec-menu__link_my-pages">
-            <span class="glyphicon glyphicon-user"></span> Мои
-        </a></li>
-        <li><a href="{% url "wiki:wiki_list_page" list_name="all" %}" class="sec-menu__link_all-pages">
-            <span class="glyphicon glyphicon-eye-open"></span> Все доступные
-        </a></li>
-    </ul>
+    <br>
+    <br>
+    {% sitetree_menu from "main_menu" include "wiki" template 'core/sec_menu.html' %}
 {% endblock %}
 
 

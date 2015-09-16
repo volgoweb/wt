@@ -3,86 +3,24 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.8);
     padding-top: 15px;
+    box-sizing: border-box;
 }
 
 .sec-menu li.active > a,
-.sec-menu li > a:hover {
-    background-color: transparent;
-    border-left: 4px solid;
+.sec-menu li > a:hover,
+.sec-menu li > a:focus {
+    background-color: @brand-primary;
+    box-sizing: border-box;
+    color: white;
+    border-radius: 0;
 }
 
-/*
-.active .sec-menu__link_today-tasks,
-.sec-menu__link_today-tasks:hover,
-.sec-menu__link_today-tasks:focus,
-.sec-menu__link_today-tasks {
-   color: @brand-success; 
-   background-color: transparent !important;
+.sec-menu li > a {
+    color: @gray-light;
 }
-.sec-menu__link_today-tasks .badge {
-    background-color: @brand-success;
-}
-*/
-
-// .active .sec-menu__link_overdue-tasks,
-// .sec-menu__link_overdue-tasks:hover,
-// .sec-menu__link_overdue-tasks:focus,
-// .sec-menu__link_overdue-tasks {
-//    color: @brand-danger; 
-//    background-color: transparent !important;
-// }
-.sec-menu__link_overdue-tasks .sec-menu__count {
-    color: @brand-danger;
-}
-
-/*
-.active .sec-menu__link_favorite-tasks,
-.sec-menu__link_favorite-tasks:hover,
-.sec-menu__link_favorite-tasks:focus,
-.sec-menu__link_favorite-tasks {
-   color: rgb(210, 175, 0); 
-   background-color: transparent !important;
-}
-.sec-menu__link_favorite-tasks .badge {
-    background-color: rgb(210, 175, 0);
-}
-
-.active .sec-menu__link_later-tasks,
-.sec-menu__link_later-tasks:hover,
-.sec-menu__link_later-tasks:focus,
-.sec-menu__link_later-tasks {
-   color: rgb(57, 161, 249); 
-   background-color: transparent !important;
-}
-.sec-menu__link_later-tasks .badge {
-    background-color: rgb(57, 161, 249);
-}
-
-.active .sec-menu__link_completed-tasks,
-.sec-menu__link_completed-tasks:hover,
-.sec-menu__link_completed-tasks:focus,
-.sec-menu__link_completed-tasks {
-   color: silver;
-   background-color: transparent !important;
-}
-.sec-menu__link_completed-tasks .badge {
-    background-color: silver;
-}
-
-.active .sec-menu__link_outbound-tasks,
-.sec-menu__link_outbound-tasks:hover,
-.sec-menu__link_outbound-tasks:focus,
-.sec-menu__link_outbound-tasks {
-   color: rgb(171, 122, 255); 
-   background-color: transparent !important;
-}
-.sec-menu__link_outbound-tasks .badge {
-    background-color: rgb(171, 122, 255);
-}
-*/
 
 .sec-menu label {
-    color: @brand-primary;
+    color: @gray-light;
     font-weight: normal;
 }
 
