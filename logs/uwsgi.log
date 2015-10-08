@@ -1,0 +1,42 @@
+*** Starting uWSGI 2.0.11.1 (64bit) on [Wed Sep 16 17:27:27 2015] ***
+compiled with version: 4.8.4 on 16 September 2015 17:15:48
+os: Linux-3.13.0-63-generic #103-Ubuntu SMP Fri Aug 14 21:42:59 UTC 2015
+nodename: volgoweb-laptop
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /my/web_projects/source/work_together
+writing pidfile to /tmp/work_together-master.pid
+detected binary path: /home/volgoweb/.virtualenvs/wt/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /my/web_projects/source/work_together
+your processes number limit is 30744
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+Python version: 2.7.6 (default, Jun 22 2015, 18:01:27)  [GCC 4.8.2]
+*** Python threads support is disabled. You can enable it with --enable-threads ***
+Python main interpreter initialized at 0x182eba0
+The -s/--socket option is missing and stdin is not a socket.
+*** Starting uWSGI 2.0.11.1 (64bit) on [Wed Sep 16 17:27:39 2015] ***
+compiled with version: 4.8.4 on 16 September 2015 17:15:48
+os: Linux-3.13.0-63-generic #103-Ubuntu SMP Fri Aug 14 21:42:59 UTC 2015
+nodename: volgoweb-laptop
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 4
+current working directory: /my/web_projects/source/work_together
+writing pidfile to /tmp/work_together-master.pid
+detected binary path: /home/volgoweb/.virtualenvs/wt/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /my/web_projects/source/work_together
+your processes number limit is 30744
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+Python version: 2.7.6 (default, Jun 22 2015, 18:01:27)  [GCC 4.8.2]
+*** Python threads support is disabled. You can enable it with --enable-threads ***
+Python main interpreter initialized at 0x1beaba0
+The -s/--socket option is missing and stdin is not a socket.

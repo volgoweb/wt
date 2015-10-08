@@ -1,0 +1,4 @@
+[Wed Sep 16 17:54:49.026668 2015] [authz_core:error] [pid 17121] [client 127.0.0.1:34297] AH01630: client denied by server configuration: /my/web_projects/source/work_together/app/wsgi.wsgi
+[Wed Sep 16 17:54:49.330093 2015] [authz_core:error] [pid 17121] [client 127.0.0.1:34297] AH01630: client denied by server configuration: /my/web_projects/source/work_together/app/wsgi.wsgi, referer: http://127.0.0.1/
+[Wed Sep 16 17:57:32.357169 2015] [authz_core:error] [pid 17462] [client 127.0.0.1:32884] AH01630: client denied by server configuration: /my/web_projects/source/work_together/app/wsgi.wsgi
+[Wed Sep 16 17:57:33.878963 2015] [authz_core:error] [pid 17462] [client 127.0.0.1:32884] AH01630: client denied by server configuration: /my/web_projects/source/work_together/app/wsgi.wsgi

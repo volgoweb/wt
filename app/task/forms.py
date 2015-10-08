@@ -204,6 +204,9 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
                     'placeholder': u'Введите название новой задачи и нажмите Enter ...',
                     'title': u'Введите название новой задачи и нажмите Enter',
                 })
+                self.fields['due_date'].widget.attrs.update({
+                    'placeholder': u'Срок',
+                })
 
         # self.add_files_formset()
         # self.add_task_steps_formset()

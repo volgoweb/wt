@@ -27,6 +27,8 @@
             $add_task.find('.add-task__btn-cancel').on('click', function(event){
                 $('.add-task__params').hide();
             });
+
+            $('#id_due_date').default_datetimepicker();
         });
     </script>
 {% endblock %}
@@ -39,10 +41,18 @@
     <div class="add-task-block panel panel-default">
         <div class="panel-body">
             {# TODO вынести в отдельный шаблон #}
-            <form action="{% url "task:add_task" %}?next={{ request.path }}" method="POST" accept-charset="utf-8">
+            <form
+                action="{% url "task:add_task" %}?next={{ request.path }}"
+                method="POST"
+                accept-charset="utf-8"
+                class="task-form task-form_add {% if form.is_shortform %}task-form_shortform{%endif%}"
+            >
                 {% csrf_token %}
                 {# <div class="input-group"> #}
-                    {{ form.title }}
+                <div class="row">
+                    <div class="col-md-9"> {{ form.title }} </div>
+                    <div class="col-md-3"> {{ form.due_date }} </div>
+                </div>
                     {# <span class="input-group-btn"> #}
                     {#     <input type="submit" class="btn btn-default" value="Добавить"><span class="glyphicon glyphicon-plus"></span></button> #}
                     {# </span> #}
@@ -57,7 +67,6 @@
 
                     {% include "core/form_field.html" with field=form.desc %}
                     {% include "core/form_field.html" with field=form.performer_unit %}
-                    {% include "core/form_field.html" with field=form.due_date %}
                     {% include "core/form_field.html" with field=form.period %}
                     {% include "task/task_detail/files_formset.html" %}
                     <input type="submit" class="btn btn-primary" value="Добавить"/>
