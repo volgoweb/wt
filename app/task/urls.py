@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^outbound/$', login_required(OutboundTasksPage.as_view()), name='outbound_tasks_page'),
     url(r'^repeating/$', login_required(RepeatingTasksPage.as_view()), name='repeating_tasks_page'),
     url(r'^all/$', login_required(AllTasksPage.as_view()), name='all_tasks_page'),
+    url(r'^get-count-tasks.json/$', login_required(CountTasks.as_view()), name='get_count_tasks'),
 
     url(r'^task/(?P<pk>\d+)/$', login_required(TaskDetail.as_view()), name='task_detail'),
     url(r'^task/add/$', login_required(TaskAddForm.as_view()), name='add_task'),

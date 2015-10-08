@@ -4,7 +4,6 @@
 {% paginate tasks %}
 {% get_pages %}
 
-<div class="endless_page_template">
     <div>
     {% for t in tasks %}
         <div class="task-item row-fluid {% if t.is_overdue %}task-item_overdue{% endif %}">
@@ -31,18 +30,22 @@
 
             <div class="task-item__row2">
                 {% if show_due_date %}
-                    <span class="badge">{{ t.due_date|date:"FULL_DATETIME_FORMAT" }}</span>
+                    <span class="badge"><span class="task-icon_due">Срок: </span>{{ t.due_date|date:"FULL_DATETIME_FORMAT" }}</span>
+                {% endif %}
+
+                {% if show_author %}
+                    <span class="badge"><span class="task-icon_author">Автор: </span>{{ t.template.author }}</span>
                 {% endif %}
 
                 {% if show_performer %}
-                    <span class="badge">{{ t.template.performer_unit }}</span>
+                    <span class="badge"><span class="task-icon_performer">Исполнитель: </span>{{ t.template.performer_unit }}</span>
                 {% endif %}
                 {# <span class="task-item__comments badge">2 комментария</span> #}
             </div>
         </div>
     {% endfor %}
     </div>
+
     {% include "helper/endless_pagination/pages.html" %}
 
     <script type="text/javascript" src="{% static 'core/js/endless_custom.js' %}"></script>
-</div>

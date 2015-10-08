@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from django.views.generic import ListView, UpdateView, CreateView
+from django.views.generic import ListView, UpdateView, CreateView, View
 from django.forms.models import modelformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.contrib.contenttypes.models import ContentType
 from django.http import Http404, HttpResponse
@@ -146,6 +146,7 @@ class TodayTasksPage(TasksList):
         context.update({
             'page_title': u'Задачи на сегодня',
             'list_name': self.LIST_MY_TODAY,
+            'show_author': True,
             'show_due_date': False,
         })
         return context
@@ -161,6 +162,7 @@ class OverdueTasksPage(TasksList):
         context.update({
             'page_title': u'Задачи просроченные',
             'list_name': self.LIST_MY_OVERDUE,
+            'show_author': True,
             'show_due_date': True,
         })
         return context
@@ -176,6 +178,7 @@ class LaterTasksPage(TasksList):
         context.update({
             'page_title': u'Задачи на будущее',
             'list_name': self.LIST_MY_FUTURE,
+            'show_author': True,
             'show_due_date': True,
         })
         return context
@@ -191,6 +194,7 @@ class CompletedTasksPage(TasksList):
         context.update({
             'page_title': u'Задачи выполненные',
             'list_name': self.LIST_MY_COMPLETED,
+            'show_author': True,
             'show_due_date': True,
         })
         return context
@@ -409,3 +413,24 @@ class TaskAddForm(TemplateFormMixin, CreateView):
 
     def get_success_url(self, *args, **kwargs):
         return self.request.GET.get('next', '/tasks/today/')
+
+
+class CountTasks(View):
+    def get(self, *args, **kwargs):
+        today_count = TodayTasksPage.get_base_queryset_from_class(self.request).count()
+        overdue_count = OverdueTasksPage.get_base_queryset_from_class(self.request).count()
+        later_count = LaterTasksPage.get_base_queryset_from_class(self.request).count()
+        completed_count = CompletedTasksPage.get_base_queryset_from_class(self.request).count()
+        outbound_count = OutboundTasksPage.get_base_queryset_from_class(self.request).count()
+        repeating_count = RepeatingTasksPage.get_base_queryset_from_class(self.request).count()
+        all_count = AllTasksPage.get_base_queryset_from_class(self.request).count()
+        context = {
+            'today': today_count,
+            'overdue': overdue_count,
+            'later': later_count,
+            'completed': completed_count,
+            'outbound': outbound_count,
+            'repeating': repeating_count,
+            'all': all_count,
+        }
+        return JsonResponse(context)

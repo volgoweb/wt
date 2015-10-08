@@ -34,6 +34,15 @@ class ContactForm(BootstrapFormMixin, forms.ModelForm):
         self.cleaned_data['author'] = self.request.user
         return self.cleaned_data['author']
 
+    def clean(self):
+        self.cleaned_data = super(ContactForm, self).clean()
+        if not self.cleaned_data['phone'] and not self.cleaned_data['mobile_phone']:
+            raise forms.ValidationError({
+                'phone': u'Укажите либо телефон либо мобильный телефон.',
+                'mobile_phone': u'Укажите либо телефон либо мобильный телефон.',
+            })
+        return self.cleaned_data
+
 
 class CompanyForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:

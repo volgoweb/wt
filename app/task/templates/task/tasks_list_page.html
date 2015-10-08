@@ -80,7 +80,9 @@
         <div class="row-fluid">
             {# <p class="lead">Найдено: <strong>{{ count_objects }}</strong></p> #}
             {% if tasks %}
-                {% include "task/tasks_list_block.html" %}
+                <div class="endless_page_template">
+                    {% include "task/tasks_list_block.html" %}
+                </div>
             {% else %}
                 <div class="tasks-list__empty bg-warning">
                     Нет задач
