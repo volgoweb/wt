@@ -12,29 +12,44 @@
        {{ page_title}}
 {% endblock %}
 
-{% block sec_menu %}
-    {{ block.super }}
-
-    {% if list_name == view.LIST_ALL %}
-        <div class="tasks-list__filters row-fluid">
-            <form action="" method="GET" accept-charset="utf-8" class="filters-form">
-                {% for f in filters_form.visible_fields %}
-                    {% include "core/form_field.html" with field=f %}
-                {% endfor %}
-
-                {% for f in filters_form.hidden_fields %}
-                    {{ f }}
-                {% endfor %}
-
-                {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %}
-                {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="this.form.reset(); $('select').val(''); this.form.submit();" %}
-            </form>
-        </div>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
     <div class="tasks-list">
+    {% if list_name == view.LIST_ALL and filters_form %}
+        <div class="panel-group" id="tasks-list__filters" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="tasks-list-filters__my-heading">
+                    <h4 class="panel-title">
+                        <a
+                            role="button"
+                            data-toggle="collapse"
+                            data-parent="#tasks-list__filters"
+                            href="#tasks-filters__my-body"
+                            aria-expanded="true"
+                            aria-controls="tasks-filters__my-body"
+                            class="{% if not request.GET %}collapsed{% endif %}"
+                        >Фильтры</a>
+                    </h4>
+                </div>
+                <div id="tasks-filters__my-body" class="panel-collapse collapse {% if request.GET %}in{% endif %}" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <form action="" method="GET" accept-charset="utf-8" class="filters-form form-inline">
+                            {% for f in filters_form.visible_fields %}
+                                {% include "core/form_field.html" with field=f %}
+                            {% endfor %}
+
+                            {% for f in filters_form.hidden_fields %}
+                                {{ f }}
+                            {% endfor %}
+
+                            {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %}
+                            {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="this.form.reset(); $('select').val(''); this.form.submit();" %}
+                        </form>
+                    </div> {# .panel-body #}
+                </div> {# #tasks-filters__my-body #}
+            </div>
+        </div> {# .panel-group #}
+    {% endif %}
+
         {# <div class="row-fluid"> #}
             {# <p class="lead">Найдено: <strong>{{ count_objects }}</strong></p> #}
             {% if tasks %}

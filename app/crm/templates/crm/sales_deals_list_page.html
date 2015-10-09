@@ -10,33 +10,53 @@
 
     <hr>
 
-    {% if filters_form %}
-        <h4 class="text-primary">Фильтры</h4>
-        <form action="" method="GET" accept-charset="utf-8" class="filters-form form-inline">
-            {% for f in filters_form.visible_fields %}
-                {% include "core/form_field.html" with field=f %}
-            {% endfor %}
-
-            {% for f in filters_form.hidden_fields %}
-                {{ f }}
-            {% endfor %}
-
-            <p>
-                {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %}
-                {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="$('.filters-form').find('input[type=text], select').val('').change(); this.form.submit();" %}
-            </p>
-        </form>
-    {% endif %}
 {% endblock %}
 
 {% block content %}
     <div class="sales_deals-list-page">
 
+    {% if filters_form %}
+        <div class="panel-group" id="deal-filters" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="deal-filters__my-heading">
+                    <h4 class="panel-title">
+                        <a
+                            role="button"
+                            data-toggle="collapse"
+                            data-parent="#deal-filters"
+                            href="#deal-filters__my-body"
+                            aria-expanded="true"
+                            aria-controls="deal-filters__my-body"
+                            class="{% if not request.GET %}collapsed{% endif %}"
+                        >Фильтры</a>
+                    </h4>
+                </div>
+                <div id="deal-filters__my-body" class="panel-collapse collapse {% if request.GET %}in{% endif %}" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <form action="" method="GET" accept-charset="utf-8" class="filters-form form-inline">
+                            {% for f in filters_form.visible_fields %}
+                                {% include "core/form_field.html" with field=f %}
+                            {% endfor %}
+
+                            {% for f in filters_form.hidden_fields %}
+                                {{ f }}
+                            {% endfor %}
+
+                            {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %}
+                            {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="$('.filters-form').find('input[type=text], select').val('').change(); this.form.submit();" %}
+                        </form>
+                    </div> {# .panel-body #}
+                </div> {# #deal-filters__my-body #}
+            </div>
+        </div> {# .panel-group #}
+    {% endif %}
+
+
         <div class="panel-group" id="deal-statistics" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="deal-statistics__my-heading">
                     <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#deal-statistics" href="#deal-statistics__my-body" aria-expanded="true" aria-controls="deal-statistics__my-body">
+                        <a role="button" data-toggle="collapse" data-parent="#deal-statistics" href="#deal-statistics__my-body" aria-expanded="true" aria-controls="deal-statistics__my-body" class="collapsed">
                           Статистика
                         </a>
                     </h4>

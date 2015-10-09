@@ -30,6 +30,16 @@ td, th {
     padding: 10px;
 }
 
+.panel-title > a {
+    text-decoration: none;
+}
+.panel-title > a:after {
+    content: ' ↑'
+}
+.panel-title > a.collapsed:after {
+    content: ' ↓'
+}
+
 
 .form-field_inline {
     overflow: hidden;
