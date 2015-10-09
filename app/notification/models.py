@@ -30,7 +30,7 @@ class Notification(PolymorphicModel):
 @receiver(task_saved, sender=Task)
 def notify_about_task(task, created, **kwargs):
     # TODO перенести в ассинхронное выполнение через celery
-    if created:
+    if created and task.author != task.template.performer:
         text = u'Добавлена новая задача "<a href="{link}">{title}</a>"'.format(link=task.get_absolute_url(), title=task.template.title)
         n = Notification(
             text=text,
@@ -54,9 +54,10 @@ def notify_about_adding_comment(*args, **kwargs):
     if type(obj) == Task:
         task = obj
         subscribers.append(obj.author)
-        subscribers.append(obj.template.performer)
+        if obj.template.performer != obj.author:
+            subscribers.append(obj.template.performer)
         for u in subscribers:
-            text = u'Добавлен комментарий к задаче "<a href="{link}">{title}</a>"'.format(link=task.get_absolute_url(), title=task.template.title)
+            text = u'Добавлен комментарий к задаче "<a href="{link}">{title}</a>": <span class="notify-item__comment">"{comment}"</span>'.format(link=task.get_absolute_url(), title=task.template.title, comment=comment.comment)
             n = Notification(
                 text=text,
                 subscriber=u,
