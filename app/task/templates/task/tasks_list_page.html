@@ -50,8 +50,12 @@
                 {% csrf_token %}
                 {# <div class="input-group"> #}
                 <div class="row">
-                    <div class="col-md-9"> {{ form.title }} </div>
-                    <div class="col-md-3"> {{ form.due_date }} </div>
+                    <div class="col-md-9">
+                        {% include "core/form_field.html" with field=form.title %}
+                    </div>
+                    <div class="col-md-3">
+                        {% include "core/form_field.html" with field=form.due_date %}
+                    </div>
                 </div>
                     {# <span class="input-group-btn"> #}
                     {#     <input type="submit" class="btn btn-default" value="Добавить"><span class="glyphicon glyphicon-plus"></span></button> #}

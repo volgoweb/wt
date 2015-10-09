@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 from django import forms
 # from django.core.exceptions import ValidationError
 # from django.template.loader import render_to_string
@@ -207,6 +208,7 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
                 self.fields['due_date'].widget.attrs.update({
                     'placeholder': u'Срок',
                 })
+                self.fields['due_date'].initial = datetime.datetime.now() + datetime.timedelta(minutes=30)
 
         # self.add_files_formset()
         # self.add_task_steps_formset()

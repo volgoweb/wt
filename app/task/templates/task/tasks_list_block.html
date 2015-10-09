@@ -26,7 +26,14 @@
                     {% endif %}
                 </span>
 
-                <a href="{% url "task:task_detail" t.pk %}" data-toggle="tooltip" data-html="true" title="{{ t.template.desc|linebreaks }}">{{ t.template.title }}</a>
+                <a
+                    href="{% url "task:task_detail" t.pk %}"
+                    {% if t.template.desc %}
+                        data-toggle="tooltip"
+                        data-html="true"
+                        title="{{ t.template.desc|linebreaks }}"
+                    {% endif %}
+                >{{ t.template.title }}</a>
             </div>
 
             <div class="task-item__row2">

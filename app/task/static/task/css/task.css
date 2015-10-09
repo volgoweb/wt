@@ -60,6 +60,11 @@
     margin-bottom: 0;
 }
 
+.task-form_shortform .form-field_title,
+.task-form_shortform .form-field_due_date {
+    margin-bottom: 0;
+}
+
 .task-item_overdue,
 .task-item_overdue a {
     color: red;
