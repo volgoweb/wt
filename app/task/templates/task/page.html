@@ -2,11 +2,6 @@
 {% load static %}
 {% load sitetree %}
 
-{% block js %}
-    {{ block.super }}
-    <script type="text/javascript" src="{% static "task/js/tasks_count_in_menu.js" %}"></script>
-{% endblock %}
-
 {% block sec_menu %}
     {{ block.super }}
     <div class="btn-group">

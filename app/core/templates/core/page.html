@@ -48,6 +48,8 @@
 
                 <script type="text/javascript" src="{% static 'endless_pagination/js/endless-pagination.js' %}"></script>
                 {# <script type="text/javascript" src="{% static 'core/js/endless_custom.js' %}"></script> #}
+                <script type="text/javascript" src="{% static 'notification/js/counts_in_menu.js' %}"></script>
+                <script type="text/javascript" src="{% static "task/js/tasks_count_in_menu.js" %}"></script>
             {% endblock %}
         {% endblock %}
     </head>
@@ -66,7 +68,7 @@
                     <a href="http://click-and-click.ru" target="_blank" class="logo"></a>
                 </div>
 
-                {% sitetree_menu from "main_menu" include "root" template 'sitetree/menu_bootstrap3.html' %}
+                {% sitetree_menu from "main_menu" include "root" template "core/main_menu.html" %}
                 <ul class="nav navbar-nav pull-right">
                     {% auth_menu %}
                 </ul>

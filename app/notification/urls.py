@@ -8,4 +8,5 @@ from .views import *
 
 urlpatterns = patterns('',
     url(r'^$', login_required(NotificationsListPage.as_view()), name='notifications_list_page'),
+    url(r'^get-count.json/$', login_required(CountNotifications.as_view()), name='count_notifications'),
 )

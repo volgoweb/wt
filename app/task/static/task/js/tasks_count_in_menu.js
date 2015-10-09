@@ -5,7 +5,9 @@ $(document).ready(function() {
         $.get(url_for_sec_menu, function(data){
             for (key in data) {
                 $('.sec-menu-item__suffix_tasks_' + key).text(data[key] || '0');
+                $('.main-menu-subitem__suffix_tasks_' + key).text(data[key] || '0');
             }
+            $('.main-menu-item__suffix_tasks').text(data['today'] || '0' + '|' + data['overdue'] || '0');
         });
     }
 

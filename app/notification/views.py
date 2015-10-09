@@ -3,6 +3,8 @@ from django.shortcuts import render
 from endless_pagination.views import AjaxListView
 from endless_pagination import settings as endless_settings
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.views.generic import View
 
 from .models import Notification
 from .forms import NotificationsListFilters
@@ -56,3 +58,9 @@ class NotificationsListPage(AjaxListView):
     #     # фильтры списка
     #     context['filters_form'] = self.filters_form
     #     return context
+
+
+class CountNotifications(View):
+    def get(self, *args, **kwargs):
+        qs = Notification.objects.filter(subscriber=self.request.user)
+        return JsonResponse({'all': qs.count()})
