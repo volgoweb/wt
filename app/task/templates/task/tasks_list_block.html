@@ -16,8 +16,8 @@
                             type="checkbox"
                             name="task-complete"
                             value=""
-                            data-task-pk="{{ task.pk }}"
-                            class="task-item__complete form-control pull-left"
+                            data-task-pk="{{ t.pk }}"
+                            class="task-item__status-btn form-control pull-left"
                             {% if t.status == Task.STATUS_READY %}
                                 checked="checked"
                             {% endif %}
@@ -49,3 +49,4 @@
     {% include "helper/endless_pagination/pages.html" %}
 
     <script type="text/javascript" src="{% static 'core/js/endless_custom.js' %}"></script>
+    <script type="text/javascript" src="{% static 'task/js/task_status_btn.js' %}"></script>

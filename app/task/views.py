@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, UpdateView, CreateView, View
 from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect, JsonResponse
@@ -434,3 +435,15 @@ class CountTasks(View):
             'all': all_count,
         }
         return JsonResponse(context)
+
+
+class SetTaskStatus(View):
+    def get(self, *args, **kwargs):
+        task_pk = self.request.GET.get('task', None)
+        new_status = self.request.GET.get('new_status', None)
+        task = get_object_or_404(Task, pk=task_pk)
+        if new_status in Task.STATUSES:
+            task.status = new_status
+            task.save()
+            return HttpResponse('ok')
+        return HttpResponse('error')

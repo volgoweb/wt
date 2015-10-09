@@ -331,7 +331,7 @@ class Task(models.Model):
     def save(self, *args, **kwargs):
         super(Task, self).save(*args, **kwargs)
         if self.status in (self.STATUS_READY, self.STATUS_DECLINE):
-            if self.step:
+            if hasattr(self, 'step'):
                 self.step.end(task=self, request=self.request)
 
 
