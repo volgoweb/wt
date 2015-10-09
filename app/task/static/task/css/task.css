@@ -90,3 +90,6 @@
     content: "\e032";
 }
 
+.nav > li.sec-menu__item_add_task {
+    display: none;
+}

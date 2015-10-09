@@ -18,7 +18,7 @@
                 $('.add-task__params').show();
             });
 
-            $add_task.find('input[name="title"]').on('keyPress', function(event){
+            $add_task.find('input[name="title"], input[name="due_date"]').on('keyPress', function(event){
                 if (event.keyCode === 13) {
                     $add_task.find('form').submit();
                 }

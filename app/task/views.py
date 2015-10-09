@@ -142,7 +142,7 @@ class TasksList(AjaxListView):
 class TodayTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().performed(request.user).in_work_or_wait().today()
+        return Task.objects.all().performed(request.user).in_work_or_wait().today().order_by('due_date')
 
     def get_context_data(self, **kwargs):
         context = super(TodayTasksPage, self).get_context_data(**kwargs)
@@ -150,7 +150,7 @@ class TodayTasksPage(TasksList):
             'page_title': u'Задачи на сегодня',
             'list_name': self.LIST_MY_TODAY,
             'show_author': True,
-            'show_due_date': False,
+            'show_due_date': True,
         })
         return context
 

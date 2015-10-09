@@ -1,5 +1,6 @@
 {% load static %}
 {% load endless %}
+{% load humanize %}
 
 {% paginate tasks %}
 {% get_pages %}
@@ -25,12 +26,12 @@
                     {% endif %}
                 </span>
 
-                <a href="{% url "task:task_detail" t.pk %}">{{ t.template.title }}</a>
+                <a href="{% url "task:task_detail" t.pk %}" data-toggle="tooltip" data-html="true" title="{{ t.template.desc|linebreaks }}">{{ t.template.title }}</a>
             </div>
 
             <div class="task-item__row2">
                 {% if show_due_date %}
-                    <span class="badge"><span class="task-icon_due">Срок: </span>{{ t.due_date|date:"FULL_DATETIME_FORMAT" }}</span>
+                    <span class="badge"><span class="task-icon_due">Срок: </span>{{ t.due_date|naturaltime }}</span>
                 {% endif %}
 
                 {% if show_author %}
@@ -50,3 +51,8 @@
 
     <script type="text/javascript" src="{% static 'core/js/endless_custom.js' %}"></script>
     <script type="text/javascript" src="{% static 'task/js/task_status_btn.js' %}"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+    </script>
