@@ -77,8 +77,11 @@
 .sec-menu__item_tasks_completed .sec-menu-item__icon:before {
     content: "\e089";
 }
+.sec-menu__item_tasks_inbound .sec-menu-item__icon:before {
+    content: "\e169";
+}
 .sec-menu__item_tasks_outbound .sec-menu-item__icon:before {
-    content: "\e066";
+    content: "\e170";
 }
 .sec-menu__item_tasks_repeating .sec-menu-item__icon:before {
     content: "\e030";

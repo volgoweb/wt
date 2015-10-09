@@ -42,6 +42,7 @@ class TasksList(AjaxListView):
     LIST_MY_NO_DATE = 'my-no-date'
     LIST_MY_FUTURE = 'my-future'
     LIST_MY_COMPLETED = 'my-completed'
+    LIST_MY_INBOUND = 'my-inbound'
     LIST_MY_OUTBOUND = 'my-outbound'
     LIST_MY_REPEATING = 'my-repeating'
     LIST_ALL = 'all'
@@ -51,6 +52,7 @@ class TasksList(AjaxListView):
         LIST_MY_NO_DATE,
         LIST_MY_FUTURE,
         LIST_MY_COMPLETED,
+        LIST_MY_INBOUND,
         LIST_MY_OUTBOUND,
         LIST_MY_REPEATING,
         LIST_ALL,
@@ -195,6 +197,23 @@ class CompletedTasksPage(TasksList):
         context.update({
             'page_title': u'Задачи выполненные',
             'list_name': self.LIST_MY_COMPLETED,
+            'show_author': True,
+            'show_due_date': True,
+        })
+        return context
+
+
+class InboundTasksPage(TasksList):
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
+        return Task.objects.all().performed(request.user, exclude_self_tasks=True).in_work_or_wait()
+
+    def get_context_data(self, **kwargs):
+        context = super(InboundTasksPage, self).get_context_data(**kwargs)
+        context.update({
+            'page_title': u'Задачи входящие',
+            'list_name': self.LIST_MY_INBOUND,
+            # 'show_performer': True,
             'show_author': True,
             'show_due_date': True,
         })
@@ -422,6 +441,7 @@ class CountTasks(View):
         overdue_count = OverdueTasksPage.get_base_queryset_from_class(self.request).count()
         later_count = LaterTasksPage.get_base_queryset_from_class(self.request).count()
         completed_count = CompletedTasksPage.get_base_queryset_from_class(self.request).count()
+        inbound_count = InboundTasksPage.get_base_queryset_from_class(self.request).count()
         outbound_count = OutboundTasksPage.get_base_queryset_from_class(self.request).count()
         repeating_count = RepeatingTasksPage.get_base_queryset_from_class(self.request).count()
         all_count = AllTasksPage.get_base_queryset_from_class(self.request).count()
@@ -430,6 +450,7 @@ class CountTasks(View):
             'overdue': overdue_count,
             'later': later_count,
             'completed': completed_count,
+            'inbound': inbound_count,
             'outbound': outbound_count,
             'repeating': repeating_count,
             'all': all_count,

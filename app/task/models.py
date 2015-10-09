@@ -174,10 +174,23 @@ class TaskQueryset(models.query.QuerySet):
             ),
         )
 
-    def performed(self, user):
-        return self.filter(template__performer=user)
+    def performed(self, user, exclude_self_tasks=False):
+        """
+        Задачи с указанным исполнителем.
+        Если exclude_self_tasks равен True, исключаются задачи,
+        в который указанный сотрудник является автором.
+        """
+        qs = self.filter(template__performer=user)
+        if exclude_self_tasks:
+            qs = qs.exclude(template__performer=F('author'))
+        return qs
 
     def consigned(self, user, exclude_self_tasks=False):
+        """
+        Задачи с указанным автором.
+        Если exclude_self_tasks равен True, исключаются задачи,
+        в который указанный сотрудник является еще исполнителем.
+        """
         qs = self.filter(author=user)
         if exclude_self_tasks:
             qs = qs.exclude(template__performer=F('author'))
