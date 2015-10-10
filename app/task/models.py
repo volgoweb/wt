@@ -91,6 +91,7 @@ class TaskTemplate(helper_models.FieldsLabelsMixin, PolymorphicModel):
     author = models.ForeignKey('account.Account', verbose_name=u'Автор', related_name='%(class)s_author')
     due_date = models.DateTimeField(null=True, blank=True, verbose_name=u'Крайний срок')
     # TODO добавить поля для клиента и партнера
+    contact = models.ForeignKey('contact.Contact', null=True, blank=True, verbose_name=u'Контакт')
 
     step_type = models.ForeignKey(ContentType, related_name='%(class)s_step_type', blank=True, null=True)
     step_id = models.PositiveIntegerField(blank=True, null=True)

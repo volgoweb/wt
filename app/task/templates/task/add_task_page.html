@@ -1,16 +1,17 @@
 {% extends "task/page.html" %}
+{% load static %}
 
 {% block page_title %}Новая задача{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    
+    <script type="text/javascript" src="{% static 'task/js/base.js' %}"></script>
+{% endblock %}
 
 {% block scripts %}
     {{ block.super }}
     {{ form.media }}
-
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function(){
-            $('#id_due_date').default_datetimepicker();
-        });
-    </script>
 {% endblock %}
 
 {% block content %}

@@ -11,11 +11,7 @@
 {% block js %}
     {{ block.super }}
     
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function(){
-            $('#id_due_date').default_datetimepicker();
-        });
-    </script>
+    <script type="text/javascript" src="{% static 'task/js/base.js' %}"></script>
     <script type="text/javascript" src="{% static 'fluent_comments/js/ajaxcomments.js' %}"></script>
 {% endblock %}
 
