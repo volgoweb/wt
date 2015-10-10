@@ -65,6 +65,10 @@
     margin-bottom: 0;
 }
 
+.task-form__submit-btn_quick-add {
+    margin-top: 24px;
+}
+
 .task-item_overdue,
 .task-item_overdue a {
     color: red;
@@ -117,3 +121,5 @@
 .main-menu-item__suffix_tasks_overdue {
     color: red;
 }
+
+

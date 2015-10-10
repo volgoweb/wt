@@ -158,7 +158,7 @@ class TodayTasksPage(TasksList):
 class OverdueTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().performed(request.user).in_work_or_wait().overdue()
+        return Task.objects.all().performed(request.user).in_work_or_wait().overdue().order_by('due_date')
 
     def get_context_data(self, **kwargs):
         context = super(OverdueTasksPage, self).get_context_data(**kwargs)
@@ -174,7 +174,7 @@ class OverdueTasksPage(TasksList):
 class LaterTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().performed(request.user).in_work_or_wait().later_than_today_or_without_due()
+        return Task.objects.all().performed(request.user).in_work_or_wait().later_than_today_or_without_due().order_by('due_date')
 
     def get_context_data(self, **kwargs):
         context = super(LaterTasksPage, self).get_context_data(**kwargs)
@@ -190,7 +190,7 @@ class LaterTasksPage(TasksList):
 class CompletedTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().performed(request.user).completed()
+        return Task.objects.all().performed(request.user).completed().order_by('due_date')
 
     def get_context_data(self, **kwargs):
         context = super(CompletedTasksPage, self).get_context_data(**kwargs)
@@ -206,7 +206,7 @@ class CompletedTasksPage(TasksList):
 class InboundTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().performed(request.user, exclude_self_tasks=True).in_work_or_wait()
+        return Task.objects.all().performed(request.user, exclude_self_tasks=True).in_work_or_wait().order_by('due_date')
 
     def get_context_data(self, **kwargs):
         context = super(InboundTasksPage, self).get_context_data(**kwargs)
@@ -223,7 +223,7 @@ class InboundTasksPage(TasksList):
 class OutboundTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().consigned(request.user, exclude_self_tasks=True).in_work_or_wait()
+        return Task.objects.all().consigned(request.user, exclude_self_tasks=True).in_work_or_wait().order_by('due_date')
 
     def get_context_data(self, **kwargs):
         context = super(OutboundTasksPage, self).get_context_data(**kwargs)
@@ -239,7 +239,7 @@ class OutboundTasksPage(TasksList):
 class RepeatingTasksPage(TasksList):
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all().consigned(request.user).repeating()
+        return Task.objects.all().consigned(request.user).repeating().order_by('due_date')
 
     def get_context_data(self, **kwargs):
         context = super(RepeatingTasksPage, self).get_context_data(**kwargs)
@@ -264,7 +264,7 @@ class AllTasksPage(TasksList):
         }
     @classmethod
     def get_base_queryset_from_class(cls, request):
-        return Task.objects.all()
+        return Task.objects.all().order_by('due_date')
 
     def get_page_template(self, *args, **kwargs):
         return 'task/tasks_list_all_block.html'

@@ -53,8 +53,11 @@
                     <div class="col-md-9">
                         {% include "core/form_field.html" with field=form.title %}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         {% include "core/form_field.html" with field=form.due_date %}
+                    </div>
+                    <div class="col-md-1">
+                        <input type="submit" class="task-form__submit-btn task-form__submit-btn_quick-add btn btn-primary" value="+"/>
                     </div>
                 </div>
                     {# <span class="input-group-btn"> #}

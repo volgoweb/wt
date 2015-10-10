@@ -2,6 +2,12 @@
 {% load static %}
 {% load sitetree %}
 
+{% block js %}
+    {{ block.super }}
+    
+    <script type="text/javascript" src="{% static 'task/js/base.js' %}"></script>
+{% endblock %}
+
 {% block sec_menu %}
     {{ block.super }}
     <div class="btn-group">

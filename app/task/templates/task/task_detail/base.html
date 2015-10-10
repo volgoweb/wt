@@ -11,7 +11,6 @@
 {% block js %}
     {{ block.super }}
     
-    <script type="text/javascript" src="{% static 'task/js/base.js' %}"></script>
     <script type="text/javascript" src="{% static 'fluent_comments/js/ajaxcomments.js' %}"></script>
 {% endblock %}
 
@@ -49,7 +48,7 @@
     {# </div> #}
 
     {% if can_edit %}
-        <form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data">
+        <form action="" method="POST" accept-charset="utf-8"  enctype="multipart/form-data" class="task-form">
             {% csrf_token %}
 
             {% block task_form_fields %}
