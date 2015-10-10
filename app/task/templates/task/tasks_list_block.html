@@ -38,7 +38,7 @@
 
             <div class="task-item__row2">
                 {% if show_due_date %}
-                    <span class="badge"><span class="task-icon_due">Срок: </span>{{ t.due_date|naturaltime }}</span>
+                    <span class="badge"><span class="task-icon_due">Срок: </span>{{ t.due_date|default:"-"|naturaltime }}</span>
                 {% endif %}
 
                 {% if show_author %}

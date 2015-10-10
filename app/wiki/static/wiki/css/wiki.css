@@ -26,3 +26,7 @@
 .sec-menu__item_wiki_all .sec-menu-item__icon:before {
     content: "\e105";
 }
+
+.nav > li.sec-menu__item_add_wiki_page {
+    display: none;
+}

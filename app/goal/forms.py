@@ -19,8 +19,9 @@ class GoalForm(BootstrapFormMixin, forms.ModelForm):
         super(GoalForm, self).__init__(*args, **kwargs)
         if not getattr(self.instance, 'pk', None):
             self.fields['author'].initial = self.request.user
-        if getattr(self.instance, 'author', None) != self.request.user:
-            self.fields = {}
+        else:
+            if getattr(self.instance, 'author', None) != self.request.user:
+                self.fields = {}
 
     def clean_author(self):
         self.cleaned_data['author'] = self.request.user

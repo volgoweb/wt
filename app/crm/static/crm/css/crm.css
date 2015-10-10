@@ -9,3 +9,7 @@
 .sec-menu__item_crm_clients .sec-menu-item__icon:before {
     content: "\e008";
 }
+
+.nav > li.sec-menu__item_add_sales_deal {
+    display: none;
+}
