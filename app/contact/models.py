@@ -21,6 +21,7 @@ class Contact(models.Model):
     company = models.ForeignKey(Company, verbose_name=u'Компания', blank=True, null=True)
     phone = models.CharField(max_length=30, verbose_name=u'Телефон', blank=True, null=True)
     mobile_phone = models.CharField(max_length=30, verbose_name=u'Мобильный тел.', blank=True, null=True)
+    email = models.EmailField(max_length=200, verbose_name=u'Email', blank=True, null=True)
     is_lead = models.BooleanField(default=False, verbose_name=u'Потенциальный клиент')
     is_client = models.BooleanField(default=False, verbose_name=u'Клиент')
     created = models.DateTimeField(auto_now_add=True, editable=False, verbose_name=u'Дата создания')

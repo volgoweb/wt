@@ -56,7 +56,8 @@ class ContactsListPage(AjaxListView):
                 Q(full_name__icontains=filter_needle) |
                 Q(desc__icontains=filter_needle) |
                 Q(phone__icontains=filter_needle) |
-                Q(mobile_phone__icontains=filter_needle)
+                Q(mobile_phone__icontains=filter_needle) |
+                Q(email__icontains=filter_needle)
             )
 
         self.queryset = qs
