@@ -1,0 +1,4 @@
+.nav > li.sec-menu__item_add_contact,
+.nav > li.sec-menu__item_add_company {
+    display: none;
+}

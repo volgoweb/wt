@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS, FieldError
 
 from .models import Contact, Company
-from .forms import ContactsListFilters, ContactForm, CompanyForm
+from .forms import ContactsListFilters, ContactForm, CompanyForm, CompaniesListFilters
 
 
 class ContactsListPage(AjaxListView):
@@ -26,6 +26,7 @@ class ContactsListPage(AjaxListView):
         super(ContactsListPage, self).__init__(*args, **kwargs)
         self.default_filters = {
             'needle': '',
+            'contact_type': '',
         }
 
     def define_filters(self):
@@ -41,6 +42,9 @@ class ContactsListPage(AjaxListView):
         if self.filters_form.is_valid():
             for key in self.default_filters.keys():
                 self.filters_values[key] = self.filters_form.cleaned_data.get(key)
+        else:
+            print '--------------- filters not valid'
+            print self.filters_form.errors
 
     def get_base_queryset(self):
         return Contact.objects.filter(deleted=False).order_by('full_name')
@@ -59,6 +63,15 @@ class ContactsListPage(AjaxListView):
                 Q(mobile_phone__icontains=filter_needle) |
                 Q(email__icontains=filter_needle)
             )
+
+        filter_contact_type = self.filters_values.get('contact_type')
+        print '----------------contact_type: %s' % filter_contact_type
+        if filter_contact_type == self.filters_form.CONTACT_TYPE_LEAD:
+            qs = qs.filter(is_lead=True)
+        elif filter_contact_type == self.filters_form.CONTACT_TYPE_CLIENT:
+            qs = qs.filter(is_client=True)
+        elif filter_contact_type == self.filters_form.CONTACT_TYPE_PARTNER:
+            qs = qs.filter(is_partner=True)
 
         self.queryset = qs
         return qs
@@ -112,6 +125,84 @@ class AddContactPage(CreateView):
             'request': self.request,
         })
         return kwargs
+
+
+class CompaniesListPage(AjaxListView):
+    model = Company
+    template_name = 'contact/companies_list_page.html'
+    context_object_name = 'companies'
+    # TODO создать кастомый queryset
+    # queryset = Company.objects.filter(deleted=False)
+    filters_form_class = CompaniesListFilters
+
+    def __init__(self, *args, **kwargs):
+        super(CompaniesListPage, self).__init__(*args, **kwargs)
+        self.default_filters = {
+            'needle': '',
+        }
+
+    def define_filters(self):
+        data = {}
+        for key, default_value in self.default_filters.items():
+            if key in self.request.GET:
+                data[key] = self.request.GET.get(key)
+            else:
+                data[key] = default_value
+
+        self.filters_form = self.filters_form_class(data)
+        self.filters_values = {}
+        if self.filters_form.is_valid():
+            for key in self.default_filters.keys():
+                self.filters_values[key] = self.filters_form.cleaned_data.get(key)
+        else:
+            print '--------------- filters not valid'
+            print self.filters_form.errors
+
+    def get_base_queryset(self):
+        return Company.objects.filter(deleted=False).order_by('name')
+
+    def get_queryset(self):
+        qs = self.get_base_queryset()
+        # if len(self.request.GET) > 0:
+        self.define_filters()
+
+        filter_needle = self.filters_values.get('needle')
+        if filter_needle:
+            qs = qs.filter(
+                Q(name__icontains=filter_needle) |
+                Q(desc__icontains=filter_needle) |
+                Q(phone__icontains=filter_needle) |
+                Q(mobile_phone__icontains=filter_needle) |
+                Q(email__icontains=filter_needle)
+            )
+
+        filter_contact_type = self.filters_values.get('company_type')
+        if filter_contact_type == self.filters_form.CONTACT_TYPE_LEAD:
+            qs = qs.filter(is_lead=True)
+        elif filter_contact_type == self.filters_form.CONTACT_TYPE_CLIENT:
+            qs = qs.filter(is_client=True)
+        elif filter_contact_type == self.filters_form.CONTACT_TYPE_PARTNER:
+            qs = qs.filter(is_partner=True)
+
+        self.queryset = qs
+        return qs
+
+    def get_context_data(self, **kwargs):
+        # TODO брать из урла и переделать модуль endless_pagination, чтобы он использовал кол-во страниц из адреса или переменной вьюса.
+        self.per_page = endless_settings.PER_PAGE
+
+        context = super(CompaniesListPage, self).get_context_data(**kwargs)
+        self.define_filters()
+
+        # фильтры списка
+        context['filters_form'] = self.filters_form
+
+        # context['count_objects'] = self.queryset.count()
+        from django.template import RequestContext
+        return RequestContext(self.request, context)
+
+    def get_page_template(self, *args, **kwargs):
+        return 'contact/companies_list.html'
 
 
 class CompanyDetailPage(UpdateView):

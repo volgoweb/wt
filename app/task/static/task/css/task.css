@@ -98,3 +98,22 @@
 .nav > li.sec-menu__item_add_task {
     display: none;
 }
+
+.sec-menu__item:hover .sec-menu-item__suffix,
+.sec-menu__item.active .sec-menu-item__suffix,
+.main-menu__item:hover .main-menu-item__suffix,
+.main-menu__item.active .main-menu-item__suffix,
+.main-menu__item:hover .main-menu-item__suffix > *,
+.main-menu__item.active .main-menu-item__suffix > * {
+    color: white !important;
+}
+
+.sec-menu-item__suffix_tasks_today,
+.main-menu-item__suffix_tasks_today {
+    color: #5CB85C;
+}
+
+.sec-menu-item__suffix_tasks_overdue,
+.main-menu-item__suffix_tasks_overdue {
+    color: red;
+}

@@ -1,21 +1,24 @@
 {% extends "core/page.html" %}
 {% load static %}
+{% load sitetree %}
 
 {% block css %}
     {{ block.super }}
-    {# <link rel="stylesheet" type="text/css" media="all" href="{% static "partner/css/partner.css" %}" /> #}
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "contact/css/contact.css" %}" />
 {% endblock %}
 
 {% block sec_menu %}
     {{ block.super }}
 
     <div class="btn-group">
-      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="glyphicon glyphicon-plus"></span> Добавить <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu">
-        <li><a href="{% url "contact:add_contact_page" %}">Добавить контакт</a></li>
-        <li><a href="{% url "contact:add_company_page" %}">Добавить компанию</a></li>
-      </ul>
+        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="glyphicon glyphicon-plus"></span> Добавить <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a href="{% url "contact:add_contact_page" %}">Добавить контакт</a></li>
+          <li><a href="{% url "contact:add_company_page" %}">Добавить компанию</a></li>
+        </ul>
     </div>
+    <br>
+    {% sitetree_menu from "main_menu" include "contacts" template 'core/sec_menu.html' %}
 {% endblock %}

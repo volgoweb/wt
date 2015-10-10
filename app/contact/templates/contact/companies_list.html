@@ -1,0 +1,42 @@
+{% load static %}
+{% load endless %}
+{% load humanize %}
+
+{% paginate companies %}
+{% get_pages %}
+
+
+<div class="endless_page_template">
+    <table class="companies-list table table-stripped table-condensed">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Телефон</th>
+                <th>Тип</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for company in companies %}
+                <tr>
+                    <td><a href="{% url "contact:company_detail_page" company.pk %}">{{ company.name }}</a></td>
+                    <td>{{ company.phone }}</td>
+                    <td>
+                        {% if company.is_client %}
+                            <p>Клиент</p>
+                        {% endif %}
+                        {% if company.is_lead %}
+                            <p>Потенциальный клиент</p>
+                        {% endif %}
+                        {% if company.is_partner %}
+                            <p>Партнер</p>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% include "helper/endless_pagination/pages.html" %}
+
+    <script type="text/javascript" src="{% static 'core/js/endless_custom.js' %}"></script>
+</div>

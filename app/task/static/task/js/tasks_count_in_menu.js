@@ -7,7 +7,7 @@ $(document).ready(function() {
                 $('.sec-menu-item__suffix_tasks_' + key).text(data[key] || '0');
                 $('.main-menu-subitem__suffix_tasks_' + key).text(data[key] || '0');
             }
-            $('.main-menu-item__suffix_tasks').text(data['today'] || '0' + '|' + data['overdue'] || '0');
+            $('.main-menu-item__suffix_tasks').html('<span class="main-menu-item__suffix_tasks_today">' + (data['today'] || '0') + '</span>|<span class="main-menu-item__suffix_tasks_overdue">' + data['overdue'] || '0' + '</span>');
         });
     }
 

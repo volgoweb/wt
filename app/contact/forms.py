@@ -1,17 +1,32 @@
 # -*- coding: utf-8 -*-
-from django import forms
-from helper.forms import BootstrapFormMixin
+from collections import OrderedDict
 
+from django import forms
+
+from helper.forms import BootstrapFormMixin
 from .models import Contact, Company
 
 
 class ContactsListFilters(BootstrapFormMixin, forms.Form):
+    CONTACT_TYPE_LEAD = 'is_lead'
+    CONTACT_TYPE_CLIENT = 'is_client'
+    CONTACT_TYPE_PARTNER = 'is_partner'
+    CONTACT_TYPE_CHOICES = OrderedDict([
+        (CONTACT_TYPE_LEAD, u'Лид'),
+        (CONTACT_TYPE_CLIENT, u'Клиент'),
+        (CONTACT_TYPE_PARTNER, u'Партнер'),
+    ])
     needle = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
             'placeholder': 'Поиск'
         }),
         label='',
+    )
+    contact_type = forms.ChoiceField(
+        choices=[('', '---------')] + CONTACT_TYPE_CHOICES.items(),
+        required=False,
+        label=u'Тип контакта',
     )
 
 
@@ -61,3 +76,6 @@ class CompanyForm(BootstrapFormMixin, forms.ModelForm):
         self.cleaned_data['author'] = self.request.user
         return self.cleaned_data['author']
 
+
+class CompaniesListFilters(ContactsListFilters):
+    pass
