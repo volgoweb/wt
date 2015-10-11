@@ -5,21 +5,19 @@
 
 {% block content %}
     <div class="notifications-list">
-        {# <div class="notifications-list__filters row-fluid"> #}
+        <div class="notifications-list__filters row-fluid">
             {# TODO вынести форму фильтров в отдельный шаблон #}
-        {#     <form action="" method="GET" accept-charset="utf-8" class="form-inline"> #}
-        {#         {% for f in filters_form.visible_fields %} #}
-        {#             {% include "core/form_field.html" with field=f %} #}
-        {#         {% endfor %} #}
+            <form action="" method="GET" accept-charset="utf-8" class="form-inline">
+                {% include "core/form_field.html" with field=filters_form.readed label="" %}
 
-        {#         {% for f in filters_form.hidden_fields %} #}
-        {#             {{ f }} #}
-        {#         {% endfor %} #}
+                {% for f in filters_form.hidden_fields %}
+                    {{ f }}
+                {% endfor %}
 
-        {#         {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %} #}
-        {#         {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="this.form.reset();" %} #}
-        {#     </form> #}
-        {# </div> #}
+                {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %}
+                {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="this.form.reset();" %}
+            </form>
+        </div>
 
         {% paginate notifications %}
         {% get_pages %}

@@ -7,8 +7,9 @@ class NotificationsListFilters(BootstrapFormMixin, forms.Form):
     readed = forms.ChoiceField(
         choices=[
             ('', u'Все'),
-            ('', u'Только непрочитанные'),
+            ('unreaded', u'Только непрочитанные'),
         ],
         label=u'Прочитано',
         required=False,
+        widget=forms.RadioSelect(),
     )

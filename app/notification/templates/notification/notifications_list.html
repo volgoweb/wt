@@ -1,7 +1,9 @@
+{% load static %}
 
 <table class="notifications-list__table table table-bordered table-consended table-striped">
     <thead>
         <tr>
+            <th></th>
             <th class="fulldate-col">Дата</th>
             <th>Описание</th>
         </tr>
@@ -10,6 +12,20 @@
     <tbody>
         {% for n in notifications %}
             <tr>
+                <td>
+                    <input
+                        type="checkbox"
+                        {% if n.readed %}
+                            checked
+                        {% endif %}
+                        class="notifications-item__readed-checkbox has-help-popover"
+                        data-pk="{{ n.pk }}"
+                        data-toggle="popover"
+                        data-trigger="hover"
+                        data-placement="right"
+                        data-content="При включении галочки событие станет считаться прочитанным и пропадет из списка при выключенным фильтре 'показать прочитанные'."
+                    >
+                </td>
                 <td class="fulldate-col">{{ n.created|date:"FULL_DATETIME_FORMAT" }}</td>
                 <td>{{ n.text|safe }}</td>
             </tr>
@@ -17,3 +33,4 @@
     </tbody>
 </table>
 
+<script type="text/javascript" src="{% static 'notification/js/notifications_list.js' %}"></script>
