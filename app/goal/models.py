@@ -29,3 +29,5 @@ class Goal(models.Model):
 
     objects = GoalManager()
 
+    def __unicode__(self):
+        return self.title

@@ -210,6 +210,10 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
                 })
                 self.fields['due_date'].initial = datetime.datetime.now() + datetime.timedelta(minutes=30)
 
+        goal_pk = self.request.GET.get('goal', None)
+        if goal_pk:
+            self.fields['goal'].initial = goal_pk
+
         # self.add_files_formset()
         # self.add_task_steps_formset()
 

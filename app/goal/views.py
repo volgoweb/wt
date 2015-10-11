@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError, NON_FIELD_ERRORS, FieldError
 
 from .models import Goal
 from .forms import GoalForm
+from app.task.models import Task
 
 
 class GoalsListPage(AjaxListView):
@@ -128,6 +129,21 @@ class GoalDetailPage(UpdateView):
             'request': self.request,
         })
         return kwargs
+
+    def get_goal_tasks(self):
+        goal = self.get_object()
+        tasks = Task.objects.all().not_deleted().for_goal(goal)
+        return tasks
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(GoalDetailPage, self).get_context_data(*args, **kwargs)
+        context.update({
+            'tasks': self.get_goal_tasks(),
+            'show_performer': True,
+            'show_author': True,
+            'show_due_date': True,
+        })
+        return context
 
 
 class AddGoalPage(CreateView):

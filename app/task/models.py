@@ -92,6 +92,7 @@ class TaskTemplate(helper_models.FieldsLabelsMixin, PolymorphicModel):
     due_date = models.DateTimeField(null=True, blank=True, verbose_name=u'Крайний срок')
     # TODO добавить поля для клиента и партнера
     contact = models.ForeignKey('contact.Contact', null=True, blank=True, verbose_name=u'Контакт')
+    goal = models.ForeignKey('goal.Goal', null=True, blank=True, verbose_name=u'Цель')
 
     step_type = models.ForeignKey(ContentType, related_name='%(class)s_step_type', blank=True, null=True)
     step_id = models.PositiveIntegerField(blank=True, null=True)
@@ -225,6 +226,9 @@ class TaskQueryset(models.query.QuerySet):
 
     def repeating(self, *args, **kwargs):
         return self.filter(is_repeating_clone=False)
+
+    def for_goal(self, goal):
+        return self.filter(template__goal=goal)
 
 
 class TaskManager(models.Manager):
