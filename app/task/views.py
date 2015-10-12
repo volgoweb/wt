@@ -39,6 +39,7 @@ class TasksList(AjaxListView):
     # queryset = Task.objects.filter(deleted=False)
     filters_form_class = TasksListFilters
     LIST_MY_TODAY = 'my-today'
+    LIST_MY_TOMORROW = 'my-tomorrow'
     LIST_MY_OVERDUE = 'my-overdue'
     LIST_MY_NO_DATE = 'my-no-date'
     LIST_MY_FUTURE = 'my-future'
@@ -49,6 +50,7 @@ class TasksList(AjaxListView):
     LIST_ALL = 'all'
     LIST_NAMES = [
         LIST_MY_TODAY,
+        LIST_MY_TOMORROW,
         LIST_MY_OVERDUE,
         LIST_MY_NO_DATE,
         LIST_MY_FUTURE,
@@ -154,6 +156,22 @@ class TodayTasksPage(TasksList):
         context.update({
             'page_title': u'Задачи на сегодня',
             'list_name': self.LIST_MY_TODAY,
+            'show_author': True,
+            'show_due_date': True,
+        })
+        return context
+
+
+class TomorrowTasksPage(TasksList):
+    @classmethod
+    def get_base_queryset_from_class(cls, request):
+        return Task.objects.all().performed(request.user).in_work_or_wait().tomorrow().order_by('due_date')
+
+    def get_context_data(self, **kwargs):
+        context = super(TomorrowTasksPage, self).get_context_data(**kwargs)
+        context.update({
+            'page_title': u'Задачи на завтра',
+            'list_name': self.LIST_MY_TOMORROW,
             'show_author': True,
             'show_due_date': True,
         })
@@ -450,6 +468,7 @@ class TaskAddForm(TemplateFormMixin, CreateView):
 class CountTasks(View):
     def get(self, *args, **kwargs):
         today_count = TodayTasksPage.get_base_queryset_from_class(self.request).count()
+        tomorrow_count = TomorrowTasksPage.get_base_queryset_from_class(self.request).count()
         overdue_count = OverdueTasksPage.get_base_queryset_from_class(self.request).count()
         later_count = LaterTasksPage.get_base_queryset_from_class(self.request).count()
         completed_count = CompletedTasksPage.get_base_queryset_from_class(self.request).count()
@@ -459,6 +478,7 @@ class CountTasks(View):
         all_count = AllTasksPage.get_base_queryset_from_class(self.request).count()
         context = {
             'today': today_count,
+            'tomorrow': tomorrow_count,
             'overdue': overdue_count,
             'later': later_count,
             'completed': completed_count,

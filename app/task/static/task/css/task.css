@@ -80,6 +80,9 @@
 .sec-menu__item_tasks_overdue .sec-menu-item__icon:before {
     content: "\e104";
 }
+.sec-menu__item_tasks_tomorrow .sec-menu-item__icon:before {
+    content: "\e109";
+}
 .sec-menu__item_tasks_later .sec-menu-item__icon:before {
     content: "\e109";
 }

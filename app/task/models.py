@@ -218,6 +218,16 @@ class TaskQueryset(models.query.QuerySet):
             due_date__range=(start_of_today, end_of_today),
         )
 
+    def tomorrow(self, *args, **kwargs):
+        now = timezone.now()
+        start_of_today = datetime.datetime(now.year, now.month, now.day, 00, 00, 01)
+        end_of_today = datetime.datetime(now.year, now.month, now.day, 23, 59, 59)
+        start_of_tomorrow = start_of_today + datetime.timedelta(days=1)
+        end_of_tomorrow = end_of_today + datetime.timedelta(days=1)
+        return self.filter(
+            due_date__range=(start_of_tomorrow, end_of_tomorrow),
+        )
+
     def later_than_today_or_without_due(self, *args, **kwargs):
         today = datetime.date.today()
         end_of_today = datetime.datetime(today.year, today.month, today.day, 23, 59, 59)
