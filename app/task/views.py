@@ -11,6 +11,7 @@ from endless_pagination import settings as endless_settings
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS, FieldError
 from django.core.urlresolvers import reverse_lazy
+from django.contrib import messages
 
 from .models import Task, TaskFile, TaskTemplate
 from .forms import TasksListFilters, TaskFileForm
@@ -385,6 +386,10 @@ class TaskDetail(UpdateView):
         # TODO переименовать переменную да и вообще с ней порядок навести
         if is_invalid_formset:
             task_saved.send(sender=Task, task=task, created=False, request=self.request)
+            if task.deleted:
+                messages.info(self.request, u'Задача "%s" удалена.' % task.template.title)
+            else:
+                messages.info(self.request, u'Задача "%s" сохранена.' % task.template.title)
             return super(TaskDetail, self).form_valid(form)
         else:
             return self.form_invalid(form)
