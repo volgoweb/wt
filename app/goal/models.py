@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.utils import timezone
+from django.core.urlresolvers import reverse_lazy
 
 class GoalQueryset(models.query.QuerySet):
     def not_overdue(self):
@@ -31,3 +32,6 @@ class Goal(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse_lazy('goal:goal_detail_page', kwargs={'pk': self.pk})

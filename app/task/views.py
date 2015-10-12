@@ -376,6 +376,7 @@ class TaskDetail(UpdateView):
             else:
                 is_invalid_formset = False
 
+        # TODO переименовать переменную да и вообще с ней порядок навести
         if is_invalid_formset:
             task_saved.send(sender=Task, task=task, created=False, request=self.request)
             return super(TaskDetail, self).form_valid(form)

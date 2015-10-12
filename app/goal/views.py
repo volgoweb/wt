@@ -4,13 +4,15 @@ from django.db.models import Q
 from django.forms.models import modelformset_factory
 from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.contrib.contenttypes.models import ContentType
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from endless_pagination.views import AjaxListView
 from endless_pagination import settings as endless_settings
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS, FieldError
+from django.core.urlresolvers import reverse_lazy
 
 from .models import Goal
+from .signals import goal_saved
 from .forms import GoalForm
 from app.task.models import Task
 
@@ -145,12 +147,18 @@ class GoalDetailPage(UpdateView):
         })
         return context
 
+    def form_valid(self, form, *args, **kwargs):
+        result = super(AddGoalPage, self).form_valid(form, *args, **kwargs)
+        goal = self.get_object()
+        goal_saved.send(sender=Goal, goal=goal, created=False, request=self.request)
+        return result
+
 
 class AddGoalPage(CreateView):
     model = Goal
     template_name = 'goal/goal_form_page.html'
     form_class = GoalForm
-    success_url = '/goals/my-goals/'
+    # success_url = '/goals/my-goals/'
 
     def get_form_kwargs(self):
         kwargs = super(AddGoalPage, self).get_form_kwargs()
@@ -158,3 +166,11 @@ class AddGoalPage(CreateView):
             'request': self.request,
         })
         return kwargs
+
+    def form_valid(self, form, *args, **kwargs):
+        goal = form.save()
+        goal_saved.send(sender=Goal, goal=goal, created=True, request=self.request)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('goal:my_goals_list_page')

@@ -12,6 +12,8 @@ from django_comments.signals import comment_was_posted
 from app.task.models import Task
 from app.task.signals import task_saved
 from app.crm.models import SalesDeal
+from app.goal.models import Goal
+from app.goal.signals import goal_saved
 
 
 class Notification(PolymorphicModel):
@@ -78,7 +80,7 @@ def notify_about_sales_deal(sender, instance, *args, **kwargs):
     if instance.author == instance.responsible:
         return
 
-    subscriber_emails = [instance.responsible]
+    subscriber_emails = [instance.responsible.email]
     if kwargs.get('created'):
         subject = u'Добавлена новая сделка'
         text = u'Добавлена новая сделка "<a href="{link}">{title}</a>"'.format(link=instance.get_absolute_url(), title=instance.title)
@@ -92,6 +94,42 @@ def notify_about_sales_deal(sender, instance, *args, **kwargs):
     )
     n.save()
 
+    try:
+        send_mail(subject, text, 'dima_page@mail.ru', [subscriber_emails], fail_silently=False)
+    except:
+        pass
+
+
+@receiver(goal_saved, sender=Goal)
+def notify_about_goal(goal, created, request, **kwargs):
+    # TODO перенести в ассинхронное выполнение через celery
+    subscribers = []
+    print '------------------------ instance.performers.all()'
+    print goal.performers.all()
+    for unit in goal.performers.all():
+        user = unit.get_user()
+        if not user or user == goal.author:
+            continue
+        subscribers.append(user)
+    print '----------- notify_about_goal'
+    print subscribers
+
+    if created:
+        subject = u'Добавлена новая цель'
+        text = u'Добавлена новая цель "<a href="{link}">{title}</a>"'.format(link=goal.get_absolute_url(), title=goal.title)
+    else:
+        subject = u'Изменена цель'
+        text = u'Изменена цель "<a href="{link}">{title}</a>"'.format(link=goal.get_absolute_url(), title=goal.title)
+
+    for user in subscribers:
+        n = Notification(
+            text=text,
+            subscriber=user,
+            obj=goal,
+        )
+        n.save()
+
+    subscriber_emails = [u.email for u in subscribers]
     try:
         send_mail(subject, text, 'dima_page@mail.ru', [subscriber_emails], fail_silently=False)
     except:
