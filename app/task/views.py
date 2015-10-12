@@ -423,7 +423,10 @@ class TemplateFormMixin(object):
             # print '------------------ files_formset.is_INvalid'
 
         if is_valid_formset:
-            task_saved.send(sender=Task, task=task_tpl.task.get(), created=True, request=self.request)
+            task = task_tpl.get_first_repeating_task()
+            print '----------------- TemplateFormMixin form_valid() task:'
+            print task
+            task_saved.send(sender=Task, task=task, created=True, request=self.request)
             return HttpResponseRedirect(self.get_success_url())
         else:
             return self.form_invalid(form)

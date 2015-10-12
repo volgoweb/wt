@@ -110,7 +110,11 @@ class TaskTemplate(helper_models.FieldsLabelsMixin, PolymorphicModel):
     def __unicode__(self):
         return u'#{0} {1}'.format(self.pk, self.title)
 
+    def get_first_repeating_task(self):
+        return Task.objects.get(template=self, is_repeating_clone=False)
+
     def create_repeating_tasks(self, author=None):
+        # TODO перенести в Celery
         # удаляем все экземпляры повторяющихся задач, если они есть
         Task.objects.filter(template=self, is_repeating_clone=True).delete()
 
@@ -137,13 +141,17 @@ class TaskTemplate(helper_models.FieldsLabelsMixin, PolymorphicModel):
         if not start_date:
             start_date = self.due_date.date()
         delta = self.get_timedelta_period()
-        end_date = now + relativedelta.relativedelta(years=10)
+        years_ago = 3
+        if self.period == self.PERIOD_DAY:
+            years_ago = 1
+        end_date = now + relativedelta.relativedelta(years=years_ago)
         dates = []
         def add_next_date(d):
             d += delta
             if d.date() < end_date.date():
                 dates.append(d)
                 add_next_date(d)
+            return
 
         add_next_date(start_date)
         return dates

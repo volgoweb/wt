@@ -65,7 +65,6 @@ class ContactsListPage(AjaxListView):
             )
 
         filter_contact_type = self.filters_values.get('contact_type')
-        print '----------------contact_type: %s' % filter_contact_type
         if filter_contact_type == self.filters_form.CONTACT_TYPE_LEAD:
             qs = qs.filter(is_lead=True)
         elif filter_contact_type == self.filters_form.CONTACT_TYPE_CLIENT:

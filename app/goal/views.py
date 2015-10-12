@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
-from django.views.generic import ListView, UpdateView, CreateView
-from django.db.models import Q
-from django.forms.models import modelformset_factory
-from django.contrib.contenttypes.forms import generic_inlineformset_factory
-from django.contrib.contenttypes.models import ContentType
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.views.generic import UpdateView, CreateView
+# from django.db.models import Q
+from django.http import HttpResponseRedirect
 from endless_pagination.views import AjaxListView
 from endless_pagination import settings as endless_settings
-from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import ValidationError, NON_FIELD_ERRORS, FieldError
 from django.core.urlresolvers import reverse_lazy
 
 from .models import Goal

@@ -179,7 +179,7 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
         tpl_pk = getattr(self.instance, 'pk', None)
         if tpl_pk:
             performer = getattr(self.instance, 'performer', None)
-            if performer and self.request.user != self.task.author:
+            if performer and self.request.user != self.instance.get_first_repeating_task().author and self.request.user != self.instance.performer:
                 self.fields = {}
         else:
             self.fields['performer'].initial = self.request.user
