@@ -75,6 +75,9 @@ def notify_about_adding_comment(*args, **kwargs):
 @receiver(post_save, sender=SalesDeal)
 def notify_about_sales_deal(sender, instance, *args, **kwargs):
     # TODO перенести в ассинхронное выполнение через celery
+    if instance.author == instance.responsible:
+        return
+
     subscriber_emails = [instance.responsible]
     if kwargs.get('created'):
         subject = u'Добавлена новая сделка'
