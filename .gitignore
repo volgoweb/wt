@@ -5,3 +5,5 @@ files
 files/*
 app/core/static/core/less/CACHE
 app/core/static/core/less/CACHE*
+tags
+logs/**
