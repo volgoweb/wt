@@ -14,6 +14,8 @@ from app.task.signals import task_saved
 from app.crm.models import SalesDeal
 from app.goal.models import Goal
 from app.goal.signals import goal_saved
+from app.wiki.models import WikiPage
+from app.wiki.signals import wiki_page_saved
 
 
 class Notification(PolymorphicModel):
@@ -104,15 +106,11 @@ def notify_about_sales_deal(sender, instance, *args, **kwargs):
 def notify_about_goal(goal, created, request, **kwargs):
     # TODO перенести в ассинхронное выполнение через celery
     subscribers = []
-    print '------------------------ instance.performers.all()'
-    print goal.performers.all()
     for unit in goal.performers.all():
         user = unit.get_user()
         if not user or user == goal.author:
             continue
         subscribers.append(user)
-    print '----------- notify_about_goal'
-    print subscribers
 
     if created:
         subject = u'Добавлена новая цель'
@@ -126,6 +124,39 @@ def notify_about_goal(goal, created, request, **kwargs):
             text=text,
             subscriber=user,
             obj=goal,
+        )
+        n.save()
+
+    subscriber_emails = [u.email for u in subscribers]
+    try:
+        send_mail(subject, text, 'dima_page@mail.ru', [subscriber_emails], fail_silently=False)
+    except:
+        pass
+
+
+@receiver(wiki_page_saved, sender=WikiPage)
+def notify_about_wiki_page(wiki_page, created, request, **kwargs):
+    # TODO перенести в ассинхронное выполнение через celery
+    subscribers = []
+    units = list(wiki_page.performers.all()) + list(wiki_page.subscribers.all()) + list(wiki_page.editors.all())
+    for unit in units:
+        user = unit.get_user()
+        if not user or user == request.user or user in subscribers:
+            continue
+        subscribers.append(user)
+
+    if created:
+        subject = u'Добавлена новая глава в книгу знаний'
+        text = u'Добавлена новая глава "<a href="{link}">{title}</a>" в книгу знаний'.format(link=wiki_page.get_absolute_url(), title=wiki_page.title)
+    else:
+        subject = u'Изменена глава в книге знаний'
+        text = u'Изменена глава "<a href="{link}">{title}</a>" в книге знаний'.format(link=wiki_page.get_absolute_url(), title=wiki_page.title)
+
+    for user in subscribers:
+        n = Notification(
+            text=text,
+            subscriber=user,
+            obj=wiki_page,
         )
         n.save()
 

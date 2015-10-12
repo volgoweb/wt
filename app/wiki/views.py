@@ -4,9 +4,12 @@ from django.views.generic import CreateView, DetailView, UpdateView
 from endless_pagination.views import AjaxListView
 from endless_pagination import settings as endless_settings
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse_lazy
 
 from .models import WikiPage
 from .forms import WikiListFilters, WikiPageForm
+from .signals import wiki_page_saved
 
 class WikiList(AjaxListView):
     model = WikiPage
@@ -71,6 +74,14 @@ class AddWikiPage(CreateView):
         })
         return kwargs
 
+    def form_valid(self, form, *args, **kwargs):
+        wiki_page = form.save()
+        wiki_page_saved.send(sender=WikiPage, wiki_page=wiki_page, created=True, request=self.request)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('wiki:wiki_list_page', kwargs={'list_name': 'my'})
+
 
 class WikiPageBlockDetail(DetailView):
     model = WikiPage
@@ -112,3 +123,11 @@ class EditWikiPage(UpdateView):
             'request': self.request,
         })
         return kwargs
+
+    def form_valid(self, form, *args, **kwargs):
+        wiki_page = form.save()
+        wiki_page_saved.send(sender=WikiPage, wiki_page=wiki_page, created=False, request=self.request)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('wiki:wiki_list_page', kwargs={'list_name': 'my'})
