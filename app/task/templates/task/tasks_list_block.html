@@ -27,7 +27,7 @@
                 </span>
 
                 <a
-                    href="{% url "task:task_detail" t.pk %}"
+                    href="{% url "task:task_detail" t.pk %}?next={{ request.get_full_path }}"
                     {% if t.template.desc %}
                         data-toggle="tooltip"
                         data-html="true"

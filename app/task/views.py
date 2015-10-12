@@ -395,9 +395,7 @@ class TaskDetail(UpdateView):
             return self.form_invalid(form)
 
     def get_success_url(self):
-        if self.object.deleted:
-            return self.request.GET.get('next', '/tasks/today/')
-        return self.object.get_absolute_url()
+        return self.request.GET.get('next', reverse_lazy('task:today_tasks_page'))
 
 
 class TemplateFormMixin(object):
@@ -432,13 +430,11 @@ class TemplateFormMixin(object):
             files_formset.save()
         else:
             is_valid_formset = False
-            # print '------------------ files_formset.is_INvalid'
 
         if is_valid_formset:
             task = task_tpl.get_first_repeating_task()
-            print '----------------- TemplateFormMixin form_valid() task:'
-            print task
             task_saved.send(sender=Task, task=task, created=True, request=self.request)
+            messages.info(self.request, u'Создана задача "%s".' % task.template.title)
             return HttpResponseRedirect(self.get_success_url())
         else:
             return self.form_invalid(form)
