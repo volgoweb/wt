@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.db.models import Count
+from django.core.urlresolvers import reverse_lazy
 
 from helper.models import Dictionary
 from app.task.models import Task
@@ -44,6 +45,12 @@ class SalesDeal(models.Model):
     deleted = models.BooleanField(default=False, verbose_name=u'Удаленная')
 
     objects = SalesDealManager()
+
+    def __unicode__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse_lazy('crm:sales_deal_detail_page', kwargs={'pk': self.pk})
 
     def get_next_task(self):
         tasks = self.tasks.filter(status__in=Task.OPENED_STATUSES).order_by('due_date')

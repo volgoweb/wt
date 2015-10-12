@@ -11,6 +11,7 @@ from django_comments.signals import comment_was_posted
 
 from app.task.models import Task
 from app.task.signals import task_saved
+from app.crm.models import SalesDeal
 
 
 class Notification(PolymorphicModel):
@@ -69,3 +70,26 @@ def notify_about_adding_comment(*args, **kwargs):
             send_mail(u'Добавлен комментарий', text, 'dima_page@mail.ru', [u.email for u in subscribers], fail_silently=False)
         except:
             pass
+
+
+@receiver(post_save, sender=SalesDeal)
+def notify_about_sales_deal(sender, instance, *args, **kwargs):
+    # TODO перенести в ассинхронное выполнение через celery
+    subscriber_emails = [instance.responsible]
+    if kwargs.get('created'):
+        subject = u'Добавлена новая сделка'
+        text = u'Добавлена новая сделка "<a href="{link}">{title}</a>"'.format(link=instance.get_absolute_url(), title=instance.title)
+    else:
+        subject = u'Изменена сделка'
+        text = u'Изменена сделка "<a href="{link}">{title}</a>"'.format(link=instance.get_absolute_url(), title=instance.title)
+    n = Notification(
+        text=text,
+        subscriber=instance.responsible,
+        obj=instance,
+    )
+    n.save()
+
+    try:
+        send_mail(subject, text, 'dima_page@mail.ru', [subscriber_emails], fail_silently=False)
+    except:
+        pass

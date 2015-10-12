@@ -114,7 +114,7 @@ class SalesDealDetail(UpdateView):
         return context
 
     def get_success_url(self):
-        return self.request.GET.get('next', '/crm/')
+        return self.request.GET.get('next', reverse_lazy('crm:sales_deals_list_page'))
 
 
 class SalesDealAddPage(CreateView):
@@ -130,4 +130,5 @@ class SalesDealAddPage(CreateView):
         return kwargs
 
     def get_success_url(self):
-        return self.request.GET.get('next', '/crm/sales-deals')
+        obj = self.get_object()
+        return reverse_lazy('crm:sales_deal_detail_page', kwargs={'pk': obj.pk})
