@@ -21,5 +21,6 @@ urlpatterns = patterns('',
     url(r'^set-task-status/$', login_required(SetTaskStatus.as_view()), name='set_task_status'),
 
     url(r'^task/(?P<pk>\d+)/$', login_required(TaskDetail.as_view()), name='task_detail'),
+    # url(r'^task/(?P<pk>\d+)/delete/$', login_required(TaskDelete.as_view()), name='task_delete'),
     url(r'^task/add/$', login_required(TaskAddForm.as_view()), name='add_task'),
 )

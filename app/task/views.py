@@ -58,6 +58,10 @@ class TasksList(AjaxListView):
         LIST_ALL,
     ]
 
+    def __init__(self, *args, **kwargs):
+        super(TasksList, self).__init__(*args, **kwargs)
+        self.default_filters = {}
+
     # @csrf_exempt
     # def get(self, *args, **kwargs):
     #     if 'only_count' in kwargs:
@@ -286,7 +290,7 @@ class TaskDetail(UpdateView):
     model = Task
     # form_class = TaskForm
     template_name = 'task/task_detail.html'
-    success_url = '/tasks/'
+    # success_url = '/tasks/'
 
     def get_files_formset(self, *args, **kwargs):
         obj = self.get_object()
@@ -375,6 +379,8 @@ class TaskDetail(UpdateView):
                 files_formset.save()
             else:
                 is_invalid_formset = False
+        else:
+            return self.form_invalid(form)
 
         # TODO переименовать переменную да и вообще с ней порядок навести
         if is_invalid_formset:
@@ -384,8 +390,9 @@ class TaskDetail(UpdateView):
             return self.form_invalid(form)
 
     def get_success_url(self):
-        obj = self.get_object()
-        return '/tasks/task/{0}'.format(obj.pk)
+        if self.object.deleted:
+            return self.request.GET.get('next', '/tasks/today/')
+        return self.object.get_absolute_url()
 
 
 class TemplateFormMixin(object):

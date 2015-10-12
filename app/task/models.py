@@ -233,7 +233,7 @@ class TaskQueryset(models.query.QuerySet):
     #     return self.filter(is_favorite=True)
 
     def repeating(self, *args, **kwargs):
-        return self.filter(is_repeating_clone=False)
+        return self.filter(is_repeating_clone=False, template__period__isnull=False)
 
     def for_goal(self, goal):
         return self.filter(template__goal=goal)
@@ -360,6 +360,8 @@ class Task(models.Model):
             if hasattr(self, 'step'):
                 self.step.end(task=self, request=self.request)
 
+        if self.deleted:
+            Task.objects.filter(template=self.template).update(deleted=True)
 
 class RepeatParamsManager(models.Manager):
     def create_next_task(self, task):
@@ -383,7 +385,7 @@ class RepeatParamsManager(models.Manager):
 def post_save_task(instance, **kwargs):
     task = instance
     template = task.template
-    if template.period and not task.is_repeating_clone:
+    if template.period and not task.is_repeating_clone and not task.deleted:
         template.create_repeating_tasks()
 
 @receiver(post_save, sender=TaskTemplate)

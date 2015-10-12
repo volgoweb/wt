@@ -4,13 +4,13 @@
 {% block task_form_fields %}
     {{ block.super }}
 
-    {# {% for f in form.hidden_fields %} #}
-    {#     {{ f }} #}
-    {# {% endfor %} #}
+    {% for f in form.hidden_fields %}
+        {{ f }}
+    {% endfor %}
 
-    {# {% for f in template_form.hidden_fields %} #}
-    {#     {{ f }} #}
-    {# {% endfor %} #}
+    {% for f in template_form.hidden_fields %}
+        {{ f }}
+    {% endfor %}
 
     <table>
         {{ template_form.as_table }}

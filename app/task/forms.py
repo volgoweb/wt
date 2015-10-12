@@ -53,7 +53,7 @@ class TaskStepForm(BootstrapFormMixin, forms.ModelForm):
 class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ['deleted', 'template']
+        exclude = ['template']
         # fields = ['title', 'desc', 'status']
         widgets = {
             # 'due_date': DateTimeWidget(
@@ -67,6 +67,7 @@ class AddTaskForm(BootstrapFormMixin, forms.ModelForm):
             # ),
             'status': forms.widgets.RadioSelect(),
             'is_repeating_clone': forms.HiddenInput(),
+            'deleted': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
