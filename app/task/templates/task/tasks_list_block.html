@@ -1,12 +1,18 @@
 {% load static %}
 {% load endless %}
 {% load humanize %}
+{% load l10n %}
 
 {% paginate tasks %}
 {% get_pages %}
 
     <div>
     {% for t in tasks %}
+        {% if list_name != 'my-today' and list_name != 'my-tomorrow' %}
+            {% localize on %}
+                {% ifchanged %}<h3>{{ t.due_date|date:"l d b Y" }}</h3>{% endifchanged %}
+            {% endlocalize %}
+        {% endif %}
         <div class="task-item row-fluid {% if t.is_overdue %}task-item_overdue{% endif %}">
             <div class="task-item__row1">
                 <span class="task-item__status">
