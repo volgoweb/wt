@@ -12,6 +12,9 @@ class DealStatus(Dictionary):
 
 
 class SalesDealQueryset(models.query.QuerySet):
+    def not_deleted(self):
+        return self.filter(deleted=False)
+
     def with_responsible(self, user):
         return self.filter(responsible_unit=user.job)
 
@@ -67,7 +70,14 @@ class SalesDeal(models.Model):
         if self.responsible_unit:
             user = self.responsible_unit.get_user()
             self.responsible = user
+        if self.deleted:
+            self.delete()
         return super(SalesDeal, self).save(*args, **kwargs)
+
+    def delete(self):
+        self.deleted = True
+        # удалять через метод модели
+        self.tasks.all().update(deleted=True)
 
 
 def task_saved_handler(task, created, request, **kwargs):

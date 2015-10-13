@@ -44,7 +44,7 @@ class SalesDealsListPage(AjaxListView):
                 self.filters_values[key] = self.filters_form.cleaned_data.get(key)
 
     def get_base_queryset(self):
-        return self.model.objects.all().order_by('-edited')
+        return self.model.objects.all().not_deleted().order_by('-edited')
 
     def get_queryset(self):
         qs = self.get_base_queryset()

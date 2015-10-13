@@ -10,7 +10,10 @@ from app.contact.models import Company
 class SalesDealForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = SalesDeal
-        exclude = ['tasks', 'deleted', 'responsible']
+        exclude = ['tasks', 'responsible']
+        widgets = {
+            'deleted': forms.HiddenInput(),
+        }
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
