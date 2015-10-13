@@ -94,6 +94,8 @@ class ContactsListPage(AjaxListView):
 
 
 class ClientsListPage(ContactsListPage):
+    template_name = 'crm/contacts_list_page.html'
+
     def get_base_queryset(self):
         return Contact.objects.filter(deleted=False, is_client=True).order_by('full_name')
 
