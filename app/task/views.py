@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, UpdateView, CreateView, View
 from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect, JsonResponse
+from django.db.models import Q
 from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.contrib.contenttypes.models import ContentType
 from django.http import Http404, HttpResponse
@@ -103,6 +104,13 @@ class TasksList(AjaxListView):
         qs = self.get_base_queryset()
         if len(self.request.GET) > 0:
             self.define_filters()
+
+            filter_search = self.filters_values.get('search')
+            if filter_search:
+                qs = qs.filter(
+                    Q(template__title__icontains=filter_search) |
+                    Q(template__desc__icontains=filter_search)
+                )
 
             filter_performer = self.filters_values.get('performer')
             if filter_performer:
@@ -281,6 +289,7 @@ class AllTasksPage(TasksList):
     def __init__(self, *args, **kwargs):
         super(TasksList, self).__init__(*args, **kwargs)
         self.default_filters = {
+            'search': '',
             'performer': None,
             'author': None,
             'status': None,

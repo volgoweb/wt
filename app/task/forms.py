@@ -133,6 +133,10 @@ class TasksListFilters(BootstrapFormMixin, forms.Form):
     # авторизованный пользователь имеет право смотреть... 
     # ну либо те сотрудники, на которых висят задачи.
     # TODO добавить значение "я"
+    search = forms.CharField(
+        required=False,
+        label=u'Название/описание',
+    )
     performer = forms.ModelChoiceField(
         queryset=Account.objects.all(),
         required=False,

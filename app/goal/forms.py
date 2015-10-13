@@ -9,9 +9,10 @@ from .models import Goal
 class GoalForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Goal
-        exclude = ['deleted']
+        fields = '__all__'
         widgets = {
             'author': forms.HiddenInput(),
+            'deleted': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):

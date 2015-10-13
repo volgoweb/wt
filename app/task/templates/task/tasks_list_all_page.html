@@ -42,7 +42,7 @@
                             {% endfor %}
 
                             {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %}
-                            {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="this.form.reset(); $('select').val(''); this.form.submit();" %}
+                            {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="this.form.reset(); $('select, input[type=text]').val(''); this.form.submit();" %}
                         </form>
                     </div> {# .panel-body #}
                 </div> {# #tasks-filters__my-body #}

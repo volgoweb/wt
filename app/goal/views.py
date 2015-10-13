@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import UpdateView, CreateView
 # from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from endless_pagination.views import AjaxListView
 from endless_pagination import settings as endless_settings
 from django.core.urlresolvers import reverse_lazy
@@ -120,6 +120,12 @@ class GoalDetailPage(UpdateView):
     template_name = 'goal/goal_form_page.html'
     success_url = '/goals/my-goals/'
 
+    def get_object(self, *args, **kwargs):
+        obj = super(GoalDetailPage, self).get_object(*args, **kwargs)
+        if obj.deleted:
+            raise Http404(u'Эта цель удалена!')
+        return obj
+
     def get_form_kwargs(self):
         kwargs = super(GoalDetailPage, self).get_form_kwargs()
         kwargs.update({
@@ -143,9 +149,8 @@ class GoalDetailPage(UpdateView):
         return context
 
     def form_valid(self, form, *args, **kwargs):
-        result = super(AddGoalPage, self).form_valid(form, *args, **kwargs)
-        goal = self.get_object()
-        goal_saved.send(sender=Goal, goal=goal, created=False, request=self.request)
+        result = super(GoalDetailPage, self).form_valid(form, *args, **kwargs)
+        goal_saved.send(sender=Goal, goal=self.object, created=False, request=self.request)
         return result
 
 
