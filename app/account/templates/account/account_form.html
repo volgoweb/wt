@@ -1,5 +1,13 @@
 {% extends "core/page.html" %}
 
 {% block content %}
-    {% include "core/form.html"  %}
+    <div class="col-lg-6 col-md-9 col-sm-12">
+        <form action="" method="POST" accept-charset="utf-8" class="form">
+            {% csrf_token %}
+            <table class="table">
+                {{ form.as_table }}
+            </table>
+            <input type="submit" value="Сохранить" class="btn btn-primary"/>
+        </form>
+    </div>
 {% endblock %}
