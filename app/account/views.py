@@ -37,10 +37,21 @@ class Login(FormView):
             return super(Login, self).form_invalid(form)
 
 
-class EditProfile(UpdateView):
+class EditMyProfile(UpdateView):
     model = Account
-    fields = '__all__'
+    # fields = '__all__'
+    fields = [
+        'first_name',
+        'middle_name',
+        'last_name',
+        'email',
+        'job',
+        'department',
+        'time_zone',
+    ]
 
+    def get_object(self):
+        return Account.objects.get(pk=self.request.user.pk)
 
 class CompanyUnitsListPage(AjaxListView):
     model = CompanyUnit

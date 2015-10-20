@@ -373,6 +373,7 @@ class Task(models.Model):
         if self.deleted:
             Task.objects.filter(template=self.template).update(deleted=True)
 
+
 class RepeatParamsManager(models.Manager):
     def create_next_task(self, task):
         task.template

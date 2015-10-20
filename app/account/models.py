@@ -139,7 +139,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     """
     email = models.EmailField(_('email address'), max_length = 255, unique=True)
     first_name = models.CharField(_('first name'), max_length=30)
-    middle_name = models.CharField(_('middle name'), max_length=30, null=True, blank=True)
+    middle_name = models.CharField(_(u'Отчество'), max_length=30, null=True, blank=True)
     last_name = models.CharField(_('last name'), max_length=30)
     # Флаг, для временного отключения учетки
     is_active = models.BooleanField(default=True, verbose_name=u'Активен')

@@ -11,7 +11,7 @@ def auth_menu(context):
         auth_status = request.user.is_authenticated()
         if auth_status:
             items.append({
-                'url': reverse('account:edit_profile'),
+                'url': reverse('account:edit_my_profile', kwargs={}),
                 'title': u'Редактировать профиль',
             })
             items.append({
