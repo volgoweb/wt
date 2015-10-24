@@ -1,0 +1,34 @@
+{% extends "idea/page.html" %}
+{% load static %}
+{% load core_tags %}
+
+{% block scripts %}
+    {{ block.super }}
+
+    {# <link rel="stylesheet" type="text/css" media="all" href="{% static "wiki/css/wiki.css" %}" /> #}
+    {{ form.media }}
+
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            $('#id_date_from').default_datepicker();
+            $('#id_date_to').default_datepicker();
+        });
+    </script>
+{% endblock %}
+
+{% block page_title %}
+    {% if form.instance.pk %}
+        Идея "{{ form.instance.title }}"
+    {% else %}
+        Добавление идеи
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        {% if form.fields %}
+            {% include "core/form.html" %}
+        {% endif %}
+    </div>
+{% endblock %}
+

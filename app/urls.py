@@ -30,6 +30,7 @@ from app.client import urls as client_urls
 from app.contact import urls as contact_urls
 from app.crm import urls as crm_urls
 from app.goal import urls as goal_urls
+from app.idea import urls as idea_urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -54,6 +55,7 @@ urlpatterns = [
     url(r'^clients/', include(client_urls, namespace='client')),
     url(r'^crm/', include(crm_urls, namespace='crm')),
     url(r'^goals/', include(goal_urls, namespace='goal')),
+    url(r'^ideas/', include(idea_urls, namespace='idea')),
 ]
 
 

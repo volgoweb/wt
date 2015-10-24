@@ -1,0 +1,40 @@
+{% extends "core/page.html" %}
+{% load static %}
+{% load sitetree %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "idea/css/idea.css" %}" />
+{% endblock %}
+
+{% block sec_menu %}
+    {{ block.super }}
+
+    <div class="btn-group">
+        <a href="{% url "idea:add_idea_page" %}" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Добавить идею</a>
+    </div>
+
+    <br>
+    <br>
+
+    {% sitetree_menu from "main_menu" include "ideas" template 'core/sec_menu.html' %}
+
+    {# {% if filters_form %} #}
+    {#     <h4 class="text-primary">Фильтры</h4> #}
+    {#     <form action="" method="GET" accept-charset="utf-8" class="filters-form form-inline"> #}
+    {#         {% for f in filters_form.visible_fields %} #}
+    {#             {% include "core/form_field.html" with field=f label='' %} #}
+    {#         {% endfor %} #}
+
+    {#         {% for f in filters_form.hidden_fields %} #}
+    {#             {{ f }} #}
+    {#         {% endfor %} #}
+
+    {#         <p> #}
+    {#             {% include "core/form_inline_buttons.html" with title="Отобразить" type="submit" btn_classes="btn-success" %} #}
+    {#             {% include "core/form_inline_buttons.html" with title="Сбросить" type="button" btn_classes="btn-default" onclick="$('.filters-form input[type=text]').val(''); this.form.submit();" %} #}
+    {#         </p> #}
+    {#     </form> #}
+    {# {% endif %} #}
+{% endblock %}
+

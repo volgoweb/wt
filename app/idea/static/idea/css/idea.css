@@ -1,0 +1,5 @@
+
+.nav > li.sec-menu__item_add_idea,
+.nav > li.sec-menu__item_ideas_list {
+    display: none;
+}

@@ -1,0 +1,16 @@
+{% extends "idea/page.html" %}
+{% load static %}
+{% load core_tags %}
+
+{% block page_title %}
+    Идея "{{ idea.title }}"
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        {% include "core/field_view.html" with label="Автор" value=idea.author  %}
+        {% include "core/field_view.html" with label="Дата создания" value=idea.created  %}
+        {{ idea.desc }}
+    </div>
+{% endblock %}
+
