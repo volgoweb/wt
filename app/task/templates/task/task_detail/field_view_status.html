@@ -1,0 +1,13 @@
+{% extends "core/field_view.html" %}
+
+{% block field_view_value %}
+    {% if value == Task.STATUS_IN_WORK %}
+        <span class="badge bg-success">{{ human_value }}</span>
+    {% elif value == Task.STATUS_READY %}
+        <span class="badge bg-warning">{{ human_value }}</span>
+    {% elif value == Task.STATUS_DECLINE %}
+        <span class="badge bg-danger">{{ human_value }}</span>
+    {% elif value == Task.STATUS_AWATING_EXECUTION %}
+        <span class="badge bg-primary">{{ human_value }}</span>
+    {% endif %}
+{% endblock %}

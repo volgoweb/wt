@@ -322,23 +322,27 @@ class Task(models.Model):
         # Возвращает список заголовков и значений полей, отвечающих за результат выполнения.
         # Такие поля как 'комментарий', 'статус' и поля из дочерних классов.
         # """
-        values = []
+        values = {}
         for obj in (self, self.template):
             fields = obj._meta.fields
             for f in fields:
-                if f.name not in ('id', 'polymorphic_ctype', 'step_id', 'step_type', 'template', 'performer', 'is_repeating_clone', 'deleted'):
+                if f.name not in ('id', 'polymorphic_ctype', 'step_id', 'step_type', 'template', 'is_repeating_clone', 'deleted'):
                     getting_human_value_method = getattr(obj, 'get_{0}_display'.format(f.name), None)
+                    human_value = ''
+                    raw_value = None
                     if callable(getting_human_value_method):
-                        val = getting_human_value_method()
+                        val = human_value = getting_human_value_method()
                     else:
-                        val = getattr(obj, f.name)
+                        val = raw_value = getattr(obj, f.name)
                     if f.name == 'performer_unit':
                         # TODO вынести в какой-то общий метод или helper функцию
                         val = u'{0} ({1})'.format(val.get_user(), val.name)
-                    values.append({
+                    values[f.name] = {
+                        'name': f.name,
                         'label': f.verbose_name,
-                        'value': val or '',
-                    })
+                        'value': raw_value,
+                        'human_value': human_value or val or '',
+                    }
         return values
 
     def is_new(self):

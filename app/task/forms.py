@@ -189,12 +189,13 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
         else:
             self.fields['performer'].initial = self.request.user
             self.fields['performer_unit'].initial = self.request.user.job
-        self.fields['performer_unit'].queryset = CompanyUnit.objects.all().employee()
-        choices = [(o.pk, u'{0} ({1})'.format(o.get_user() or '', o.name)) for o in self.fields['performer_unit'].queryset]
-        choices.sort(key=lambda x: x[1])
-        self.fields['performer_unit'].widget.choices = [('', '----------')] + choices
+        if 'performer_unit' in self.fields:
+            self.fields['performer_unit'].queryset = CompanyUnit.objects.all().employee()
+            choices = [(o.pk, u'{0} ({1})'.format(o.get_user() or '', o.name)) for o in self.fields['performer_unit'].queryset]
+            choices.sort(key=lambda x: x[1])
+            self.fields['performer_unit'].widget.choices = [('', '----------')] + choices
 
-        if self.task:
+        if self.task and 'due_date' in self.fields:
             self.fields['due_date'].widget = self.fields['due_date'].hidden_widget()
 
         if 'author' in self.fields:
@@ -216,7 +217,7 @@ class TaskTemplateForm(BootstrapFormMixin, forms.ModelForm):
                 self.fields['due_date'].initial = datetime.datetime.now() + datetime.timedelta(minutes=30)
 
         goal_pk = self.request.GET.get('goal', None)
-        if goal_pk:
+        if goal_pk and 'goal' in self.fields:
             self.fields['goal'].initial = goal_pk
 
         # self.add_files_formset()

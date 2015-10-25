@@ -1,5 +1,7 @@
 {% extends "task/task_detail/base.html" %}
 {% load comments %}
+{% load humanize %}
+{% load l10n %}
 
 {% block task_form_fields %}
     {{ block.super }}
@@ -28,11 +30,61 @@
 {% endblock %}
 
 {% block task_results_view %}
-    {% for row in task_results %}
-        {% include "core/field_view.html" with value=row.value label=row.label inline=True %}
-    {# <div class="task-field-view"> #}
-    {#     <label>{{ row.label }}</label> #}
-    {#     <span>{{ row.value }}</span> #}
-    {# </div> #}
-    {% endfor %}
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    {% if 'status' in task_results %}
+                        {% include "task/task_detail/field_view_status.html" with value=task_results.status.value human_value=task_results.status.human_value label=task_results.status.label inline=True %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'due_date' in task_results %}
+                        {% include "core/field_view.html" with value=task_results.due_date.value human_value=task_results.due_date.human_value|naturaltime label=task_results.due_date.label inline=True %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'performer' in task_results %}
+                        {% include "core/field_view.html" with value=task_results.performer.human_value label=task_results.performer.label inline=True %}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {% if 'created' in task_results %}
+                        {% include "core/field_view.html" with value=task_results.created.value|naturaltime label=task_results.created.label inline=True %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'author' in task_results %}
+                        {% include "core/field_view.html" with value=task_results.author.human_value label=task_results.author.label inline=True %}
+                    {% endif %}
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    {% if 'contact' in task_results %}
+                        {% include "core/field_view.html" with value=task_results.contact.human_value|default:"-" label=task_results.contact.label inline=True %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'goal' in task_results %}
+                        {% include "core/field_view.html" with value=task_results.goal.human_value|default:"-" label=task_results.goal.label inline=True %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'sales_deal' in task_results %}
+                        {% include "core/field_view.html" with value=task_results.sales_deal.human_value|default:"-" label=task_results.sales_deal.label inline=True %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="container-fluid well well-sm">
+        {% if 'desc' in task_results %}
+            {% include "core/field_view.html" with value=task_results.desc.value|default:"-"|safe label=task_results.desc.label inline=False %}
+        {% endif %}
+    </div>
 {% endblock %}
