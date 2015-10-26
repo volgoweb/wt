@@ -9,11 +9,14 @@ import django.dispatch
 from django.core.mail import send_mail
 from django_comments.signals import comment_was_posted
 
+from app.account.models import Account
 from app.task.models import Task
 from app.task.signals import task_saved
 from app.crm.models import SalesDeal
 from app.goal.models import Goal
 from app.goal.signals import goal_saved
+from app.idea.models import Idea
+from app.idea.signals import idea_saved
 from app.wiki.models import WikiPage
 from app.wiki.signals import wiki_page_saved
 
@@ -157,6 +160,37 @@ def notify_about_wiki_page(wiki_page, created, request, **kwargs):
             text=text,
             subscriber=user,
             obj=wiki_page,
+        )
+        n.save()
+
+    subscriber_emails = [u.email for u in subscribers]
+    try:
+        send_mail(subject, text, 'dima_page@mail.ru', [subscriber_emails], fail_silently=False)
+    except:
+        pass
+
+
+@receiver(idea_saved, sender=Idea)
+def notify_about_idea(idea, created, request, **kwargs):
+    # TODO перенести в ассинхронное выполнение через celery
+    subscribers = []
+    for user in Account.objects.all():
+        if user == idea.author:
+            continue
+        subscribers.append(user)
+
+    if created:
+        subject = u'Добавлена новая идея'
+        text = u'Добавлена новая идея "<a href="{link}">{title}</a>"'.format(link=idea.get_absolute_url(), title=idea.title)
+    else:
+        subject = u'Изменена идея'
+        text = u'Изменена идея "<a href="{link}">{title}</a>"'.format(link=idea.get_absolute_url(), title=idea.title)
+
+    for user in subscribers:
+        n = Notification(
+            text=text,
+            subscriber=user,
+            obj=idea,
         )
         n.save()
 
