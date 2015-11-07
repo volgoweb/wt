@@ -47,6 +47,8 @@
                     <span class="badge"><span class="task-icon_due">Срок: </span>{{ t.due_date|default:"-"|naturaltime }}</span>
                 {% endif %}
 
+                <span class="badge"><span class="task-icon_status">Статус: </span>{{ t.get_status_display|default:"-" }}</span>
+
                 {% if show_author %}
                     <span class="badge"><span class="task-icon_author">Автор: </span>{{ t.template.author }}</span>
                 {% endif %}

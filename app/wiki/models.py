@@ -4,8 +4,9 @@ from django.core.urlresolvers import reverse_lazy
 from mptt.models import MPTTModel, TreeForeignKey
 from mptt.managers import TreeManager
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, m2m_changed
 
+from .signals import wiki_page_saved
 from app.account.models import CompanyUnit, Account
 
 
@@ -193,12 +194,9 @@ class WikiPageExtra(models.Model):
                 extra_field.add(*users)
 
 
-
-@receiver(post_save, sender=WikiPage)
-def post_save_wiki_page(**kwargs):
-    # TODO перенести в ассинхронное выполнение через celery
-    wiki_page = kwargs.get('instance')
-    if kwargs.get('created'):
+@receiver(wiki_page_saved, sender=WikiPage)
+def post_full_save_wiki_page(wiki_page, created, request, **kwargs):
+    if created:
         ext = WikiPageExtra(
             wiki_page=wiki_page,
         )
