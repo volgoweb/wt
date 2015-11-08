@@ -4,16 +4,17 @@
     border: none;
 }
 
-.logo  {
-    background-image: url(../../../images/logo.png);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center center;
-    display: block;
-    width: 150px;
-    height: @navbar-height;
-    margin: @nav-link-padding;
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-left: 0;
+
+@media(max-width: 1100px) {
+    body .body-wrapper {
+        padding-top: 40px;
+    }
+
+    .navbar {
+        min-height: 40px;
+    }
+
+    .navbar-nav > li > a {
+        padding: 12px 11px;
+    }
 }

@@ -29,36 +29,42 @@ class Command(BaseCommand):
         self.demo_company_units['sales_dep'] = CompanyUnit(
             name=u'Отдел продаж',
             unit_type=CompanyUnit.UNIT_TYPE_DEPARTMENT,
+            parent=self.demo_company_units['director'],
         )
         self.demo_company_units['sales_dep'].save()
 
         self.demo_company_units['boss_sales_dep'] = CompanyUnit(
             name=u'Начальник отдела продаж',
             unit_type=CompanyUnit.UNIT_TYPE_EMPLOYEE,
+            parent=self.demo_company_units['sales_dep'],
         )
         self.demo_company_units['boss_sales_dep'].save()
 
         self.demo_company_units['manager_sales_dep'] = CompanyUnit(
             name=u'Менеджер отдела продаж',
             unit_type=CompanyUnit.UNIT_TYPE_EMPLOYEE,
+            parent=self.demo_company_units['boss_sales_dep'],
         )
         self.demo_company_units['manager_sales_dep'].save()
 
         self.demo_company_units['buying_dep'] = CompanyUnit(
             name=u'Отдел закупок',
             unit_type=CompanyUnit.UNIT_TYPE_DEPARTMENT,
+            parent=self.demo_company_units['director'],
         )
         self.demo_company_units['buying_dep'].save()
 
         self.demo_company_units['boss_buying_dep'] = CompanyUnit(
             name=u'Начальник отдела закупок',
             unit_type=CompanyUnit.UNIT_TYPE_EMPLOYEE,
+            parent=self.demo_company_units['buying_dep'],
         )
         self.demo_company_units['boss_buying_dep'].save()
 
         self.demo_company_units['manager_buying_dep'] = CompanyUnit(
             name=u'Менеджер отдела закупок',
             unit_type=CompanyUnit.UNIT_TYPE_EMPLOYEE,
+            parent=self.demo_company_units['boss_buying_dep'],
         )
         self.demo_company_units['manager_buying_dep'].save()
 

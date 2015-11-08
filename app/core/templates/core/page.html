@@ -68,11 +68,8 @@
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-6" aria-expanded="false">
                         <span class="sr-only">Меню</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
+                        {% sitetree_menu from "main_menu" include "root" template "core/main_menu.html" %}
                     </button>
-                    <a href="http://click-and-click.ru" target="_blank" class="logo"></a>
                 </div>
 
                 {% sitetree_menu from "main_menu" include "root" template "core/main_menu.html" %}
@@ -82,7 +79,7 @@
               </div>
             </nav>
 
-            <div class="sec-menu col-md-3 col-lg-2">
+            <div class="sec-menu col-sm-3 col-md-3 col-lg-2">
                 {% block sec_menu %}
                     {# <div class="global-search form-group"> #}
                     {#     <input id="global-search__input" type="text" class="form-control" name="some_name" value="" placeholder="Поиск..."/> #}
@@ -90,9 +87,10 @@
                     {# </div> #}
 
                 {% endblock %}
+                <a href="http://click-and-click.ru" target="_blank" class="logo"></a>
             </div>
 
-            <div class="content-sidebar col-md-9 col-lg-10">
+            <div class="content-sidebar col-sm-9 col-md-9 col-lg-10">
                 <div class="row-fluid">
                     {% if messages %}
                         {% for message in messages %}

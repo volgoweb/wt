@@ -25,11 +25,11 @@
                     <span class="input-group-addon" onclick="$('#wiki-search').val('').trigger('keyup');"><span class="glyphicon glyphicon-remove"></span></span>
                 </div>
 
-                <table class="wiki-page-items table table-hover col-md-8">
+                <table class="wiki-page-items table table-hover col-md-8 col-sm-6">
                     <tbody>
                         {% for node in tree %}
                             <tr class="wiki-page-item">
-                                <td class="wiki-catalog__item" data-pk="{{ node.pk }}" style="padding-left: {% widthratio node.level 20 100 %}px;">{#<a href="{{ node.get_absolute_url }}">#}{{ node.title }}{#</a>#}</td>
+                                <td class="wiki-catalog__item" style="padding-left: {% widthratio node.level 20 100 %}px;"><a href="{{ node.get_absolute_url }}" data-pk="{{ node.pk }}">{{ node.title }}</a></td>
                             </tr>
                         {% empty %}
                             <tr class="wiki-page-item">
@@ -55,16 +55,18 @@
                 $('.wiki-detail').html('');
             });
 
-            var $catalog_items = $('.wiki-catalog__item');
-            $catalog_items.on('click', function() {
+            var $catalog_items = $('.wiki-catalog__item a');
+            $catalog_items.on('click', function(event) {
+                event.stopPropagation();
+                event.preventDefault();
                 var $item = $(this);
                 var pk = $(this).data('pk');
                 $.get('/wiki/wiki-page-block/' + pk, function(data){
                     $('.wiki-detail').html(data);
-                    $('.wiki-detail').removeClass('col-md-2').addClass('col-md-10');
-                    $('.wiki-catalog').removeClass('col-md-10').addClass('col-md-2');
-                    var $row = $item.parent('tr');
-                    $catalog_items.parent('tr').removeClass('active')
+                    $('.wiki-detail').removeClass('col-lg-2 col-md-4 col-sm-6').addClass('col-lg-10 col-md-8 col-sm-6');
+                    $('.wiki-catalog').removeClass('col-lg-10 col-md-8 col-sm-6').addClass('col-lg-2 col-md-4 col-sm-6');
+                    var $row = $item.closest('tr');
+                    $catalog_items.closest('tr').removeClass('active')
                     $row.addClass('active');
                 });
             });

@@ -50,13 +50,13 @@
                 {% csrf_token %}
                 {# <div class="input-group"> #}
                 <div class="row">
-                    <div class="col-md-9">
+                    <div class="col-lg-9 col-sm-8">
                         {% include "core/form_field.html" with field=form.title %}
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-lg-2 col-sm-3">
                         {% include "core/form_field.html" with field=form.due_date %}
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-lg-1 col-sm-1">
                         <input type="submit" class="task-form__submit-btn task-form__submit-btn_quick-add btn btn-primary" value="+"/>
                     </div>
                 </div>

@@ -7,7 +7,7 @@
 {% block content %}
     <div class="contacts-list-page">
         {% if filters_form %}
-            <h4 class="text-primary">Фильтры</h4>
+            <h4>Фильтры</h4>
             <form action="" method="GET" accept-charset="utf-8" class="filters-form form-inline">
                 {% for f in filters_form.visible_fields %}
                     {% include "core/form_field.html" with field=f label='' %}
