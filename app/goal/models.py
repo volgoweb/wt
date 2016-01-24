@@ -11,6 +11,15 @@ class GoalQueryset(models.query.QuerySet):
     def not_deleted(self):
         return self.filter(deleted=False)
 
+    def for_company(self):
+        return self.filter(performers__isnull=True)
+
+    def for_department(self, department):
+        return self.filter(performers=department)
+
+    def for_user(self, user_company_unit):
+        return self.filter(performers=user_company_unit)
+
 
 class GoalManager(models.Manager):
     def get_queryset(self, *args, **kwargs):

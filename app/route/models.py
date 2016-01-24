@@ -3,7 +3,7 @@ from django.db import models
 from collections import OrderedDict
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from polymorphic import PolymorphicModel
+from polymorphic.models import PolymorphicModel
 
 from app.task.models import Task
 

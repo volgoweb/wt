@@ -26,7 +26,7 @@
                     <td>{{ d.responsible }}</td>
                     <td>{{ d.client_contact }}</td>
                     <td>{{ d.edited|naturaltime }}</td>
-                    <td>{{ d.get_next_task.due_date|naturaltime }}</td>
+                    <td>{{ d.get_next_task.due_date|naturaltime|default:"<span class="sales-deal__next-task-flag sales-deal__next-task-flag_no-task">нет задачи</span>" }}</td>
                 </tr>
             {% endfor %}
         </tbody>

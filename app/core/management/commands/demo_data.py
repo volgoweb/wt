@@ -143,6 +143,7 @@ class Command(BaseCommand):
             desc=u'Сравнить итоги с результатами прошлого месяца. Сравнить итоги с результатами такого же месяца прошлого года. Выявить менее продаваемые категории товаров.',
             author=self.demo_accounts['boss_sales_dep'],
             performer_unit=self.demo_company_units['boss_sales_dep'],
+            performer=self.demo_accounts['boss_sales_dep'],
             due_date=datetime.datetime(self.next_month.year, self.next_month.month, 1, 11, 0),
             period=TaskTemplate.PERIOD_MONTH_BY_DAY,
         ).save()

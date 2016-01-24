@@ -130,5 +130,4 @@ class SalesDealAddPage(CreateView):
         return kwargs
 
     def get_success_url(self):
-        obj = self.get_object()
-        return reverse_lazy('crm:sales_deal_detail_page', kwargs={'pk': obj.pk})
+        return reverse_lazy('crm:sales_deal_detail_page', kwargs={'pk': self.object.pk})

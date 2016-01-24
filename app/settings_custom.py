@@ -7,10 +7,13 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
+        'TEST': {
+            'NAME': 'wt_test',
+        },
         'OPTIONS': {
            "init_command": "SET storage_engine=MyISAM",
         },
-    }
+    },
 }
 
 

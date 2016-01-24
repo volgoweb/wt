@@ -13,3 +13,8 @@
 .nav > li.sec-menu__item_add_sales_deal {
     display: none;
 }
+
+.sales-deal__next-task-flag_no-task {
+    color: orange;
+    font-weight: bold;
+}

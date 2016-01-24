@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from django.views.generic import UpdateView, CreateView
 # from django.db.models import Q
 from django.http import HttpResponseRedirect, Http404
@@ -12,10 +13,20 @@ from .forms import GoalForm
 from app.task.models import Task
 
 
+logger = logging.getLogger(__name__)
+
+
 class GoalsListPage(AjaxListView):
     model = Goal
     template_name = 'goal/goals_list_page.html'
     context_object_name = 'goals'
+    output_fields = [
+        'pk',
+        'title',
+        'desc',
+        'date_from',
+        'date_to',
+    ]
     # TODO создать кастомый queryset
     # queryset = Goal.objects.filter(deleted=False)
     # filters_form_class = GoalsListFilters
@@ -41,7 +52,7 @@ class GoalsListPage(AjaxListView):
     #             self.filters_values[key] = self.filters_form.cleaned_data.get(key)
 
     def get_base_queryset(self):
-        return Goal.objects.filter(deleted=False).order_by('date_from')
+        return Goal.objects.all().not_deleted().not_overdue().only(*self.output_fields).order_by('date_from')
 
     def get_queryset(self):
         qs = self.get_base_queryset()
@@ -80,7 +91,8 @@ class GoalsListPage(AjaxListView):
 
 class CompanyGoalsListPage(GoalsListPage):
     def get_base_queryset(self):
-        return Goal.objects.all().not_overdue().not_deleted().filter(performers__isnull=True).order_by('date_from')
+        qs = super(CompanyGoalsListPage, self).get_base_queryset()
+        return qs.for_company()
 
     def get_context_data(self, **kwargs):
         context = super(GoalsListPage, self).get_context_data(**kwargs)
@@ -92,7 +104,8 @@ class CompanyGoalsListPage(GoalsListPage):
 
 class DepartmentGoalsListPage(GoalsListPage):
     def get_base_queryset(self):
-        return Goal.objects.all().not_overdue().not_deleted().filter(performers=self.request.user.department).order_by('date_from')
+        qs = super(DepartmentGoalsListPage, self).get_base_queryset()
+        return qs.for_department(self.request.user.department)
 
     def get_context_data(self, **kwargs):
         context = super(GoalsListPage, self).get_context_data(**kwargs)
@@ -104,7 +117,9 @@ class DepartmentGoalsListPage(GoalsListPage):
 
 class MyGoalsListPage(GoalsListPage):
     def get_base_queryset(self):
-        return Goal.objects.all().not_overdue().not_deleted().filter(performers=self.request.user.job).order_by('date_from')
+        qs = super(MyGoalsListPage, self).get_base_queryset()
+        qs = qs.for_user(user_company_unit=self.request.user.job)
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super(GoalsListPage, self).get_context_data(**kwargs)
@@ -151,6 +166,7 @@ class GoalDetailPage(UpdateView):
     def form_valid(self, form, *args, **kwargs):
         result = super(GoalDetailPage, self).form_valid(form, *args, **kwargs)
         goal_saved.send(sender=Goal, goal=self.object, created=False, request=self.request)
+        t.r = 8
         return result
 
 

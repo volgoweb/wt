@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.dispatch import receiver
-from polymorphic import PolymorphicModel
+from polymorphic.models import PolymorphicModel
 from django.db.models.signals import post_save, pre_save
 import django.dispatch
 from django.core.mail import send_mail

@@ -38,6 +38,9 @@ ALLOWED_HOSTS = []
 
 SITE_ID = 1
 
+ADMINS = (
+    ('volgoweb', 'volgoweb@bk.ru'),
+)
 
 # Application definition
 
@@ -154,12 +157,11 @@ USE_L10N = True
 LOCALE_PATHS = (
     'locale',
 )
+DEFAULT_CHARSET = 'utf-8'
 
 DATE_INPUT_FORMATS= ('%d.%m.%Y',)
 DATE_FORMAT = 'd.m.Y'
-FULL_DATE_FORMAT = 'd.m.Y'
 # DATETIME_FORMAT = 'd.m.Y H:i' # чтобы заработало надо USE_L10N перевести в False
-FULL_DATETIME_FORMAT = 'd.m.Y H:i'
 SHORT_DATE_FORMAT = 'd.m.Y'
 
 
@@ -180,27 +182,92 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "files")
 MEDIA_URL = '/files/'
 
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.core.context_processors.request",
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    # "constance.context_processors.config",
-    "django.contrib.messages.context_processors.messages",
-    "app.task.context_processors.task_counts",
-)
+# TEMPLATE_CONTEXT_PROCESSORS = (
+#     "django.core.context_processors.request",
+#     "django.contrib.auth.context_processors.auth",
+#     "django.core.context_processors.debug",
+#     "django.core.context_processors.i18n",
+#     "django.core.context_processors.media",
+#     "django.core.context_processors.static",
+#     "django.core.context_processors.tz",
+#     # "constance.context_processors.config",
+#     "django.contrib.messages.context_processors.messages",
+#     "app.task.context_processors.task_counts",
+# )
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+# )
 
 IMAGES_UPLOAD_FOLDER = 'images/'
 
 AJAXIMAGE_AUTH_TEST = lambda u: True
+
+
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'imap.mail.ru'
+# EMAIL_PORT = 993
+# DEFAULT_FROM_EMAIL = 'work_together@server.service'
+# EMAIL_HOST_USER = 'volgoweb@bk.ru'
+# EMAIL_HOST_PASSWORD = ''
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+    },
+    'handlers': {
+        'null': {
+            'level':'DEBUG',
+            'class':'django.utils.log.NullHandler',
+        },
+        'logfile': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': PROJECT_DIR + "/logfile",
+            'maxBytes': 50000,
+            'backupCount': 2,
+            'formatter': 'standard',
+        },
+        'console':{
+            'level':'INFO',
+            'class':'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+        'mail_to_adm':{
+            'level':'INFO',
+            'class':'django.utils.log.AdminEmailHandler',
+            'formatter': 'standard'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers':['console', 'logfile'],
+            'propagate': True,
+            'level':'DEBUG',
+        },
+        'django.request': {
+            'handlers':['mail_to_adm', 'logfile'],
+            'propagate': True,
+            'level':'ERROR',
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        '': {
+            'handlers': ['console', 'logfile'],
+            'level': 'DEBUG',
+        },
+    },
+}
 
 #
 # fluent_comments
@@ -227,13 +294,6 @@ COMPRESS_ROOT = os.path.join(PROJECT_DIR, "core", "static", "core", "less")
 COMPRESS_URL = STATIC_URL + 'core/less/'
 COMPRESS_ENABLED = False
 # end Compressor
-
-#
-# Copyscape
-#
-COPYSCAPE_USERNAME = 'bigt'
-COPYSCAPE_API_KEY = 'ja05t7orfuo5w5hu'
-# end Copyscape
 
 #
 # CKEditor

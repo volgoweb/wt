@@ -87,7 +87,8 @@ class CompanyUnit(MPTTModel):
         if user:
             return u'{user} ({unit_name})'.format(user=user, unit_name=self.name)
         else:
-            return u'{name} ({unit_type}) №{pk}'.format(name=self.name, unit_type=self.unit_type, pk=self.pk)
+            # return u'{name} ({unit_type}) №{pk}'.format(name=self.name, unit_type=self.unit_type, pk=self.pk)
+            return self.name
 
     def get_absolute_url(self, *args, **kwargs):
         return reverse_lazy('account:company_unit_detail_page', kwargs={'pk': self.pk})

@@ -3,7 +3,7 @@ from django.db import models
 from autoslug import AutoSlugField
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from polymorphic import PolymorphicModel
+from polymorphic.models import PolymorphicModel
 from django.conf import settings
 
 class FieldsLabelsMixin(object):

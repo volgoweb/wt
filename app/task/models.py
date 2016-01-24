@@ -8,7 +8,7 @@ from django.db.models import F
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from polymorphic import PolymorphicModel
+from polymorphic.models import PolymorphicModel
 from django.core.exceptions import ValidationError
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
@@ -400,8 +400,9 @@ class RepeatParamsManager(models.Manager):
 def post_save_task(instance, **kwargs):
     task = instance
     template = task.template
-    if template.period and not task.is_repeating_clone and not task.deleted:
-        template.create_repeating_tasks()
+    if template:
+        if template.period and not task.is_repeating_clone and not task.deleted:
+            template.create_repeating_tasks()
 
 @receiver(post_save, sender=TaskTemplate)
 def post_save_task_template(instance, created, **kwargs):

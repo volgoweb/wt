@@ -21,7 +21,7 @@
                 <tr>
                     <td>{{ goal.title }}</td>
                     <td>{{ goal.desc|default:"" }}</td>
-                    <td>{{ goal.date_from|date:"FULL_DATE_FORMAT" }} - {{ goal.date_to|date:"FULL_DATE_FORMAT" }}</td>
+                    <td>{{ goal.date_from|date:"d.m.Y" }} - {{ goal.date_to|date:"d.m.Y" }}</td>
                     <td>
                         {% if goal.author == request.user %}
                             <a href="{% url "goal:goal_detail_page" goal.pk %}">Редактировать</a>
