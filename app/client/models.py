@@ -2,7 +2,7 @@
 from django.db import models
 
 
-class ClientQueryset(models.db.QuerySet):
+class ClientQueryset(models.query.QuerySet):
     def not_deleted(self):
         return self.filter(deleted=False)
 
