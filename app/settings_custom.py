@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 
 DATABASES = {
     'default': {
@@ -15,6 +15,18 @@ DATABASES = {
         },
     },
 }
+
+#
+# haystack работа с поисковыми движками
+#
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://192.168.1.37:9200/',
+        'INDEX_NAME': 'test_dk',
+    },
+}
+# end haystack
 
 
 # EMAIL_USE_TLS = True

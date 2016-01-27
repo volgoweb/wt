@@ -75,6 +75,7 @@ INSTALLED_APPS = (
     'ajax_upload',
     'timezones',
     'sitetree',
+    'haystack',
 
     'helper',
     'app.core',
@@ -320,5 +321,19 @@ AXES_LOGIN_FAILURE_LIMIT = 10
 AXES_COOLOFF_TIME = datetime.timedelta(minutes=5)
 AXES_LOCKOUT_TEMPLATE = 'accounts/auth_temporally_lock.html'
 # end AXES
+
+#
+# haystack работа с поисковыми движками
+#
+# Требуется определить в settings_custom.py
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+#         'URL': 'http://127.0.0.1:9200/',
+#         'INDEX_NAME': 'haystack',
+#     },
+# }
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.BaseSignalProcessor'
+# end haystack
 
 from settings_custom import *

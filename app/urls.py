@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^select2/', include('django_select2.urls')),
     # url(r'^comments/', include('django_comments.urls')),
     url(r'^blog/comments/', include('fluent_comments.urls')),
+    url(r'^search/', include('haystack.urls')),
 
     url(r'^$', 'app.core.views.front_page', name='front_page'),
     url(r'^accounts/', include(account_urls, namespace='account')),

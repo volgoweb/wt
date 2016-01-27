@@ -9,5 +9,5 @@ $(document).ready(function() {
     }
 
     app.notification.update_counts_in_main_menu();
-    setInterval(app.notification.update_counts_in_main_menu, 10000);
+    setInterval(app.notification.update_counts_in_main_menu, 100000);
 });

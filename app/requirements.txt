@@ -26,3 +26,5 @@ django-contrib-comments
 django-fluent-comments
 django-sitetree
 django-fixture-generator
+pyelasticsearch
+django-haystack

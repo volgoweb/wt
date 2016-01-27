@@ -10,5 +10,5 @@ $(document).ready(function() {
     }
 
     app.core.update_counts_in_main_menu();
-    setInterval(app.core.update_counts_in_main_menu, 10000);
+    setInterval(app.core.update_counts_in_main_menu, 100000);
 });
