@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.urlresolvers import reverse_lazy
 
+
 class GoalQueryset(models.query.QuerySet):
     def not_overdue(self):
         now = timezone.now()
