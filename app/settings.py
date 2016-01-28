@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.normpath(os.path.dirname(__file__))
+LOGS_FOLDER = os.path.join(PROJECT_DIR, os.pardir, 'logs')
 
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'lib'))
 
@@ -231,7 +232,7 @@ LOGGING = {
         'logfile': {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
-            'filename': PROJECT_DIR + "/logfile",
+            'filename': os.path.join(LOGS_FOLDER, 'django.log'),
             'maxBytes': 50000,
             'backupCount': 2,
             'formatter': 'standard',
@@ -334,6 +335,7 @@ AXES_LOCKOUT_TEMPLATE = 'accounts/auth_temporally_lock.html'
 #     },
 # }
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.BaseSignalProcessor'
+ELASTICSEARCH_LOG = os.path.join(LOGS_FOLDER, 'es_trace.log')
 # end haystack
 
 from settings_custom import *
