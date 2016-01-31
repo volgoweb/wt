@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'django_comments',
     'django.contrib.sites',
+    'django_extensions',
 
     'easy_thumbnails',
     'polymorphic',
@@ -77,6 +78,7 @@ INSTALLED_APPS = (
     'timezones',
     'sitetree',
     'haystack',
+    'profiling',
 
     'helper',
     'app.core',

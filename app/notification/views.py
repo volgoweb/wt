@@ -41,7 +41,7 @@ class NotificationsListPage(AjaxListView):
             print self.filters_form.errors
 
     def get_queryset(self):
-        qs = Notification.objects.filter(subscriber=self.request.user)
+        qs = Notification.objects.filter(subscriber=self.request.user).select_related('subscriber')
         self.define_filters()
 
         filter_readed = self.filters_values.get('readed')

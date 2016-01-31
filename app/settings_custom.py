@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from settings import *
 
 DATABASES = {
     'default': {
@@ -15,6 +16,14 @@ DATABASES = {
         },
     },
 }
+
+
+#
+# PuDB отладка
+#
+MIDDLEWARE_CLASSES += ('django_pdb.middleware.PdbMiddleware',)
+#DEBUG_PROPAGATE_EXCEPTIONS = True
+INSTALLED_APPS += ('django_pdb',)
 
 #
 # haystack работа с поисковыми движками

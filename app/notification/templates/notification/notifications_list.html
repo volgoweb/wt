@@ -26,7 +26,7 @@
                         data-content="При включении галочки событие станет считаться прочитанным и пропадет из списка при выключенным фильтре 'показать прочитанные'."
                     >
                 </td>
-                <td class="fulldate-col">{{ n.created|date:"FULL_DATETIME_FORMAT" }}</td>
+                <td class="fulldate-col">{{ n.created|date:"d.m.Y" }}</td>
                 <td>{{ n.text|safe }}</td>
             </tr>
         {% endfor %}

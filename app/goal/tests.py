@@ -15,9 +15,10 @@ class TestGoal(TestCase):
         super(TestGoal, self).setUp(*args, **kwargs)
         demo = DemoData()
         demo.run()
-        self.accounts = {}
-        self.accounts['boss_sales_dep'] = Account.objects.get(email='boss_sales_dep@test.test')
-        self.accounts['director'] = Account.objects.get(email='director@test.test')
+        self.accounts = {
+            'boss_sales_dep': Account.objects.get(email='boss_sales_dep@test.test'),
+            'director': Account.objects.get(email='director@test.test'),
+        }
         self.today = datetime.date.today()
         self.user = self.accounts['boss_sales_dep']
         self.login()

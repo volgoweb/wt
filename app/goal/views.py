@@ -51,6 +51,21 @@ class GoalsListPage(AjaxListView):
     #         for key in self.default_filters.keys():
     #             self.filters_values[key] = self.filters_form.cleaned_data.get(key)
 
+
+    def create_many_goals(self):
+        import datetime
+        from app.account.models import CompanyUnit, Account
+        today = datetime.date.today()
+        for i in range(1, 10000):
+            Goal.objects.create(
+                title='Test notification %d' % i,
+                desc=self.request.user,
+                date_from=today - datetime.timedelta(days=14),
+                date_to=today + datetime.timedelta(days=24),
+                author=Account.objects.get(email='boss_sales_dep@test.test'),
+                performers=CompanyUnit.objects.all().employee(),
+            )
+
     def get_base_queryset(self):
         return Goal.objects.all().not_deleted().not_overdue().only(*self.output_fields).order_by('date_from')
 
