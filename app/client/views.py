@@ -43,7 +43,7 @@ class ClientsListPage(AjaxListView):
                 self.filters_values[key] = self.filters_form.cleaned_data.get(key)
 
     def get_base_queryset(self):
-        return Client.objects.all().not_deleted()
+        return Client.objects.all().not_deleted().values('pk', 'name')
 
     def get_queryset(self):
         qs = self.get_base_queryset()

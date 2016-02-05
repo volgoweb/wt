@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from endless_pagination.views import AjaxListView
@@ -9,6 +10,8 @@ from django.views.generic import View
 
 from .models import Notification
 from .forms import NotificationsListFilters
+
+logger = logging.getLogger(__name__)
 
 
 class NotificationsListPage(AjaxListView):
@@ -37,11 +40,11 @@ class NotificationsListPage(AjaxListView):
             for key in self.default_filters.keys():
                 self.filters_values[key] = self.filters_form.cleaned_data.get(key)
         else:
-            print '------------ notif form invalid'
-            print self.filters_form.errors
+            logger.error('Filters form in NotificationsListPage not valid')
+            logger.error(self.filters_form.errors)
 
     def get_queryset(self):
-        qs = Notification.objects.filter(subscriber=self.request.user).select_related('subscriber')
+        qs = Notification.objects.filter(subscriber=self.request.user).values('pk', 'readed', 'created', 'text')
         self.define_filters()
 
         filter_readed = self.filters_values.get('readed')
